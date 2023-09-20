@@ -1,4 +1,3 @@
-let sidebar_border_position = 300;
 let cursor_in_sidebar_resize = false;
 let is_resizing_sidebar = false;
 
@@ -20,6 +19,7 @@ document.addEventListener("mousemove", (event) => {
         sidebar_border_position = Math.min(window.innerWidth / 2, Math.max(200, event.clientX));
         secondary_sidebar.style.width = String(sidebar_border_position - 50) + "px";
         main.style.marginLeft = String(sidebar_border_position) + "px";
+        eventhandler.emit("sidebar-resize")
     }
 });
 

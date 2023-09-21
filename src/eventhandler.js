@@ -1,4 +1,4 @@
-class EventHandler {
+export class EventHandler {
     constructor() {
         this.events = {};
     }

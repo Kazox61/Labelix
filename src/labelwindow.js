@@ -1,4 +1,4 @@
-class LabelBox {
+export class LabelBox {
     constructor(x, y, w, h) {
         this.x = x;
         this.y = y;
@@ -6,17 +6,20 @@ class LabelBox {
         this.h = h;
     }
 
-    draw(originX, originY) {
+    draw(originX, originY, ctx) {
         ctx.strokeRect(this.x + originX, this.y + originY, this.w, this.h);
     }
 }
 
 
-class LabelWindow {
-    constructor() {
+export class LabelWindow {
+    constructor(eventhandler, ui) {
+        this.eventhandler = eventhandler;
+        this.ui = ui;
+
         this.active_image = null;
-        this.canvas_width = canvas.width;
-        this.canvas_height = canvas.height;
+        this.canvas_width = this.ui.canvas.width;
+        this.canvas_height = this.ui.canvas.height;
         this.cursorX = null;
         this.cursorY = null;
         this.mouse_down = false;
@@ -28,17 +31,24 @@ class LabelWindow {
 
         this.originX = 0;
         this.originY = 0;
-        
+
         window.addEventListener("resize", () => {
             this.resizeCanvas()
         });
-        eventhandler.connect("sidebar-resize", () => {
+        this.eventhandler.connect("sidebar-resize", () => {
             this.resizeCanvas();
         });
         this.resizeCanvas();
 
-        canvas.addEventListener("mousemove", (event) => {
-            let bounds = canvas.getBoundingClientRect();
+        this.eventhandler.connect("image_activated", (imageElement) => {
+            this.init();
+            this.activate_image(imageElement);
+        });
+    }
+
+    init() {
+        this.ui.canvas.addEventListener("mousemove", (event) => {
+            let bounds = this.ui.canvas.getBoundingClientRect();
 
             this.cursorX = event.clientX - bounds.left;
             this.cursorY = event.clientY - bounds.top;
@@ -50,11 +60,11 @@ class LabelWindow {
                 let startY = Math.min(this.startY, this.cursorY);
                 let width = Math.abs(this.startX - this.cursorX);
                 let height = Math.abs(this.startY - this.cursorY);
-                ctx.strokeRect(startX, startY, width, height);
+                this.ui.ctx.strokeRect(startX, startY, width, height);
             }
         });
 
-        canvas.addEventListener("mousedown", (event) => {
+        this.ui.canvas.addEventListener("mousedown", (event) => {
             if (!this.mouse_down) {
                 this.mouse_down = true;
                 this.startX = this.cursorX;
@@ -76,11 +86,11 @@ class LabelWindow {
     }
 
     resizeCanvas() {
-        canvas.width = window.innerWidth - sidebar_border_position;
-        canvas.height = window.innerHeight;
-        console.log(canvas.width, canvas.height);
-        this.canvas_width = canvas.width;
-        this.canvas_height = canvas.height;
+        this.ui.canvas.width = window.innerWidth - this.ui.sidebar_border_position;
+        this.ui.canvas.height = window.innerHeight;
+
+        this.canvas_width = this.ui.canvas.width;
+        this.canvas_height = this.ui.canvas.height;
 
     }
 
@@ -94,14 +104,12 @@ class LabelWindow {
     }
 
     draw() {
-        ctx.clearRect(0, 0, this.canvas_width, this.canvas_height);
+        this.ui.ctx.clearRect(0, 0, this.canvas_width, this.canvas_height);
 
-        ctx.drawImage(this.active_image.image, this.originX, this.originY);
+        this.ui.ctx.drawImage(this.active_image.image, this.originX, this.originY);
 
         this.label_boxes.forEach(rect => {
-            rect.draw(this.originX, this.originY);
+            rect.draw(this.originX, this.originY, this.ui.ctx);
         });
     }
-
-
 }

@@ -7,40 +7,37 @@ class ImageElement {
 }
 
 class Project {
-    constructor() {
-        this.images = [];
+    constructor(eventhandler) {
+        this.eventhandler = eventhandler;
     }
 
-    async load_project() {
+    async init(project_root_name, project_root_path, ui) {
+        this.project_root_name = project_root_name;
+        this.project_root_path = project_root_path;
+
         await this.load_images();
-        this.create_ui();
+        this.add_ui(ui);
     }
 
-    create_ui() {
+    add_ui(ui) {
         let header = document.createElement("div");
         header.innerText = this.project_root_name;
         header.classList.add("explorer-project-root");
-        secondary_sidebar.appendChild(header);
+        ui.secondary_sidebar.appendChild(header);
 
         let list = document.createElement("ul");
         list.classList.add("explorer-list");
-        secondary_sidebar.appendChild(list);
+        ui.secondary_sidebar.appendChild(list);
 
         this.images.forEach(imageElement => {
             let element = document.createElement("li");
             element.innerText = imageElement.name;
             element.classList.add("explorer-element");
             element.addEventListener("click", () => {
-                label_window.activate_image(imageElement);
+                this.eventhandler.emit("image_activated", imageElement)
             })
             list.appendChild(element);
         })
-    }
-
-    async choose_project_path() {
-        const { dirName, dirPath} = await window.electronAPI.openDirectory();
-        this.project_root_name = dirName;
-        this.project_root_path = dirPath;
     }
 
     async load_images() {
@@ -55,3 +52,5 @@ class Project {
         }
     }
 }
+
+export { Project, ImageElement }

@@ -1,6 +1,6 @@
 # Labelix
 
-Labelix is a labeling tool for crearing Yolo datasets. It's built on top of Electron. 
+Labelix is a labeling tool for creating Yolo datasets. It's built on top of Electron. 
 
 features:
 * zooming

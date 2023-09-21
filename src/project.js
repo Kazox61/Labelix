@@ -1,3 +1,5 @@
+import { eventhandler } from "./labelix.js";
+
 class ImageElement {
     constructor(name, path, image) {
         this.name = name;
@@ -7,34 +9,31 @@ class ImageElement {
 }
 
 class Project {
-    constructor(eventhandler) {
-        this.eventhandler = eventhandler;
-    }
-
     async init(project_root_name, project_root_path, ui) {
         this.project_root_name = project_root_name;
         this.project_root_path = project_root_path;
+        this.ui = ui;
 
         await this.load_images();
-        this.add_ui(ui);
+        this.add_ui();
     }
 
-    add_ui(ui) {
+    add_ui() {
         let header = document.createElement("div");
         header.innerText = this.project_root_name;
         header.classList.add("explorer-project-root");
-        ui.secondary_sidebar.appendChild(header);
+        this.ui.secondary_sidebar.appendChild(header);
 
         let list = document.createElement("ul");
         list.classList.add("explorer-list");
-        ui.secondary_sidebar.appendChild(list);
+        this.ui.secondary_sidebar.appendChild(list);
 
         this.images.forEach(imageElement => {
             let element = document.createElement("li");
             element.innerText = imageElement.name;
             element.classList.add("explorer-element");
             element.addEventListener("click", () => {
-                this.eventhandler.emit("image_activated", imageElement)
+                eventhandler.emit("image_activated", imageElement)
             })
             list.appendChild(element);
         })
@@ -50,6 +49,10 @@ class Project {
 
             this.images.push(new ImageElement(name, path, image))
         }
+    }
+
+    close() {
+        this.ui.secondary_sidebar.replaceChildren();
     }
 }
 

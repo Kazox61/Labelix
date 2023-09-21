@@ -1,9 +1,12 @@
+import { Titlebar } from "./titlebar.js";
+import { eventhandler } from "./labelix.js";
+
 export class UI {
-    constructor(eventhandler) {
-        this.eventhandler = eventhandler;
+    constructor() {
+
     }
 
-    init(project) {
+    init() {
         this.canvas = document.querySelector("canvas")
         this.ctx = this.canvas.getContext("2d");
         this.secondary_sidebar = document.querySelector(".secondary-sidebar")
@@ -12,27 +15,13 @@ export class UI {
         this.canvas = document.querySelector("canvas");
         this.ctx = this.canvas.getContext("2d");
 
+        this.titlebar = new Titlebar(document.querySelector(".titlebar"));
+        this.titlebar.create();
+
         this.cursor_in_sidebar_resize = false;
         this.is_resizing_sidebar = false;
         this.sidebar_border_position = 300;
         this.init_secondary_sidebar_resize();
-
-        document.querySelector(".window-close").addEventListener("click", () => {
-            window.windowAPI.close();
-        });
-
-        document.querySelector(".window-maximize").addEventListener("click", () => {
-            window.windowAPI.maximize();
-        });
-
-        document.querySelector(".window-minimize").addEventListener("click", () => {
-            window.windowAPI.minimize();
-        });
-
-        this.sidebar_tab_explorer.addEventListener("click", async () => {
-            const { dirName, dirPath} = await window.electronAPI.openDirectory();
-            project.init(dirName, dirPath, this);
-        });
     }
 
     init_secondary_sidebar_resize() {
@@ -53,8 +42,8 @@ export class UI {
             if (this.is_resizing_sidebar) {
                 this.sidebar_border_position = Math.min(window.innerWidth / 2, Math.max(200, event.clientX));
                 this.secondary_sidebar.style.width = String(this.sidebar_border_position - 50) + "px";
-                this.main.style.marginLeft = String(this.sidebar_border_position - 25) + "px";
-                this.eventhandler.emit("sidebar-resize")
+                this.main.style.marginLeft = String(this.sidebar_border_position) + "px";
+                eventhandler.emit("sidebar-resize")
             }
         });
 

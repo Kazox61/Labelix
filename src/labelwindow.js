@@ -1,3 +1,5 @@
+import { eventhandler } from "./labelix.js";
+
 export class LabelBox {
     constructor(x, y, w, h) {
         this.x = x;
@@ -13,8 +15,7 @@ export class LabelBox {
 
 
 export class LabelWindow {
-    constructor(eventhandler, ui) {
-        this.eventhandler = eventhandler;
+    constructor(ui) {
         this.ui = ui;
 
         this.active_image = null;
@@ -35,12 +36,12 @@ export class LabelWindow {
         window.addEventListener("resize", () => {
             this.resizeCanvas()
         });
-        this.eventhandler.connect("sidebar-resize", () => {
+        eventhandler.connect("sidebar-resize", () => {
             this.resizeCanvas();
         });
         this.resizeCanvas();
 
-        this.eventhandler.connect("image_activated", (imageElement) => {
+        eventhandler.connect("image_activated", (imageElement) => {
             this.init();
             this.activate_image(imageElement);
         });

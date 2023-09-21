@@ -1,22 +1,23 @@
 const { app, BrowserWindow, dialog, ipcMain } = require('electron')
 const path = require('path');
 const fs = require('fs');
-const nativeImage = require('electron').nativeImage;
 
 function createWindow () {
     const win = new BrowserWindow({
+        frame: false,
         width: 800,
         height: 600,
         webPreferences: {
-        preload: path.join(__dirname, '../preload.js')
+            preload: path.join(__dirname, '../preload.js')
         }
     })
 
     win.loadFile('static/index.html')
+    return win
 }
 
 app.whenReady().then(() => {
-    createWindow();
+    let win = createWindow();
 
     app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0) {
@@ -48,6 +49,18 @@ app.whenReady().then(() => {
                 }
             });
         });
+    });
+
+    ipcMain.handle("window:close", () => {
+        win.close();
+    });
+
+    ipcMain.handle("window:maximize", () => {
+        win.maximize();
+    });
+
+    ipcMain.handle("window:minimize", () => {
+        win.minimize();
     });
 })
 

@@ -6,20 +6,67 @@
 }
 
 html, body {
-    height: 100vh;
+    height: 100%;
+    width: 100%;
     overflow: hidden;
     background-color: black;
 }
 
-.container {
-    position: absolute;
-    width: 100%;
+.titlebar {
+    -webkit-user-select: none;
+    -webkit-app-region: drag;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 25px;
+    background-color: rgb(25, 26, 33);
+}
+
+.horizontal {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
     height: 100%;
+}
+
+.titlebar-left {
+
+}
+
+.titlebar-center {
+
+}
+
+.titlebar-right {
+    display: flex;
+    flex-direction: row;
+}
+
+.window-controls {
+    -webkit-app-region: no-drag;
+    height: 100%;
+    width: 35px;
+    border-style: none;
+    background-color: transparent;
+    outline: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.window-close:hover {
+    background-color: rgb(220, 49, 49);
+}
+
+.window-maximize:hover,
+.window-minimize:hover {
+    background-color: rgb(84, 95, 105);
 }
 
 .primary-sidebar {
     position: fixed;
-    top: 0;
+    top: 25px;
     bottom: 0;
     left: 0;
     width: 50px;
@@ -32,7 +79,7 @@ html, body {
 
 .secondary-sidebar {
     position: fixed;
-    top: 0;
+    top: 25px;
     bottom: 0;
     left: 50px;
     width: 250px;
@@ -83,8 +130,10 @@ html, body {
 }
 
 .main {
+    position: fixed;
+    margin-top: 25px;
     margin-left: 300px;
-    min-height: 100%;
+    height: calc(100% - 25px);
     background-color: rgb(40, 42, 54);
     overflow: hidden;
 }

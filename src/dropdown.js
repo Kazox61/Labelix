@@ -3,7 +3,6 @@ import { eventhandler } from "./labelix.js";
 export class Dropdown {
     constructor(category) {
         this.category = category
-        console.log(eventhandler);
 
         this.rootElement = document.createElement("div");
         this.rootElement.classList.add("dropdown");

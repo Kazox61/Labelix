@@ -1,15 +1,40 @@
+:root {
+    --titlebar-height: 25px;
+    --titlebar-background: rgb(25, 26, 33);
+    --sidebar-width: 50px;
+    --sideContent-width: 250px;
+    --default-foreground: rgb(255, 255, 255);
+}
+
+.menubar {
+    --dropdown-hover-background: rgb(79, 75, 94);
+    --dropdown-content-background: rgb(69, 71, 90);
+    --dropdown-content-li-hover-background: rgb(125, 119, 156);
+}
+
+.explorer {
+    --explorer-project-header-background: rgb(54, 54, 71);
+}
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    color: white;
+    color: var(--default-foreground);
+    user-select: none;
 }
 
-html, body {
+html, body, .root {
     height: 100%;
     width: 100%;
     overflow: hidden;
     background-color: black;
+}
+
+.container {
+    display: flex;
+    margin-top: var(--titlebar-height);
+    height: calc(100% - var(--titlebar-height));
 }
 
 .titlebar {
@@ -19,8 +44,8 @@ html, body {
     top: 0;
     left: 0;
     right: 0;
-    height: 25px;
-    background-color: rgb(25, 26, 33);
+    height: var(--titlebar-height);
+    background-color: var(--titlebar-background);
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -30,41 +55,11 @@ html, body {
     -webkit-app-region: no-drag;
 }
 
-.titlebar-left {
+.menubar {
     height: 100%;
     display: flex;
     flex-direction: row;
     align-items: center;
-}
-
-.titlebar-center {
-    height: 100%;
-}
-
-.titlebar-right {
-    height: 100%;
-    display: flex;
-    flex-direction: row;
-}
-
-.window-controls {
-    height: 100%;
-    width: 35px;
-    border-style: none;
-    background-color: transparent;
-    outline: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.window-close:hover {
-    background-color: rgb(220, 49, 49);
-}
-
-.window-maximize:hover,
-.window-minimize:hover {
-    background-color: rgb(84, 95, 105);
 }
 
 .dropdown {
@@ -82,19 +77,19 @@ html, body {
 }
 
 .dropdown-btn:hover {
-    background-color: rgb(79, 75, 94);
+    background-color: var(--dropdown-hover-background);
 }
 
 .dropdown-content {
-    display: block;
+    display: none;
     list-style: none;
     position: absolute;
     z-index: 1;
-    background-color: rgb(69, 71, 90);
+    background-color: var(--dropdown-content-background);
 }
 
-.dropdown-content.hidden {
-    display: none;
+.dropdown-content.visible {
+    display: block;
 }
 
 .dropdown-content li {
@@ -107,7 +102,7 @@ html, body {
 }
 
 .dropdown-content li:hover {
-    background-color: rgb(125, 119, 156);
+    background-color: var(--dropdown-content-li-hover-background);
 }
 
 .dropdown-element-name {
@@ -119,50 +114,33 @@ html, body {
     padding: 1px 10px;
 }
 
-.primary-sidebar {
-    position: absolute;
-    top: 25px;
-    bottom: 0;
-    left: 0;
-    width: 50px;
-    min-height: 100%;
+.sidebar {
+    height: 100%;
+    width: var(--sidebar-width);
     background-color: rgb(53, 55, 70);
     display: flex;
     flex-direction: column;
 }
 
-.secondary-sidebar {
-    position: absolute;
-    top: 25px;
-    bottom: 0;
-    left: 50px;
-    width: 250px;
-    min-height: 100%;    
+.sideContent {
+    width: var(--sideContent-width);
+    height: 100%;    
     background-color: rgb(33, 34, 44);
 }
 
-.sidebar-tab {
-    width: 50px;
-    height: 50px;
-    background-color: transparent;
-    border-style: none;
+.mainContent {
+    flex: 1;
+    background-color: rgb(40, 42, 54);
+    overflow: hidden;
 }
 
-.sidebar-tab.selected {
-    background-color: rgb(61, 61, 81)
-}
-
-.highlighted-border {
-    border-right: solid rgb(101, 113, 163) 6px;
-}
-
-.sidebar-header {
+.explorer-header {
     padding: 12px 20px;
 }
 
-.explorer-project-root {
+.explorer-project-header {
     padding: 4px 20px;
-    background-color: rgb(54, 54, 71);
+    background-color: var(--explorer-project-header-background);
 }
 
 .explorer-list {
@@ -177,20 +155,11 @@ html, body {
     border-left: solid white 0.5px;
 }
 
-.explorer-element:hover {
+.explorer-element.selected {
+    background-color: rgb(154, 148, 165);
+}
+
+.explorer-element:not(.selected):hover {
     cursor: pointer;
-    background-color: rgb(60, 61, 70);
-}
-
-.main {
-    position: absolute;
-    margin-top: 25px;
-    margin-left: 300px;
-    height: calc(100% - 25px);
-    background-color: rgb(40, 42, 54);
-    overflow: hidden;
-}
-
-canvas {
-    overflow: hidden;
+    background-color: rgb(64, 60, 70);
 }

@@ -1,8 +1,7 @@
-import { Labelix } from "./labelix.js"
-
-
+import { Application } from "./application.js";
 
 (async() => {
-    let labelix = new Labelix();
-    await labelix.start();
+    const app = new Application();
+    await app.start();
 })()
+

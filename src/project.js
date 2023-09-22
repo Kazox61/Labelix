@@ -1,10 +1,10 @@
 import { eventhandler } from "./labelix.js";
 
-class ImageElement {
+class LabelixImage {
     constructor(name, path, image) {
         this.name = name;
         this.path = path;
-        this.image = image;
+        this.canvasImage = image;
     }
 }
 
@@ -28,12 +28,12 @@ class Project {
         list.classList.add("explorer-list");
         this.ui.secondary_sidebar.appendChild(list);
 
-        this.images.forEach(imageElement => {
+        this.images.forEach(image => {
             let element = document.createElement("li");
-            element.innerText = imageElement.name;
+            element.innerText = image.name;
             element.classList.add("explorer-element");
             element.addEventListener("click", () => {
-                eventhandler.emit("image_activated", imageElement)
+                eventhandler.emit("imageSelected", image)
             })
             list.appendChild(element);
         })
@@ -44,10 +44,10 @@ class Project {
         let images = await window.electronAPI.getDirectoryFiles(this.project_root_path);
     
         for (const [name, path] of Object.entries(images)) {
-            let image = new Image();
-            image.src = path;
+            let canvasImage = new Image();
+            canvasImage.src = path;
 
-            this.images.push(new ImageElement(name, path, image))
+            this.images.push(new LabelixImage(name, path, canvasImage))
         }
     }
 
@@ -56,4 +56,4 @@ class Project {
     }
 }
 
-export { Project, ImageElement }
+export { Project, LabelixImage }

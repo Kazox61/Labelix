@@ -8,10 +8,6 @@ export class LabelBox {
         this.w = w;
         this.h = h;
     }
-
-    draw(originX, originY, ctx) {
-        ctx.strokeRect(this.x + originX, this.y + originY, this.w, this.h);
-    }
 }
 
 
@@ -19,9 +15,9 @@ export class LabelWindow {
     constructor(ui) {
         this.ui = ui;
 
-        this.active_image = null;
-        this.canvas_width = this.ui.canvas.width;
-        this.canvas_height = this.ui.canvas.height;
+        this.selectedImage = null;
+        this.canvasWidth = this.ui.canvas.width;
+        this.canvasHeight = this.ui.canvas.height;
         this.cursorX = null;
         this.cursorY = null;
         this.mouse_down = false;
@@ -45,9 +41,9 @@ export class LabelWindow {
         });
         this.resizeCanvas();
 
-        eventhandler.connect("image_activated", (imageElement) => {
+        eventhandler.connect("imageSelected", (image) => {
             this.init();
-            this.activate_image(imageElement);
+            this.onImageSelected(image);
         });
 
         this.ui.canvas.addEventListener("wheel", (event) => {
@@ -101,13 +97,13 @@ export class LabelWindow {
                 let height = Math.abs(this.startY - this.cursorY);
 
 
-                let totalWidth = this.active_image.image.width * this.scale * this.zoom;
-                let leftCanvas = this.canvasCenterX - (this.active_image.image.width * this.scale * this.zoom * 0.5)
+                let totalWidth = this.selectedImage.canvasImage.width * this.scale * this.zoom;
+                let leftCanvas = this.canvasCenterX - (this.selectedImage.canvasImage.width * this.scale * this.zoom * 0.5)
                 let centerX = startX + width * 0.5;
                 let x = (centerX - leftCanvas) / totalWidth;
                 
-                let totalHeight = this.active_image.image.height * this.scale * this.zoom;
-                let topCanvas = this.canvasCenterY - (this.active_image.image.height * this.scale * this.zoom * 0.5)
+                let totalHeight = this.selectedImage.canvasImage.height * this.scale * this.zoom;
+                let topCanvas = this.canvasCenterY - (this.selectedImage.canvasImage.height * this.scale * this.zoom * 0.5)
                 let centerY = startY + height * 0.5;
                 let y = (centerY - topCanvas) / totalHeight;
                 
@@ -123,16 +119,16 @@ export class LabelWindow {
         this.ui.canvas.width = window.innerWidth - this.ui.sidebar_border_position;
         this.ui.canvas.height = window.innerHeight - 25;
 
-        this.canvas_width = this.ui.canvas.width;
-        this.canvas_height = this.ui.canvas.height;
+        this.canvasWidth = this.ui.canvas.width;
+        this.canvasHeight = this.ui.canvas.height;
 
     }
 
-    activate_image(imageElement) {
-        this.active_image = imageElement;
+    onImageSelected(image) {
+        this.selectedImage = image;
 
-        const ratioX = this.canvas_width / this.active_image.image.width;
-        const ratioY =  this.canvas_height / this.active_image.image.height;
+        const ratioX = this.canvasWidth / this.selectedImage.canvasImage.width;
+        const ratioY =  this.canvasHeight / this.selectedImage.canvasImage.height;
 
         this.zoom = 1;
 
@@ -143,22 +139,22 @@ export class LabelWindow {
             this.scale = ratioY;
         }
 
-        this.canvasCenterX = this.canvas_width * 0.5;
-        this.canvasCenterY = this.canvas_height * 0.5;
+        this.canvasCenterX = this.canvasWidth * 0.5;
+        this.canvasCenterY = this.canvasHeight * 0.5;
 
         this.draw();
     }
 
     draw() {
-        this.ui.ctx.clearRect(0, 0, this.canvas_width, this.canvas_height);
+        this.ui.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
 
-        let x = this.canvasCenterX - (this.active_image.image.width * this.scale * this.zoom * 0.5);
-        let y = this.canvasCenterY - (this.active_image.image.height * this.scale * this.zoom * 0.5);
+        let x = this.canvasCenterX - (this.selectedImage.canvasImage.width * this.scale * this.zoom * 0.5);
+        let y = this.canvasCenterY - (this.selectedImage.canvasImage.height * this.scale * this.zoom * 0.5);
 
-        let w = this.active_image.image.width * this.scale * this.zoom;
-        let h = this.active_image.image.height * this.scale * this.zoom;
+        let w = this.selectedImage.canvasImage.width * this.scale * this.zoom;
+        let h = this.selectedImage.canvasImage.height * this.scale * this.zoom;
 
-        this.ui.ctx.drawImage(this.active_image.image, x, y, w, h);
+        this.ui.ctx.drawImage(this.selectedImage.canvasImage, x, y, w, h);
 
         this.label_boxes.forEach(rect => {
             this.drawLabelBox(rect);
@@ -166,15 +162,15 @@ export class LabelWindow {
     }
 
     drawLabelBox(rect) {
-        let totalWidth = this.active_image.image.width * this.scale * this.zoom;
+        let totalWidth = this.selectedImage.canvasImage.width * this.scale * this.zoom;
         let width = rect.w * 2 * totalWidth;
-        let leftCanvas = this.canvasCenterX - (this.active_image.image.width * this.scale * this.zoom * 0.5);
+        let leftCanvas = this.canvasCenterX - (this.selectedImage.canvasImage.width * this.scale * this.zoom * 0.5);
         let centerX = rect.x * totalWidth + leftCanvas;
         let startX = centerX - width * 0.5
 
-        let totalHeight = this.active_image.image.height * this.scale * this.zoom;
+        let totalHeight = this.selectedImage.canvasImage.height * this.scale * this.zoom;
         let height = rect.h * 2 * totalHeight;
-        let topCanvas = this.canvasCenterY - (this.active_image.image.height * this.scale * this.zoom * 0.5);
+        let topCanvas = this.canvasCenterY - (this.selectedImage.canvasImage.height * this.scale * this.zoom * 0.5);
         let centerY = rect.y * totalHeight + topCanvas;
         let startY = centerY - height * 0.5
 

@@ -6,10 +6,10 @@ export class UI {
 
     }
 
-    init() {
+    init(settings) {
         this.canvas = document.querySelector("canvas")
         this.ctx = this.canvas.getContext("2d");
-        this.secondary_sidebar = document.querySelector(".secondary-sidebar")
+        this.secondarySidebar = document.querySelector(".secondary-sidebar")
         this.main = document.querySelector(".main")
         this.sidebar_tab_explorer = document.getElementById("sidebar-tab-explorer")
         this.canvas = document.querySelector("canvas");
@@ -18,46 +18,48 @@ export class UI {
         this.titlebar = new Titlebar(document.querySelector(".titlebar"));
         this.titlebar.create();
 
-        this.cursor_in_sidebar_resize = false;
-        this.is_resizing_sidebar = false;
-        this.sidebar_border_position = 300;
-        this.init_secondary_sidebar_resize();
+        this.cursorInSidebarResize = false;
+        this.isResizingSidebar = false;
+        this.sidebarBorderPosition = settings.sidebarBorderPosition;
+        this.secondarySidebar.style.width = String(this.sidebarBorderPosition - 50) + "px";
+        this.main.style.marginLeft = String(this.sidebarBorderPosition) + "px";
+        this.initSecondarySidebarResize();
     }
 
-    init_secondary_sidebar_resize() {
+    initSecondarySidebarResize() {
         document.addEventListener("mousemove", (event) => {
-            if (event.clientX >= this.sidebar_border_position -3 && event.clientX <= this.sidebar_border_position + 3) {
-                if (!this.cursor_in_sidebar_resize) {
+            if (event.clientX >= this.sidebarBorderPosition -3 && event.clientX <= this.sidebarBorderPosition + 3) {
+                if (!this.cursorInSidebarResize) {
                     document.body.style.cursor = "e-resize";
-                    this.cursor_in_sidebar_resize = true;
+                    this.cursorInSidebarResize = true;
                 }
             }
             else {
-                if (this.cursor_in_sidebar_resize && !this.is_resizing_sidebar) {
+                if (this.cursorInSidebarResize && !this.isResizingSidebar) {
                     document.body.style.cursor = "default";
-                    this.cursor_in_sidebar_resize = false;
+                    this.cursorInSidebarResize = false;
                 }
             }
 
-            if (this.is_resizing_sidebar) {
-                this.sidebar_border_position = Math.min(window.innerWidth / 2, Math.max(200, event.clientX));
-                this.secondary_sidebar.style.width = String(this.sidebar_border_position - 50) + "px";
-                this.main.style.marginLeft = String(this.sidebar_border_position) + "px";
+            if (this.isResizingSidebar) {
+                this.sidebarBorderPosition = Math.min(window.innerWidth / 2, Math.max(200, event.clientX));
+                this.secondarySidebar.style.width = String(this.sidebarBorderPosition - 50) + "px";
+                this.main.style.marginLeft = String(this.sidebarBorderPosition) + "px";
                 eventhandler.emit("sidebar-resize")
             }
         });
 
         document.addEventListener("mousedown", (event) => {
-            if (this.cursor_in_sidebar_resize) {
-                this.is_resizing_sidebar = true;
-                this.secondary_sidebar.classList.add('highlighted-border')
+            if (this.cursorInSidebarResize) {
+                this.isResizingSidebar = true;
+                this.secondarySidebar.classList.add('highlighted-border')
             }
         });
 
         document.addEventListener("mouseup", (event) => {
-            if (this.is_resizing_sidebar) {
-                this.is_resizing_sidebar = false;
-                this.secondary_sidebar.classList.remove('highlighted-border')
+            if (this.isResizingSidebar) {
+                this.isResizingSidebar = false;
+                this.secondarySidebar.classList.remove('highlighted-border')
             }
         });
 

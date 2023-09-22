@@ -51,6 +51,10 @@ app.whenReady().then(() => {
         });
     });
 
+    ipcMain.handle("fs:writeFile", (filePath, content) => {
+        fs.writeFile(filePath, content);
+    });
+
     ipcMain.handle("window:close", () => {
         win.close();
     });
@@ -62,10 +66,26 @@ app.whenReady().then(() => {
     ipcMain.handle("window:minimize", () => {
         win.minimize();
     });
+
+    ipcMain.handle('fs:settings',async () => {
+        return new Promise((resolve, reject) => {
+            const settingsPath = path.join(app.getPath("userData"), "settings.json");
+            if (fs.existsSync(settingsPath)) {
+                fs.readFile(settingsPath, (err, data) => {
+                    resolve(JSON.parse(data));
+                });
+            }
+
+            fs.readFile(path.join(__dirname, "../../static/defaultSettings.json"), (err, data) => {
+                resolve(JSON.parse(data));
+            });
+
+        });
+    });
 })
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
-        app.quit()
+        app.quit();
     }
 })

@@ -8,13 +8,12 @@ const eventhandler = new EventHandler();
 class Labelix {
     constructor() {
         this.ui = new UI();
-        this.project = new Project();
         this.openedProject = null
     }
 
-    start() {
-        this.loadConfig();
-        this.ui.init();
+    async start() {
+        await this.loadSettings();
+        this.ui.init(this.settings);
         this.label_window = new LabelWindow(this.ui);
         this.connectEvents();
     }
@@ -28,10 +27,18 @@ class Labelix {
             this.openedProject = new Project();
             this.openedProject.init(dirName, dirPath, this.ui);
         });
+
+        eventhandler.connect("window:close", () => {
+            if (this.openedProject !== null) {
+                this.openedProject.close();
+
+
+            }
+        });
     }
 
-    loadConfig() {
-
+    async loadSettings() {
+        this.settings = await window.electronAPI.getSettings();
     }
 }
 

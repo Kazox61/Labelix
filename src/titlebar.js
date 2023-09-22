@@ -1,4 +1,5 @@
 import { Dropdown } from "./dropdown.js";
+import { eventhandler } from "./labelix.js";
 
 let titlebarCategories = [{
     "name": "File",
@@ -71,6 +72,7 @@ export class Titlebar {
         closeBtn.classList.add("window-close");
         closeBtn.innerHTML = '<svg width="15px" height="15px" viewBox="0 0 20 20" fill="none"><path d="M3 17 L17 3 M3 3 L17 17" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'
         closeBtn.addEventListener("click", () => {
+            eventhandler.emit("window:close");
             window.windowAPI.close();
         });
         rightTitlebar.appendChild(closeBtn);

@@ -1,4 +1,8 @@
 import { Labelix } from "./labelix.js"
 
-let labelix = new Labelix();
-labelix.start();
+
+
+(async() => {
+    let labelix = new Labelix();
+    await labelix.start();
+})()

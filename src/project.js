@@ -22,11 +22,11 @@ class Project {
         let header = document.createElement("div");
         header.innerText = this.project_root_name;
         header.classList.add("explorer-project-root");
-        this.ui.secondary_sidebar.appendChild(header);
+        this.ui.secondarySidebar.appendChild(header);
 
         let list = document.createElement("ul");
         list.classList.add("explorer-list");
-        this.ui.secondary_sidebar.appendChild(list);
+        this.ui.secondarySidebar.appendChild(list);
 
         this.images.forEach(image => {
             let element = document.createElement("li");
@@ -52,7 +52,7 @@ class Project {
     }
 
     close() {
-        this.ui.secondary_sidebar.replaceChildren();
+        this.ui.secondarySidebar.replaceChildren();
     }
 }
 

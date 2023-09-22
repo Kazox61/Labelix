@@ -2,7 +2,9 @@ const { contextBridge, ipcRenderer } = require('electron')
 
 contextBridge.exposeInMainWorld('electronAPI', {
     openDirectory: () => ipcRenderer.invoke('dialog:openDirectory'),
-    getDirectoryFiles: (directoryPath) => ipcRenderer.invoke('fs:getDirectoryFiles', directoryPath)
+    getDirectoryFiles: (directoryPath) => ipcRenderer.invoke('fs:getDirectoryFiles', directoryPath),
+    writeFile: (filePath, content) => ipcRenderer.invoke('fs:writeFile', filePath, content),
+    getSettings: () => ipcRenderer.invoke('fs:settings')
 })
 
 contextBridge.exposeInMainWorld('windowAPI', {

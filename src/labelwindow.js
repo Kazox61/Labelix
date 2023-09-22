@@ -10,6 +10,27 @@ export class LabelBox {
     }
 }
 
+function getMouseButton(event) {
+    const e = event || window.event;
+    const btnCode = e.button;
+
+    switch (btnCode) {
+        case 0:
+        return "left";
+        break;
+
+        case 1:
+        return "middle";
+        break;
+
+        case 2:
+        return "right";
+        break;
+
+        default:
+        return "undefined yet";
+    }
+}
 
 export class LabelWindow {
     constructor(ui) {
@@ -20,12 +41,12 @@ export class LabelWindow {
         this.canvasHeight = this.ui.canvas.height;
         this.cursorX = null;
         this.cursorY = null;
-        this.mouse_down = false;
+        this.leftMouseDown = false;
 
         this.startX = null;
         this.startY = null;
 
-        this.label_boxes = [];
+        this.labelBoxes = [];
 
         this.originX = 0;
         this.originY = 0;
@@ -57,20 +78,20 @@ export class LabelWindow {
             // Apply a minimum and maximum scale limit if desired
             // For example, you can use Math.min and Math.max:
             this.zoom = Math.max(0.1, Math.min(10, zoom));
-            this.draw();
+            this.render();
         });
     }
 
     init() {
         this.ui.canvas.addEventListener("mousemove", (event) => {
             let bounds = this.ui.canvas.getBoundingClientRect();
-
+            //update Cursor Position
             this.cursorX = event.clientX - bounds.left;
             this.cursorY = event.clientY - bounds.top;
 
-            this.draw();
+            this.render();
 
-            if (this.mouse_down) {
+            if (this.leftMouseDown) {
                 let startX = Math.min(this.startX, this.cursorX);
                 let startY = Math.min(this.startY, this.cursorY);
                 let width = Math.abs(this.startX - this.cursorX);
@@ -80,43 +101,54 @@ export class LabelWindow {
         });
 
         this.ui.canvas.addEventListener("mousedown", (event) => {
-            if (!this.mouse_down) {
-                this.mouse_down = true;
-                this.startX = this.cursorX;
-                this.startY = this.cursorY;
-            }
+            const mouseButton = getMouseButton(event);
+            if (mouseButton === "left") {
+                if (!this.leftMouseDown) {
+                    this.leftMouseDown = true;
+                    this.startX = this.cursorX;
+                    this.startY = this.cursorY;
+                }
+            } 
+
+            
         });
 
         document.addEventListener("mouseup", (event) => {
-            if (this.mouse_down) {
-                this.mouse_down = false;
-
-                let startX = Math.min(this.startX, this.cursorX);
-                let startY = Math.min(this.startY, this.cursorY);
-                let width = Math.abs(this.startX - this.cursorX);
-                let height = Math.abs(this.startY - this.cursorY);
-
-
-                let totalWidth = this.selectedImage.canvasImage.width * this.scale * this.zoom;
-                let leftCanvas = this.canvasCenterX - (this.selectedImage.canvasImage.width * this.scale * this.zoom * 0.5)
-                let centerX = startX + width * 0.5;
-                let x = (centerX - leftCanvas) / totalWidth;
-                
-                let totalHeight = this.selectedImage.canvasImage.height * this.scale * this.zoom;
-                let topCanvas = this.canvasCenterY - (this.selectedImage.canvasImage.height * this.scale * this.zoom * 0.5)
-                let centerY = startY + height * 0.5;
-                let y = (centerY - topCanvas) / totalHeight;
-                
-                let w = width * 0.5 / totalWidth;
-                let h = height * 0.5 / totalHeight;
-
-                this.label_boxes.push(new LabelBox(x, y, w, h));
+            const mouseButton = getMouseButton(event);
+            if (mouseButton === "left") {
+                if (this.leftMouseDown) {
+                    this.leftMouseDown = false;
+                    this.saveLabelbox();
+                }
             }
         });
     }
 
+    saveLabelbox() {
+        let startX = Math.min(this.startX, this.cursorX);
+        let startY = Math.min(this.startY, this.cursorY);
+        let width = Math.abs(this.startX - this.cursorX);
+        let height = Math.abs(this.startY - this.cursorY);
+
+
+        let totalWidth = this.selectedImage.canvasImage.width * this.scale * this.zoom;
+        let leftCanvas = this.canvasCenterX - (this.selectedImage.canvasImage.width * this.scale * this.zoom * 0.5)
+        let centerX = startX + width * 0.5;
+        let x = (centerX - leftCanvas) / totalWidth;
+        
+        let totalHeight = this.selectedImage.canvasImage.height * this.scale * this.zoom;
+        let topCanvas = this.canvasCenterY - (this.selectedImage.canvasImage.height * this.scale * this.zoom * 0.5)
+        let centerY = startY + height * 0.5;
+        let y = (centerY - topCanvas) / totalHeight;
+        
+        let w = width * 0.5 / totalWidth;
+        let h = height * 0.5 / totalHeight;
+
+        this.labelBoxes.push(new LabelBox(x, y, w, h));
+    }
+
     resizeCanvas() {
-        this.ui.canvas.width = window.innerWidth - this.ui.sidebar_border_position;
+        this.ui.canvas.width = window.innerWidth - this.ui.sidebarBorderPosition;
         this.ui.canvas.height = window.innerHeight - 25;
 
         this.canvasWidth = this.ui.canvas.width;
@@ -142,10 +174,10 @@ export class LabelWindow {
         this.canvasCenterX = this.canvasWidth * 0.5;
         this.canvasCenterY = this.canvasHeight * 0.5;
 
-        this.draw();
+        this.render();
     }
 
-    draw() {
+    render() {
         this.ui.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
 
         let x = this.canvasCenterX - (this.selectedImage.canvasImage.width * this.scale * this.zoom * 0.5);
@@ -156,22 +188,22 @@ export class LabelWindow {
 
         this.ui.ctx.drawImage(this.selectedImage.canvasImage, x, y, w, h);
 
-        this.label_boxes.forEach(rect => {
-            this.drawLabelBox(rect);
+        this.labelBoxes.forEach(labelBox => {
+            this.drawLabelBox(labelBox);
         });
     }
 
-    drawLabelBox(rect) {
+    drawLabelBox(labelBox) {
         let totalWidth = this.selectedImage.canvasImage.width * this.scale * this.zoom;
-        let width = rect.w * 2 * totalWidth;
+        let width = labelBox.w * 2 * totalWidth;
         let leftCanvas = this.canvasCenterX - (this.selectedImage.canvasImage.width * this.scale * this.zoom * 0.5);
-        let centerX = rect.x * totalWidth + leftCanvas;
+        let centerX = labelBox.x * totalWidth + leftCanvas;
         let startX = centerX - width * 0.5
 
         let totalHeight = this.selectedImage.canvasImage.height * this.scale * this.zoom;
-        let height = rect.h * 2 * totalHeight;
+        let height = labelBox.h * 2 * totalHeight;
         let topCanvas = this.canvasCenterY - (this.selectedImage.canvasImage.height * this.scale * this.zoom * 0.5);
-        let centerY = rect.y * totalHeight + topCanvas;
+        let centerY = labelBox.y * totalHeight + topCanvas;
         let startY = centerY - height * 0.5
 
         this.ui.ctx.strokeRect(startX, startY, width, height);

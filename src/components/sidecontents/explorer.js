@@ -32,6 +32,8 @@ export class Explorer {
 
         eventhandler.connect("tb:openFolder", async () => {
             const { dirName, dirPath} = await window.electronAPI.openDirectory();
+            this.unloadProject();
+
             this.settings.lastProjectPath = dirPath;
             this.settings.lastProjectName = dirName;
             eventhandler.emit("settingsUpdated");
@@ -52,9 +54,9 @@ export class Explorer {
         this.images = [];
         let images = await window.electronAPI.getDirectoryFiles(this.dirPath);
 
-        let listNode = document.createElement("ul");
-        listNode.classList.add("explorer-list");
-        this.explorerNode.appendChild(listNode);
+        this.listNode = document.createElement("ul");
+        this.listNode.classList.add("explorer-list");
+        this.explorerNode.appendChild(this.listNode);
     
         let i = 0
         for (const [name, path] of Object.entries(images)) {
@@ -75,7 +77,7 @@ export class Explorer {
                 canvasImage.onload = () => this.onSelect(elementNode, labelixImage);
             }
 
-            listNode.appendChild(elementNode);
+            this.listNode.appendChild(elementNode);
             i++;
         }
     }
@@ -93,5 +95,13 @@ export class Explorer {
         this.selectedImageNode.classList.add("selected");
         eventhandler.emit("explorer:imageSelected", labelixImage)
         elementNode.classList
+    }
+
+    unloadProject() {
+        if (this.explorerProjectHeaderNode == null) {
+            return;
+        }
+        this.explorerNode.removeChild(this.explorerProjectHeaderNode);
+        this.explorerNode.removeChild(this.listNode);
     }
 }

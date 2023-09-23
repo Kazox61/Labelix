@@ -114,6 +114,10 @@ html, body, .root {
     background-color: var(--sideContent-background);
 }
 
+.sideContent.highlighted-border {
+    border-right: solid rgb(101, 113, 163) 6px;
+}
+
 .mainContent {
     flex: 1;
     background-color: var(--mainContent-background);

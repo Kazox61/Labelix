@@ -6,6 +6,7 @@ export class SideContent {
         this.containerNode = containerNode;
         this.settings = settings;
         this.sideContentSettings = this.settings.sideContent;
+        this.sideContentWidth = this.settings.sideContent.width;
 
         this.sideContentNode = document.createElement("div");
         this.sideContentNode.className = "sideContent";
@@ -24,7 +25,7 @@ export class SideContent {
         this.cursorInSideContentResize = false;
 
         document.addEventListener("mousemove", (event) => {
-            let borderPosition = this.settings.sidebar.width + this.sideContentSettings.width;
+            let borderPosition = this.settings.sidebar.width + this.sideContentWidth;
             if (event.clientX >= borderPosition -3 && event.clientX <= borderPosition + 3) {
                 if (!this.cursorInSideContentResize) {
                     document.body.style.cursor = "e-resize";
@@ -40,8 +41,8 @@ export class SideContent {
 
             if (this.isResizingSideContent) {
                 borderPosition = Math.min(window.innerWidth / 2, Math.max(200, event.clientX));
-                this.sideContentSettings.width = borderPosition - this.settings.sidebar.width;
-                this.sideContentNode.style.setProperty("--sideContent-width", String(this.sideContentSettings.width)+"px");
+                this.sideContentWidth = borderPosition - this.settings.sidebar.width;
+                this.sideContentNode.style.setProperty("--sideContent-width", String(this.sideContentWidth)+"px");
                 eventhandler.emit("sideContent:resize")
             }
         });
@@ -57,6 +58,8 @@ export class SideContent {
             if (this.isResizingSideContent) {
                 this.isResizingSideContent = false;
                 this.sideContentNode.classList.remove('highlighted-border')
+                this.settings.sideContent.width = this.sideContentWidth;
+                eventhandler.emit("settingsUpdated");
             }
         });
 

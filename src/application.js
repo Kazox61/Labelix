@@ -26,9 +26,15 @@ export class Application {
         this.sidebar = new Sidebar(this.containerNode, this.settings);
         this.sideContent = new SideContent(this.containerNode, this.settings);
         this.mainContent = new MainContent(this.containerNode, this.settings);
+
+        eventhandler.connect("settingsUpdated", () => this.onSettingsUpdated())
     }
 
     async loadSettings() {
         this.settings = await window.electronAPI.getSettings();
+    }
+
+    onSettingsUpdated() {
+        window.electronAPI.saveSettings(this.settings);
     }
 }

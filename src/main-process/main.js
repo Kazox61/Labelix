@@ -4,7 +4,12 @@ const fs = require('fs');
 
 function createWindow () {
     const win = new BrowserWindow({
-        frame: false,
+        titleBarStyle: 'hidden',
+        titleBarOverlay: {
+            height: 25,
+            color: '#ffffff00',
+            symbolColor: '#ffffff'
+        },
         width: 800,
         height: 600,
         webPreferences: {
@@ -67,19 +72,35 @@ app.whenReady().then(() => {
         win.minimize();
     });
 
-    ipcMain.handle('fs:settings',async () => {
-        return new Promise((resolve, reject) => {
-            const settingsPath = path.join(app.getPath("userData"), "settings.json");
+    ipcMain.handle('fs:loadSettings', async () => {
+        const settingsPath = path.join(app.getPath("userData"), "settings.json");
+        
+        try {
             if (fs.existsSync(settingsPath)) {
-                fs.readFile(settingsPath, (err, data) => {
-                    resolve(JSON.parse(data));
-                });
+                const userData = await fs.promises.readFile(settingsPath, 'utf-8');
+                console.log("Load Settings from User.");
+                return JSON.parse(userData);
+            } else {
+                console.log("User settings file not found, loading Default Settings.");
+                const defaultData = await fs.promises.readFile(path.join(__dirname, "../../static/defaultSettings.json"), 'utf-8');
+                return JSON.parse(defaultData);
             }
+        } catch (error) {
+            console.error("Error reading settings:", error);
 
-            fs.readFile(path.join(__dirname, "../../static/defaultSettings.json"), (err, data) => {
-                resolve(JSON.parse(data));
-            });
+            throw error;
+        }
+    })
 
+    ipcMain.handle('fs:saveSettings', (event, settings) => {
+        const settingsPath = path.join(app.getPath("userData"), "settings.json");
+
+        fs.writeFile(settingsPath, JSON.stringify(settings), (err) => {
+            if (err) {
+            console.error('Error writing Settings:', err);
+            } else {
+            console.log('Settings overwritten successfully.');
+            }
         });
     });
 })

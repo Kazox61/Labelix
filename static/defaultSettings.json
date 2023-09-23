@@ -1,5 +1,32 @@
 {
     "lastProjectPath": null,
-    "sidebarWidth": 50,
-    "sideContentWidth": 250
+    "defaultForeground": "#ffffff",
+    "titlebar": {
+        "background": "#191a21",
+        "menubar": {
+            "dropdown": {
+                "buttonHoverBackground": "#4f4b5e",
+                "content": {
+                    "background": "#45475a",
+                    "elementHoverBackground": "#7d779c"
+                }
+            }
+        }
+    },
+    "sidebar": {
+        "width": 50,
+        "background": "#353746"
+    },
+    "sideContent": {
+        "width": 250,
+        "background": "#21222c",
+        "explorer": {
+            "projectHeaderBackground": "#363647",
+            "elementSelectedBackground": "#9a94a5",
+            "elementHoverBackground": "#403c46"
+        }
+    },
+    "mainContent": {
+        "background": "#282a36"
+    }
 }

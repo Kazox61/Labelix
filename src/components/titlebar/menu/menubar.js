@@ -1,8 +1,9 @@
 import { Dropdown } from "./Dropdown.js";
 
 export class Menubar {
-    constructor(titlebarNode) {
+    constructor(titlebarNode, settings) {
         this.titlebarNode = titlebarNode;
+        this.settings = settings;
 
         this.menubarNode = document.createElement("div");
         this.menubarNode.className = "menubar";
@@ -19,6 +20,6 @@ export class Menubar {
                 }
             ]
         };
-        this.fileDropdown = new Dropdown(this.menubarNode, this.fileDropdownContent);
+        this.fileDropdown = new Dropdown(this.menubarNode, this.settings, this.fileDropdownContent);
     }
 }

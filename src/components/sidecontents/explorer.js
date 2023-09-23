@@ -9,11 +9,15 @@ class LabelixImage {
 }
 
 export class Explorer {
-    constructor(sideContentNode) {
+    constructor(sideContentNode, explorerSettings) {
         this.sideContentNode = sideContentNode;
+        this.explorerSettings = explorerSettings;
 
         this.explorerNode = document.createElement("div");
         this.explorerNode.className = "explorer";
+        this.explorerNode.style.setProperty("--explorer-project-header-background", this.explorerSettings.projectHeaderBackground);
+        this.explorerNode.style.setProperty("--explorer-element-selected-background", this.explorerSettings.elementSelectedBackground);
+        this.explorerNode.style.setProperty("--explorer-element-hover-background", this.explorerSettings.elementHoverBackground);
         this.sideContentNode.appendChild(this.explorerNode);
 
         this.explorerHeaderNode = document.createElement("div");

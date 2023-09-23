@@ -4,26 +4,27 @@ import { eventhandler } from "../../application.js";
 export class SideContent {
     constructor(containerNode, settings) {
         this.containerNode = containerNode;
-        this.sideContentWidth = settings.sideContentWidth;
-        this.sidebarWidth = settings.sidebarWidth;
+        this.settings = settings;
+        this.sideContentSettings = this.settings.sideContent;
 
         this.sideContentNode = document.createElement("div");
         this.sideContentNode.className = "sideContent";
+        this.sideContentNode.style.setProperty("--sideContent-background", this.sideContentSettings.background);
+        this.sideContentNode.style.setProperty("--sideContent-width", String(this.sideContentSettings.width)+"px");
         this.containerNode.appendChild(this.sideContentNode);
 
         this.handleResize();
 
-        this.explorer = new Explorer(this.sideContentNode);
+        this.explorer = new Explorer(this.sideContentNode, this.settings.sideContent.explorer);
 
     }
 
     handleResize() {
-        const root = document.querySelector(":root");
         this.isResizingSideContent = false;
         this.cursorInSideContentResize = false;
 
         document.addEventListener("mousemove", (event) => {
-            let borderPosition = this.sidebarWidth + this.sideContentWidth;
+            let borderPosition = this.settings.sidebar.width + this.sideContentSettings.width;
             if (event.clientX >= borderPosition -3 && event.clientX <= borderPosition + 3) {
                 if (!this.cursorInSideContentResize) {
                     document.body.style.cursor = "e-resize";
@@ -39,8 +40,8 @@ export class SideContent {
 
             if (this.isResizingSideContent) {
                 borderPosition = Math.min(window.innerWidth / 2, Math.max(200, event.clientX));
-                this.sideContentWidth = borderPosition - this.sidebarWidth;
-                root.style.setProperty("--sideContent-width", String(this.sideContentWidth)+"px");
+                this.sideContentSettings.width = borderPosition - this.settings.sidebar.width;
+                this.sideContentNode.style.setProperty("--sideContent-width", String(this.sideContentSettings.width)+"px");
                 eventhandler.emit("sideContent:resize")
             }
         });

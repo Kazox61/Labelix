@@ -13,15 +13,19 @@ export class Application {
 
     async start() {
         await this.loadSettings();
-        this.titlebar = new Titlebar();
+        this.rootNode = document.querySelector(".root");
+        this.rootNode.style.setProperty("--default-foreground", this.settings.defaultForeground);
+
+        this.titlebar = new Titlebar(this.rootNode, this.settings);
 
         this.containerNode = document.createElement("div");
         this.containerNode.className = "container";
+
         document.querySelector(".root").appendChild(this.containerNode);
 
-        this.sidebar = new Sidebar(this.containerNode);
+        this.sidebar = new Sidebar(this.containerNode, this.settings);
         this.sideContent = new SideContent(this.containerNode, this.settings);
-        this.mainContent = new MainContent(this.containerNode);
+        this.mainContent = new MainContent(this.containerNode, this.settings);
     }
 
     async loadSettings() {

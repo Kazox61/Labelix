@@ -1,19 +1,5 @@
 :root {
-    --titlebar-height: 25px;
-    --titlebar-background: rgb(25, 26, 33);
-    --sidebar-width: 50px;
-    --sideContent-width: 250px;
-    --default-foreground: rgb(255, 255, 255);
-}
-
-.menubar {
-    --dropdown-hover-background: rgb(79, 75, 94);
-    --dropdown-content-background: rgb(69, 71, 90);
-    --dropdown-content-li-hover-background: rgb(125, 119, 156);
-}
-
-.explorer {
-    --explorer-project-header-background: rgb(54, 54, 71);
+    --titlebar-height: 25px
 }
 
 * {
@@ -77,7 +63,7 @@ html, body, .root {
 }
 
 .dropdown-btn:hover {
-    background-color: var(--dropdown-hover-background);
+    background-color: var(--dropdown--button-hover-background);
 }
 
 .dropdown-content {
@@ -102,7 +88,7 @@ html, body, .root {
 }
 
 .dropdown-content li:hover {
-    background-color: var(--dropdown-content-li-hover-background);
+    background-color: var(--dropdown-content-element-hover-background);
 }
 
 .dropdown-element-name {
@@ -117,20 +103,20 @@ html, body, .root {
 .sidebar {
     height: 100%;
     width: var(--sidebar-width);
-    background-color: rgb(53, 55, 70);
+    background-color: var(--sidebar-background);
     display: flex;
     flex-direction: column;
 }
 
 .sideContent {
     width: var(--sideContent-width);
-    height: 100%;    
-    background-color: rgb(33, 34, 44);
+    height: 100%;
+    background-color: var(--sideContent-background);
 }
 
 .mainContent {
     flex: 1;
-    background-color: rgb(40, 42, 54);
+    background-color: var(--mainContent-background);
     overflow: hidden;
 }
 
@@ -156,10 +142,10 @@ html, body, .root {
 }
 
 .explorer-element.selected {
-    background-color: rgb(154, 148, 165);
+    background-color: var(--explorer-element-selected-background);
 }
 
 .explorer-element:not(.selected):hover {
     cursor: pointer;
-    background-color: rgb(64, 60, 70);
+    background-color: var(--explorer-element-hover-background);
 }

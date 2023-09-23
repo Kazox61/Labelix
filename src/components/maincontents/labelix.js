@@ -110,33 +110,49 @@ export class Labelix {
         this.canvasWidth = this.mainContentNode.clientWidth;
         this.canvasHeight = this.mainContentNode.clientHeight;
 
+        this.canvasCenterX = this.canvasWidth * 0.5;
+        this.canvasCenterY = this.canvasHeight * 0.5;
+
         this.canvasNode.width = this.canvasWidth;
         this.canvasNode.height = this.canvasHeight;
+
+        this.setScaleMaximize();
+
+        this.render();
     }
 
     onImageSelected(labelixImage) {
         this.labelBoxes = []
         this.selectedImage = labelixImage;
 
-        const ratioX = this.canvasWidth / this.selectedImage.canvasImage.width;
-        const ratioY =  this.canvasHeight / this.selectedImage.canvasImage.height;
+        
 
         // can be changed with mouse wheel
         this.zoom = 1;
-        // scale to resize image to canvas size
+        this.setScaleMaximize();
+        
+
+        this.render();
+    }
+
+    setScaleMaximize() {
+        if (this.selectedImage == null) {
+            return;
+        }
+        const ratioX = this.canvasWidth / this.selectedImage.canvasImage.width;
+        const ratioY =  this.canvasHeight / this.selectedImage.canvasImage.height;
         if (ratioX < ratioY) {
             this.scaleMaximize = ratioX;
         }
         else {
             this.scaleMaximize = ratioY;
         }
-
-        this.canvasCenterX = this.canvasWidth * 0.5;
-        this.canvasCenterY = this.canvasHeight * 0.5;
-        this.render();
     }
 
     render() {
+        if (this.selectedImage == null) {
+            return;
+        }
         this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
 
         let x = this.canvasCenterX - (this.selectedImage.canvasImage.width * this.scaleMaximize * this.zoom * 0.5);

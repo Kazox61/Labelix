@@ -1,4 +1,5 @@
 import { Explorer } from "./explorer.js";
+import { eventhandler } from "../../application.js";
 
 export class SideContent {
     constructor(containerNode, settings) {

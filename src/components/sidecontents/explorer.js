@@ -48,17 +48,18 @@ export class Explorer {
         listNode.classList.add("explorer-list");
         this.explorerNode.appendChild(listNode);
     
+        let i = 0
         for (const [name, path] of Object.entries(images)) {
             let canvasImage = new Image();
             canvasImage.src = path;
 
             let labelixImage = new LabelixImage(name, path, canvasImage);
 
-            
             let elementNode = document.createElement("li");
             elementNode.innerText = name;
             elementNode.classList.add("explorer-element");
-            elementNode.addEventListener("click", () => {
+
+            function onSelect()  {
                 if (this.selectedImageNode != null) {
                     if (this.selectedImageNode === elementNode) {
                         return;
@@ -71,8 +72,18 @@ export class Explorer {
                 this.selectedImageNode.classList.add("selected");
                 eventhandler.emit("explorer:imageSelected", labelixImage)
                 elementNode.classList
+            }
+
+            elementNode.addEventListener("click", () => {
+                onSelect()
             })
+
+            if (i == 0) {
+                canvasImage.onload = onSelect;
+            }
+
             listNode.appendChild(elementNode);
+            i++;
         }
     }
 }

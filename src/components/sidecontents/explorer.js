@@ -9,9 +9,10 @@ class LabelixImage {
 }
 
 export class Explorer {
-    constructor(sideContentNode, explorerSettings) {
+    constructor(sideContentNode, settings) {
         this.sideContentNode = sideContentNode;
-        this.explorerSettings = explorerSettings;
+        this.settings = settings;
+        this.explorerSettings = this.settings.sideContent.explorer;
 
         this.explorerNode = document.createElement("div");
         this.explorerNode.className = "explorer";
@@ -25,8 +26,15 @@ export class Explorer {
         this.explorerHeaderNode.innerText = "Explorer";
         this.explorerNode.appendChild(this.explorerHeaderNode);
 
+        if (this.settings.lastProjectPath != null) {
+            this.loadDirectory(this.settings.lastProjectName, this.settings.lastProjectPath);
+        }
+
         eventhandler.connect("tb:openFolder", async () => {
             const { dirName, dirPath} = await window.electronAPI.openDirectory();
+            this.settings.lastProjectPath = dirPath;
+            this.settings.lastProjectName = dirName;
+            eventhandler.emit("settingsUpdated");
             
             await this.loadDirectory(dirName, dirPath);
         });
@@ -59,31 +67,31 @@ export class Explorer {
             elementNode.innerText = name;
             elementNode.classList.add("explorer-element");
 
-            function onSelect()  {
-                if (this.selectedImageNode != null) {
-                    if (this.selectedImageNode === elementNode) {
-                        return;
-                    }
-
-                    this.selectedImageNode.classList.remove("selected")
-                }
-
-                this.selectedImageNode = elementNode;
-                this.selectedImageNode.classList.add("selected");
-                eventhandler.emit("explorer:imageSelected", labelixImage)
-                elementNode.classList
-            }
-
             elementNode.addEventListener("click", () => {
-                onSelect()
+                this.onSelect(elementNode, labelixImage);
             })
 
             if (i == 0) {
-                canvasImage.onload = onSelect;
+                canvasImage.onload = () => this.onSelect(elementNode, labelixImage);
             }
 
             listNode.appendChild(elementNode);
             i++;
         }
+    }
+
+    onSelect(elementNode, labelixImage)  {
+        if (this.selectedImageNode != null) {
+            if (this.selectedImageNode === elementNode) {
+                return;
+            }
+
+            this.selectedImageNode.classList.remove("selected")
+        }
+
+        this.selectedImageNode = elementNode;
+        this.selectedImageNode.classList.add("selected");
+        eventhandler.emit("explorer:imageSelected", labelixImage)
+        elementNode.classList
     }
 }

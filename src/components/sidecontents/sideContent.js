@@ -16,7 +16,7 @@ export class SideContent {
 
         this.handleResize();
 
-        this.explorer = new Explorer(this.sideContentNode, this.settings.sideContent.explorer);
+        this.explorer = new Explorer(this.sideContentNode, this.settings);
 
     }
 

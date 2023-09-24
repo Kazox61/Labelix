@@ -87,7 +87,6 @@ export class Explorer {
             if (this.selectedImageNode === elementNode) {
                 return;
             }
-
             this.selectedImageNode.classList.remove("selected")
         }
 

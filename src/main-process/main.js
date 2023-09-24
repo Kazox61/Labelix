@@ -56,8 +56,18 @@ app.whenReady().then(() => {
         });
     });
 
-    ipcMain.handle("fs:writeFile", (filePath, content) => {
-        fs.writeFile(filePath, content);
+    ipcMain.handle("fs:writeLabels", (event, imagePath, labels) => {
+        let content = ""
+        labels.forEach((label) => {
+            content += `${label.x} ${label.y} ${label.w} ${label.h}\n`;
+        });
+        const imageName = path.basename(imagePath);
+        const dirPath = path.dirname(imagePath);
+        const suffix = path.extname(imageName);
+        const labelFilePath = path.join(dirPath, imageName.replace(suffix, ".txt"));
+        fs.writeFile(labelFilePath, content, () => {
+            
+        });
     });
 
     ipcMain.handle("window:close", () => {

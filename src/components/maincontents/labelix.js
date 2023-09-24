@@ -187,6 +187,7 @@ export class Labelix {
         let h = height * 0.5 / totalHeight;
 
         this.labelBoxes.push(new LabelBox(x, y, w, h));
+        window.electronAPI.writeLabels(this.selectedImage.path, this.labelBoxes);
     }
 
     drawLabelBox(labelBox) {

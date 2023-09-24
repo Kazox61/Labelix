@@ -70,18 +70,6 @@ app.whenReady().then(() => {
         });
     });
 
-    ipcMain.handle("window:close", () => {
-        win.close();
-    });
-
-    ipcMain.handle("window:maximize", () => {
-        win.maximize();
-    });
-
-    ipcMain.handle("window:minimize", () => {
-        win.minimize();
-    });
-
     ipcMain.handle('fs:loadSettings', async () => {
         const settingsPath = path.join(app.getPath("userData"), "settings.json");
         

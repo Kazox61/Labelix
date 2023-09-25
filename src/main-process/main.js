@@ -39,21 +39,42 @@ app.whenReady().then(() => {
         }
     });
 
-    ipcMain.handle("fs:getDirectoryFiles", async (event, directoryPath) => {
-        return new Promise((resolve, reject) => {
-            fs.readdir(directoryPath, (err, files) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    const images = {};
-                    files.forEach(fileName => {
-                        let filePath = path.join(directoryPath, fileName)
-                        images[fileName] = filePath;
+    ipcMain.handle("fs:getDirectoryFiles", async (event, dirPath) => {
+        try {
+            const files = await fs.promises.readdir(dirPath);
+            const data = [];
+        
+            for (const fileName of files) {
+                const filePath = path.join(dirPath, fileName);
+                const suffix = path.extname(fileName);
+                const textName = fileName.replace(suffix, ".txt");
+        
+                if ([".png", ".jpeg", ".jpg"].includes(suffix.toLowerCase())) {
+                    const labelFilePath = path.join(dirPath, textName);
+                    let labelData = null;
+
+                    if (files.includes(textName)) {
+                        try {
+                            labelData = (await fs.promises.readFile(labelFilePath)).toString();
+
+                        } catch (err) {
+                            console.error("Error reading label data:", err);
+                        }
+                    }
+                    let parsedData = parseLabelData(labelData);
+                    data.push({
+                        "imagePath": filePath,
+                        "labelData": parsedData
                     });
-                    resolve(images);
                 }
-            });
-        });
+            }
+        
+            console.log(data);
+            return data;
+          } catch (err) {
+            console.error("Error reading directory:", err);
+            throw err;
+          }
     });
 
     ipcMain.handle("fs:writeLabels", (event, imagePath, labels) => {
@@ -108,3 +129,16 @@ app.on('window-all-closed', () => {
         app.quit();
     }
 })
+
+function parseLabelData(data) {
+    if (data === null) {
+        return [];
+    }
+    const parsedData = []
+    const lines = data.split("\n");
+    lines.forEach(line => {
+        const values = line.split(" ");
+        parsedData.push(values);
+    })
+    return parsedData;
+}

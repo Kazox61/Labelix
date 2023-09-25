@@ -15,8 +15,10 @@
         }
     },
     "sidebar": {
-        "width": 50,
-        "background": "#353746"
+        "width": 40,
+        "background": "#353746",
+        "buttonSelectedBackground": "#3C3D51",
+        "buttonSVGColor": "#ACA9B4"
     },
     "sideContent": {
         "width": 250,

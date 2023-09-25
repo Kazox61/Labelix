@@ -1,4 +1,5 @@
 import { eventhandler } from "../../application.js";
+import { SideContentBase } from "./sideContentBase.js";
 
 class LabelixImage {
     constructor(name, path, image) {
@@ -8,12 +9,29 @@ class LabelixImage {
     }
 }
 
-export class Explorer {
-    constructor(sideContentNode, settings) {
-        this.sideContentNode = sideContentNode;
-        this.settings = settings;
+export class Explorer extends SideContentBase {
+    constructor(sideContentNode, settings, sidebarButtonNode) {
+        super(sideContentNode, settings, sidebarButtonNode);
         this.explorerSettings = this.settings.sideContent.explorer;
 
+        eventhandler.connect("tb:openFolder", async () => {
+            const { dirName, dirPath} = await window.electronAPI.openDirectory();
+            this.unloadProject();
+
+            this.settings.lastProjectPath = dirPath;
+            this.settings.lastProjectName = dirName;
+            eventhandler.emit("settingsUpdated");
+            await this.loadDirectory(dirName, dirPath);
+            if (!this.isHidden) {
+                this.showFiles();
+            }
+        });
+
+
+    }
+
+    async show() {
+        await super.show();
         this.explorerNode = document.createElement("div");
         this.explorerNode.className = "explorer";
         this.explorerNode.style.setProperty("--explorer-project-header-background", this.explorerSettings.projectHeaderBackground);
@@ -27,36 +45,24 @@ export class Explorer {
         this.explorerNode.appendChild(this.explorerHeaderNode);
 
         if (this.settings.lastProjectPath != null) {
-            this.loadDirectory(this.settings.lastProjectName, this.settings.lastProjectPath);
+            await this.loadDirectory(this.settings.lastProjectName, this.settings.lastProjectPath);
         }
 
-        eventhandler.connect("tb:openFolder", async () => {
-            const { dirName, dirPath} = await window.electronAPI.openDirectory();
-            this.unloadProject();
-
-            this.settings.lastProjectPath = dirPath;
-            this.settings.lastProjectName = dirName;
-            eventhandler.emit("settingsUpdated");
-            
-            await this.loadDirectory(dirName, dirPath);
-        });
+        if (this.labelData != null) {
+            this.showFiles();
+        }
     }
 
-    async loadDirectory(dirName, dirPath) {
-        this.dirName = dirName;
-        this.dirPath = dirPath;
-
+    showFiles() {
         this.explorerProjectHeaderNode = document.createElement("div");
         this.explorerProjectHeaderNode.className = "explorer-project-header";
         this.explorerProjectHeaderNode.innerText = this.dirName;
         this.explorerNode.appendChild(this.explorerProjectHeaderNode);
 
-        
-        this.labelData = await window.electronAPI.getDirectoryFiles(this.dirPath);
         this.listNode = document.createElement("ul");
         this.listNode.classList.add("explorer-list");
         this.explorerNode.appendChild(this.listNode);
-    
+
         let i = 0
         this.labelData.forEach(element => {
             let canvasImage = new Image();
@@ -78,6 +84,13 @@ export class Explorer {
             this.listNode.appendChild(elementNode);
             i++;
         });
+    }
+
+    async loadDirectory(dirName, dirPath) {
+        this.dirName = dirName;
+        this.dirPath = dirPath;
+
+        this.labelData = await window.electronAPI.getDirectoryFiles(this.dirPath);
     }
 
     onSelect(elementNode, labelixImage, labelBoxes)  {

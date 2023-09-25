@@ -24,8 +24,9 @@ export class Application {
         document.querySelector(".root").appendChild(this.containerNode);
 
         this.sidebar = new Sidebar(this.containerNode, this.settings);
-        this.sideContent = new SideContent(this.containerNode, this.settings);
+        this.sideContent = new SideContent(this.containerNode, this.settings, this.sidebar.explorerButtonNode, this.sidebar.labelListButtonNode);
         this.mainContent = new MainContent(this.containerNode, this.settings);
+        this.sidebar.select(this.sidebar.explorerButtonNode)
 
         eventhandler.connect("settingsUpdated", () => this.onSettingsUpdated())
     }

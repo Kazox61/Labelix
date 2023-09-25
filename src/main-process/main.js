@@ -51,25 +51,24 @@ app.whenReady().then(() => {
         
                 if ([".png", ".jpeg", ".jpg"].includes(suffix.toLowerCase())) {
                     const labelFilePath = path.join(dirPath, textName);
-                    let labelData = null;
+                    let labelBoxes = null;
 
                     if (files.includes(textName)) {
                         try {
-                            labelData = (await fs.promises.readFile(labelFilePath)).toString();
+                            labelBoxes = (await fs.promises.readFile(labelFilePath)).toString();
 
                         } catch (err) {
                             console.error("Error reading label data:", err);
                         }
                     }
-                    let parsedData = parseLabelData(labelData);
+                    let parsedBoxes = parseLabelBoxes(labelBoxes);
                     data.push({
+                        "name": fileName,
                         "imagePath": filePath,
-                        "labelData": parsedData
+                        "labelBoxes": parsedBoxes
                     });
                 }
             }
-        
-            console.log(data);
             return data;
           } catch (err) {
             console.error("Error reading directory:", err);
@@ -80,7 +79,7 @@ app.whenReady().then(() => {
     ipcMain.handle("fs:writeLabels", (event, imagePath, labels) => {
         let content = ""
         labels.forEach((label) => {
-            content += `${label.x} ${label.y} ${label.w} ${label.h}\n`;
+            content += label.join(" ") + "\n";
         });
         const imageName = path.basename(imagePath);
         const dirPath = path.dirname(imagePath);
@@ -130,15 +129,15 @@ app.on('window-all-closed', () => {
     }
 })
 
-function parseLabelData(data) {
-    if (data === null) {
+function parseLabelBoxes(boxes) {
+    if (boxes === null) {
         return [];
     }
     const parsedData = []
-    const lines = data.split("\n");
+    const lines = boxes.split("\n");
     lines.forEach(line => {
         const values = line.split(" ");
-        parsedData.push(values);
+        parsedData.push([parseFloat(values[0]), parseFloat(values[1]), parseFloat(values[2]), parseFloat(values[3])]);
     })
     return parsedData;
 }

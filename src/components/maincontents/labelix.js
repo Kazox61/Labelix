@@ -1,15 +1,5 @@
 import { eventhandler } from "../../application.js";
 
-class LabelBox {
-    constructor(x, y, w, h) {
-        //normalized
-        this.x = x;
-        this.y = y;
-        this.w = w;
-        this.h = h;
-    }
-}
-
 function getMouseButton(event) {
     const e = event || window.event;
     const btnCode = e.button;
@@ -45,7 +35,7 @@ export class Labelix {
             this.resize();
         });
 
-        eventhandler.connect("explorer:imageSelected", (labelixImage) => this.onImageSelected(labelixImage))
+        eventhandler.connect("explorer:imageSelected", (labelixImage, labelBoxes) => this.onImageSelected(labelixImage, labelBoxes))
 
         this.canvasNode.addEventListener("wheel", (event) => {
             if (this.selectedImage == null) {
@@ -121,16 +111,13 @@ export class Labelix {
         this.render();
     }
 
-    onImageSelected(labelixImage) {
-        this.labelBoxes = []
+    onImageSelected(labelixImage, labelBoxes) {
+        this.labelBoxes = labelBoxes
         this.selectedImage = labelixImage;
-
-        
-
+    
         // can be changed with mouse wheel
         this.zoom = 1;
         this.setScaleMaximize();
-        
 
         this.render();
     }
@@ -186,21 +173,21 @@ export class Labelix {
         let w = width * 0.5 / totalWidth;
         let h = height * 0.5 / totalHeight;
 
-        this.labelBoxes.push(new LabelBox(x, y, w, h));
+        this.labelBoxes.push([x, y, w, h]);
         window.electronAPI.writeLabels(this.selectedImage.path, this.labelBoxes);
     }
 
     drawLabelBox(labelBox) {
         let totalWidth = this.selectedImage.canvasImage.width * this.scaleMaximize * this.zoom;
-        let width = labelBox.w * 2 * totalWidth;
+        let width = labelBox[2] * 2 * totalWidth;
         let leftCanvas = this.canvasCenterX - (this.selectedImage.canvasImage.width * this.scaleMaximize * this.zoom * 0.5);
-        let centerX = labelBox.x * totalWidth + leftCanvas;
+        let centerX = labelBox[0] * totalWidth + leftCanvas;
         let startX = centerX - width * 0.5
 
         let totalHeight = this.selectedImage.canvasImage.height * this.scaleMaximize * this.zoom;
-        let height = labelBox.h * 2 * totalHeight;
+        let height = labelBox[3] * 2 * totalHeight;
         let topCanvas = this.canvasCenterY - (this.selectedImage.canvasImage.height * this.scaleMaximize * this.zoom * 0.5);
-        let centerY = labelBox.y * totalHeight + topCanvas;
+        let centerY = labelBox[1] * totalHeight + topCanvas;
         let startY = centerY - height * 0.5
 
         this.ctx.strokeRect(startX, startY, width, height);

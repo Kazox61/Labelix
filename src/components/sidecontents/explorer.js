@@ -51,38 +51,36 @@ export class Explorer {
         this.explorerProjectHeaderNode.innerText = this.dirName;
         this.explorerNode.appendChild(this.explorerProjectHeaderNode);
 
-        this.images = [];
-        let images = await window.electronAPI.getDirectoryFiles(this.dirPath);
-
+        
+        this.labelData = await window.electronAPI.getDirectoryFiles(this.dirPath);
         this.listNode = document.createElement("ul");
         this.listNode.classList.add("explorer-list");
         this.explorerNode.appendChild(this.listNode);
     
         let i = 0
-        for (const [name, path] of Object.entries(images)) {
+        this.labelData.forEach(element => {
             let canvasImage = new Image();
-            canvasImage.src = path;
-
-            let labelixImage = new LabelixImage(name, path, canvasImage);
+            canvasImage.src = element.imagePath;
+            let labelixImage = new LabelixImage(element.name, element.imagePath, canvasImage);
 
             let elementNode = document.createElement("li");
-            elementNode.innerText = name;
+            elementNode.innerText = element.name;
             elementNode.classList.add("explorer-element");
 
             elementNode.addEventListener("click", () => {
-                this.onSelect(elementNode, labelixImage);
+                this.onSelect(elementNode, labelixImage, element.labelBoxes);
             })
 
             if (i == 0) {
-                canvasImage.onload = () => this.onSelect(elementNode, labelixImage);
+                canvasImage.onload = () => this.onSelect(elementNode, labelixImage, element.labelBoxes);
             }
 
             this.listNode.appendChild(elementNode);
             i++;
-        }
+        });
     }
 
-    onSelect(elementNode, labelixImage)  {
+    onSelect(elementNode, labelixImage, labelBoxes)  {
         if (this.selectedImageNode != null) {
             if (this.selectedImageNode === elementNode) {
                 return;
@@ -92,7 +90,7 @@ export class Explorer {
 
         this.selectedImageNode = elementNode;
         this.selectedImageNode.classList.add("selected");
-        eventhandler.emit("explorer:imageSelected", labelixImage)
+        eventhandler.emit("explorer:imageSelected", labelixImage, labelBoxes)
         elementNode.classList
     }
 

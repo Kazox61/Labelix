@@ -186,12 +186,17 @@ html, body, .root {
     border-collapse: collapse;
 }
 
-.labelList-addNewButton {
+.labelList .addButton {
     background-color: #1ac422;
     outline: none;
     border: none;
     border-radius: 0;
     padding: 2px 5px;
+}
+
+.labelList .addButton:hover {
+    background-color: #258a2a;
+    cursor: pointer;
 }
 
 .labelList {
@@ -207,8 +212,23 @@ html, body, .root {
     background-color: rgb(206, 164, 241);
 }
 
+.labelList td {
+    padding: 2px 5px;
+}
+
+.labelList .newItem {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-sizing: border-box;
+}
+
 .labelList .newItem-textInput {
     margin: 5px;
+    box-sizing: border-box;
+    width: auto;
+    min-width: 20px;
 }
 
 .labelList .newItem-textInput {
@@ -221,21 +241,12 @@ html, body, .root {
     border: 1px solid #6fa2e6;
 }
 
-.labelList .newItem-colorInput {
-    appearance: none;
-    background-color: red;
-    padding: 0;
-    margin: 0;
-    border: none;
-    outline: none;
-    max-width: 3rem;
-}
-
-.labelList .newItem-colorInput::after {
-    content: '';
-}
-
 :where(th, td).min {
     width: 0;
     white-space: nowrap;
+    text-align: center;
+}
+
+:where(th, td):not(.min) {
+    text-align: left;
 }

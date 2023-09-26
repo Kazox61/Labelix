@@ -29,6 +29,8 @@ export class Application {
         this.sidebar.select(this.sidebar.explorerButtonNode)
 
         eventhandler.connect("settingsUpdated", () => this.onSettingsUpdated())
+
+        eventhandler.emit("components:created");
     }
 
     async loadSettings() {

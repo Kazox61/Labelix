@@ -26,6 +26,9 @@ export class Labelix {
         this.canvasNode = document.createElement("canvas");
         this.mainContentNode.appendChild(this.canvasNode);
         this.ctx = this.canvasNode.getContext("2d");
+        this.selectedLabelIndex = 0;
+        this.currentStrokeColor = "#ffffff";
+        this.labelTypes = [];
 
         this.resize();
         window.addEventListener("resize", () => {
@@ -35,10 +38,20 @@ export class Labelix {
             this.resize();
         });
 
-        eventhandler.connect("explorer:imageSelected", (labelixImage, labelBoxes) => this.onImageSelected(labelixImage, labelBoxes))
+        eventhandler.connect("explorer:imageSelected", (labelixImage, labelBoxes) => this.onImageSelected(labelixImage, labelBoxes));
+
+        eventhandler.connect("labelList:selectLabel", (index, color) => {
+            this.selectedLabelIndex = index;
+            this.currentStrokeColor = color;
+        });
+
+        eventhandler.connect("projectLoaded", (dirPath, labelTypes) => {
+            console.log(this.labelTypes);
+            this.labelTypes = labelTypes
+        });
 
         this.canvasNode.addEventListener("wheel", (event) => {
-            if (this.selectedImage == null) {
+            if (!this.canLabel()) {
                 return;
             }
             event.preventDefault();
@@ -50,7 +63,7 @@ export class Labelix {
 
         this.leftMouseDown = false;
         this.canvasNode.addEventListener("mousedown", (event) => {
-            if (this.selectedImage == null) {
+            if (!this.canLabel()) {
                 return;
             }
             const mouseButton = getMouseButton(event);
@@ -63,7 +76,7 @@ export class Labelix {
             }
         });
         document.addEventListener("mouseup", (event) => {
-            if (this.selectedImage == null) {
+            if (!this.canLabel()) {
                 return;
             }
 
@@ -76,7 +89,7 @@ export class Labelix {
             }
         });
         this.canvasNode.addEventListener("mousemove", (event) => {
-            if (this.selectedImage == null) {
+            if (!this.canLabel()) {
                 return;
             }
             let bounds = this.canvasNode.getBoundingClientRect();
@@ -94,6 +107,10 @@ export class Labelix {
                 this.ctx.strokeRect(startX, startY, width, height);
             }
         });
+    }
+
+    canLabel() {
+        return this.selectedImage !== null && this.labelTypes.length > 0;
     }
 
     resize() {
@@ -148,6 +165,9 @@ export class Labelix {
         let h = this.selectedImage.canvasImage.height * this.scaleMaximize * this.zoom;
         this.ctx.drawImage(this.selectedImage.canvasImage, x, y, w, h);
 
+        if (!this.canLabel()) {
+            return;
+        }
         this.labelBoxes.forEach(labelBox => {
             this.drawLabelBox(labelBox);
         });
@@ -173,23 +193,25 @@ export class Labelix {
         let w = width * 0.5 / totalWidth;
         let h = height * 0.5 / totalHeight;
 
-        this.labelBoxes.push([x, y, w, h]);
+
+        this.labelBoxes.push([this.selectedLabelIndex, x, y, w, h]);
         window.electronAPI.writeLabels(this.selectedImage.path, this.labelBoxes);
     }
 
     drawLabelBox(labelBox) {
         let totalWidth = this.selectedImage.canvasImage.width * this.scaleMaximize * this.zoom;
-        let width = labelBox[2] * 2 * totalWidth;
+        let width = labelBox[3] * 2 * totalWidth;
         let leftCanvas = this.canvasCenterX - (this.selectedImage.canvasImage.width * this.scaleMaximize * this.zoom * 0.5);
-        let centerX = labelBox[0] * totalWidth + leftCanvas;
+        let centerX = labelBox[1] * totalWidth + leftCanvas;
         let startX = centerX - width * 0.5
 
         let totalHeight = this.selectedImage.canvasImage.height * this.scaleMaximize * this.zoom;
-        let height = labelBox[3] * 2 * totalHeight;
+        let height = labelBox[4] * 2 * totalHeight;
         let topCanvas = this.canvasCenterY - (this.selectedImage.canvasImage.height * this.scaleMaximize * this.zoom * 0.5);
-        let centerY = labelBox[1] * totalHeight + topCanvas;
+        let centerY = labelBox[2] * totalHeight + topCanvas;
         let startY = centerY - height * 0.5
 
+        this.ctx.strokeStyle = this.labelTypes[labelBox[0]].color;
         this.ctx.strokeRect(startX, startY, width, height);
     }
 }

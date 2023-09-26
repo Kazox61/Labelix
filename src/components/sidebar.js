@@ -39,6 +39,7 @@ export class Sidebar {
         this.labelListButtonNode.addEventListener("click", async () => {
             this.select(this.labelListButtonNode)
         });
+        
         this.labelListButtonNode.addEventListener("mouseenter", () => {
             this.labelListButtonNode.style.setProperty("--sidebar-btn-svg-color", "#ffffff");
         });
@@ -52,8 +53,6 @@ export class Sidebar {
     }
 
     select(buttonNode) {
-        eventhandler.emit("sidebar:elementSelected", buttonNode)
-
         if (this.selectedNode != null) {
             this.selectedNode.classList.remove("selected");
             this.selectedNode.style.setProperty("--sidebar-btn-svg-color", this.settings.sidebar.buttonSVGColor);
@@ -62,7 +61,7 @@ export class Sidebar {
         buttonNode.style.setProperty("--sidebar-btn-svg-color", "#ffffff");
         buttonNode.classList.add("selected");
         
-
+        eventhandler.emit("sidebar:elementSelected", buttonNode)
         
     }
 }

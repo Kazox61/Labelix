@@ -6,7 +6,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
     writeFile: (filePath, content) => ipcRenderer.invoke('fs:writeFile', filePath, content),
     getSettings: () => ipcRenderer.invoke('fs:loadSettings'),
     saveSettings: (settings) => ipcRenderer.invoke('fs:saveSettings', settings),
-    writeLabels: (imagePath, labels) => ipcRenderer.invoke('fs:writeLabels', imagePath, labels)
-
+    writeLabels: (imagePath, labels) => ipcRenderer.invoke('fs:writeLabels', imagePath, labels),
+    loadProject: (path) => ipcRenderer.invoke('fs:loadProject', path),
+    saveProject: (path, labelTypes) => ipcRenderer.invoke('fs:saveProject', path, labelTypes),
 })
 

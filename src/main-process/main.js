@@ -22,7 +22,7 @@ function createWindow () {
 }
 
 app.whenReady().then(() => {
-    let win = createWindow();
+    createWindow();
 
     app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0) {
@@ -121,6 +121,32 @@ app.whenReady().then(() => {
             }
         });
     });
+
+    ipcMain.handle("fs:loadProject", async (event, dirPath) => {
+        const projectPath = path.join(dirPath, ".labelix");
+        if (fs.existsSync(projectPath)) {
+
+            const labelTypePath = path.join(projectPath, "labelTypes.json");
+            if (fs.existsSync(labelTypePath)) {
+                const labelTypesData = await fs.promises.readFile(labelTypePath, 'utf-8');
+                return JSON.parse(labelTypesData);
+            }
+        }
+        else {
+            await fs.promises.mkdir(projectPath);
+        }
+        return [];
+    });
+
+    ipcMain.handle("fs:saveProject", async (event, dirPath, labelTypes) => {
+        const rootPath = path.join(dirPath, ".labelix");
+        if (!fs.existsSync(rootPath)) {
+            await fs.promises.mkdir(rootPath);
+        }
+        const labelTypePath = path.join(rootPath, "labelTypes.json");
+
+        await fs.promises.writeFile(labelTypePath, JSON.stringify(labelTypes));
+    });
 })
 
 app.on('window-all-closed', () => {
@@ -137,7 +163,7 @@ function parseLabelBoxes(boxes) {
     const lines = boxes.split("\n");
     lines.forEach(line => {
         const values = line.split(" ");
-        parsedData.push([parseFloat(values[0]), parseFloat(values[1]), parseFloat(values[2]), parseFloat(values[3])]);
+        parsedData.push([parseInt(values[0]), parseFloat(values[1]), parseFloat(values[2]), parseFloat(values[3]), parseFloat(values[4])]);
     })
     return parsedData;
 }

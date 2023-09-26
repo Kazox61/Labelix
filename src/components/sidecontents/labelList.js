@@ -1,3 +1,4 @@
+import { eventhandler } from "../../application.js";
 import { SideContentBase } from "./sideContentBase.js";
 
 
@@ -5,8 +6,14 @@ export class LabelList extends SideContentBase {
     constructor(sideContentNode, settings, sidebarButtonNode) {
         super(sideContentNode, settings, sidebarButtonNode);
         this.nextId = 0;
-        this.elements = [];
-        this.indexSelectedElement = 0;
+        this.nodes = [];
+
+        eventhandler.connect("projectLoaded", (dirPath, labelTypes) => {
+            this.indexSelectedElement = 0; 
+            this.rootPath = dirPath;
+            this.labelTypes = labelTypes
+            this.nextId = labelTypes.length;
+        })
     }
 
     async show() {
@@ -31,9 +38,11 @@ export class LabelList extends SideContentBase {
         tableNameHeaderNode.innerText = "Name";
         tableHeaderRowNode.appendChild(tableNameHeaderNode);
         const tableColorHeaderNode = document.createElement("th");
+        tableColorHeaderNode.className = "min";
         tableColorHeaderNode.innerText = "Color";
         tableHeaderRowNode.appendChild(tableColorHeaderNode);
         const tableAmountHeaderNode = document.createElement("th");
+        tableAmountHeaderNode.className = "min";
         tableAmountHeaderNode.innerText = "Amount";
         tableHeaderRowNode.appendChild(tableAmountHeaderNode);
         
@@ -44,6 +53,7 @@ export class LabelList extends SideContentBase {
 
         
         const newItemNode = document.createElement("div");
+        newItemNode.className = "newItem"
         this.containerNode.appendChild(newItemNode);
 
         const nameRowNode = document.createElement("div");
@@ -51,37 +61,50 @@ export class LabelList extends SideContentBase {
 
         const nameInputNode = document.createElement("input");
         nameInputNode.setAttribute('type', 'text');
+        nameInputNode.setAttribute('placeholder', 'car');
         nameInputNode.className = "newItem-textInput"
         newItemNode.appendChild(nameInputNode);
 
-        const colorRowNode = document.createElement("div");
-        newItemNode.appendChild(colorRowNode);
-
         const colorInputNode = document.createElement("input");
-        colorInputNode.setAttribute('type', 'color');
-        colorInputNode.className = "newItem-colorInput";
-        colorRowNode.appendChild(colorInputNode);
+        colorInputNode.setAttribute('type', 'text');
+        colorInputNode.setAttribute('placeholder', '#ff0000');
+        colorInputNode.className = "newItem-textInput"
+        newItemNode.appendChild(colorInputNode);
 
-        const addButtonNode = document.createElement("button");
-        addButtonNode.innerText = "Add new";
-        addButtonNode.className = "labelList-addNewButton";
-        this.containerNode.appendChild(addButtonNode);        
+        const commitInputNode = document.createElement("button");
+        commitInputNode.innerText = "add";
+        commitInputNode.className = "addButton";
+        newItemNode.appendChild(commitInputNode);
+        commitInputNode.addEventListener("click", () => {
 
-        this.addElement("Florian", "#ffffff", 0);
-        this.addElement("Florian", "#ffffff", 0);
+            let element = {
+                "index": this.nextId,
+                "name": nameInputNode.value,
+                "color": colorInputNode.value,
+                "amount": 0
+            }
+            nameInputNode.value = "";
+            colorInputNode.value = "";
 
-        for (let index = 0; index < this.elements.length; index++) {
-            let element = this.elements[index];
-            let selected = index == this.indexSelectedElement;
-            this.showElement(element, selected, index);
+            this.labelTypes.push(element);
+            this.showElement(element, this.nextId);
+            this.nextId++;
+
+            window.electronAPI.saveProject(this.rootPath, this.labelTypes);
+        });
+
+        for (let index = 0; index < this.labelTypes.length; index++) {
+            let element = this.labelTypes[index];
+            this.showElement(element, index);
         }
     }
 
-    showElement(element, selected, index) {
+    showElement(element, index) {
         const bodyElementNode = this.tableBodyNode.insertRow();
-        element.rowNode = bodyElementNode;
 
-        if (selected) {
+        this.nodes.push(bodyElementNode);
+
+        if (index === this.indexSelectedElement) {
             bodyElementNode.className = "selected";
         }
 
@@ -97,30 +120,22 @@ export class LabelList extends SideContentBase {
         bodyElementNode.appendChild(bodyNameNode);
 
         const bodyColorNode = document.createElement("td");
+        bodyColorNode.className = "min";
         bodyColorNode.innerText = element.color;
         bodyElementNode.appendChild(bodyColorNode);
 
         const bodyAmountNode = document.createElement("td");
+        bodyAmountNode.className = "min";
         bodyAmountNode.innerText = element.amount;
         bodyElementNode.appendChild(bodyAmountNode);
-
-        this.nextId++;
-    }
-
-    addElement(name, color, amount) {
-        this.elements.push({
-            "index": this.nextId,
-            "name": name,
-            "color": color,
-            "amount": amount
-        })
-        this.nextId++;
     }
 
     selectElement(index) {
-        if (this.indexSelectedElement > this.elements.length) return;
-        this.elements[this.indexSelectedElement].rowNode.classList.remove("selected");
+        if (this.indexSelectedElement > this.labelTypes.length) return;
+        console.log(this.nodes, this.indexSelectedElement);
+        this.nodes[this.indexSelectedElement].classList.remove("selected");
         this.indexSelectedElement = index;
-        this.elements[this.indexSelectedElement].rowNode.classList.add("selected");
+        this.nodes[this.indexSelectedElement].classList.add("selected");
+        eventhandler.emit("labelList:selectLabel", index, this.labelTypes[this.indexSelectedElement].color);
     }
 }

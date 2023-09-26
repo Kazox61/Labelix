@@ -17,17 +17,12 @@ export class Explorer extends SideContentBase {
         eventhandler.connect("tb:openFolder", async () => {
             const { dirName, dirPath} = await window.electronAPI.openDirectory();
             this.unloadProject();
-
-            this.settings.lastProjectPath = dirPath;
-            this.settings.lastProjectName = dirName;
-            eventhandler.emit("settingsUpdated");
-            await this.loadDirectory(dirName, dirPath);
-            if (!this.isHidden) {
-                this.showFiles();
-            }
+            await this.openProject(dirName, dirPath);
         });
 
-
+        if (this.settings.lastProjectPath !== null) {
+            this.openProject(this.settings.lastProjectName, this.settings.lastProjectPath);
+        }
     }
 
     async show() {
@@ -43,10 +38,6 @@ export class Explorer extends SideContentBase {
         this.explorerHeaderNode.className = "explorer-header";
         this.explorerHeaderNode.innerText = "Explorer";
         this.explorerNode.appendChild(this.explorerHeaderNode);
-
-        if (this.settings.lastProjectPath != null) {
-            await this.loadDirectory(this.settings.lastProjectName, this.settings.lastProjectPath);
-        }
 
         if (this.labelData != null) {
             this.showFiles();
@@ -86,11 +77,23 @@ export class Explorer extends SideContentBase {
         });
     }
 
-    async loadDirectory(dirName, dirPath) {
+    async openProject(dirName, dirPath) {
+        this.settings.lastProjectPath = dirPath;
+        this.settings.lastProjectName = dirName;
+        eventhandler.emit("settingsUpdated");
+        
         this.dirName = dirName;
         this.dirPath = dirPath;
 
+        const labelTypes = await window.electronAPI.loadProject(this.dirPath);
         this.labelData = await window.electronAPI.getDirectoryFiles(this.dirPath);
+
+        eventhandler.emit("projectLoaded", dirPath, labelTypes);
+
+        if (!this.isHidden) {
+            this.showFiles();
+        }
+
     }
 
     onSelect(elementNode, labelixImage, labelBoxes)  {

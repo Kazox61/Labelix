@@ -1,4 +1,5 @@
 import { eventhandler } from "../../application.js";
+import { Explorer } from "./explorer.js";
 
 export class SideContent {
     constructor(settings) {
@@ -13,15 +14,20 @@ export class SideContent {
         this.sideContentNode = document.createElement("div");
         this.sideContentNode.className = "sideContent";
         this.sideContentNode.style.setProperty("--sideContent-background", this.sideContentSettings.background);
-        this.sideContentNode.style.setProperty("--sideContent-width", String(this.sideContentSettings.width)+"px");
+        this.containerNode.style.setProperty("--sideContent-width", String(this.sideContentSettings.width)+"px");
         this.containerNode.appendChild(this.sideContentNode);
 
         this.sideContentResizeNode = document.createElement("div");
         this.sideContentResizeNode.className = "sideContentResize";
-        this.sideContentNode.style.setProperty('--sideContent-resize-background', "transparent")
-        this.sideContentNode.appendChild(this.sideContentResizeNode);
+        this.sideContentResizeNode.style.setProperty('--sideContent-resize-background', "transparent")
+        this.containerNode.appendChild(this.sideContentResizeNode);
 
-        this.handleResize();        
+        
+        this.sideContents = [
+            new Explorer(this.sideContentNode, this.settings)
+        ]
+
+        this.handleResize();
 
         this.selectedSideContent = null;
         eventhandler.connect("sidebar:elementSelected", async (buttonNode) => {
@@ -37,6 +43,20 @@ export class SideContent {
                     return;
                 }
             }
+        });
+        
+        eventhandler.connect("sidebar.tabSelected", (tab) => {
+            console.log("Tab selected");
+            this.sideContents.forEach(sideContent => {
+                console.log(sideContent.name, tab.name);
+                if (tab.name === sideContent.name) {
+                    console.log("show");
+                    sideContent.show();
+                }
+                else {
+                    sideContent.hide();
+                }
+            })
         });
     }
 
@@ -62,22 +82,22 @@ export class SideContent {
             if (this.isResizingSideContent) {
                 borderPosition = Math.min(window.innerWidth / 2, Math.max(200, event.clientX));
                 this.sideContentWidth = borderPosition - this.settings.sidebar.width;
-                this.sideContentNode.style.setProperty("--sideContent-width", String(this.sideContentWidth)+"px");
-                eventhandler.emit("sideContent:resize")
+                this.containerNode.style.setProperty("--sideContent-width", String(this.sideContentWidth)+"px");
+                eventhandler.emit("sideContent.resized")
             }
         });
 
         document.addEventListener("mousedown", (event) => {
             if (this.cursorInSideContentResize) {
                 this.isResizingSideContent = true;
-                this.sideContentNode.style.setProperty('--sideContent-resize-background', "rgb(101, 113, 163)")
+                this.sideContentResizeNode.style.setProperty('--sideContent-resize-background', "rgb(101, 113, 163)")
             }
         });
 
         document.addEventListener("mouseup", (event) => {
             if (this.isResizingSideContent) {
                 this.isResizingSideContent = false;
-                this.sideContentNode.style.setProperty('--sideContent-resize-background', "transparent")
+                this.sideContentResizeNode.style.setProperty('--sideContent-resize-background', "transparent")
                 this.settings.sideContent.width = this.sideContentWidth;
                 eventhandler.emit("settingsUpdated");
             }

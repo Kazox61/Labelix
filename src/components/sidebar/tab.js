@@ -37,7 +37,6 @@ export class Tab {
         this.tabButtonNode.classList.add("selected");
         
         eventhandler.emit("sidebar.tabSelected", this);
-        eventhandler.emit("sidebar.tabSelected." + this.name);
     }
 
     unselectTab() {

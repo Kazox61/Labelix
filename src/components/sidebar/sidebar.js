@@ -17,7 +17,7 @@ export class Sidebar {
 
         this.sidebarNode = document.createElement("div");
         this.sidebarNode.className = "sidebar";
-        this.sidebarNode.style.setProperty("--sidebar-width", String(this.settings.sidebar.width)+"px");
+        this.containerNode.style.setProperty("--sidebar-width", String(this.settings.sidebar.width)+"px");
         this.sidebarNode.style.setProperty("--sidebar-background", this.settings.sidebar.background);
         this.sidebarNode.style.setProperty("--sidebar-btn-selected-background", this.settings.sidebar.buttonSelectedBackground);
         this.containerNode.appendChild(this.sidebarNode);

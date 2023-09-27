@@ -134,12 +134,12 @@ html, body, .root {
 }
 
 .sideContentResize {
-    position: relative;
-    left: calc(var(--sideContent-width) - 3px);
-    background-color: yellow;
+    position: absolute;
+    left: calc(var(--sideContent-width) + calc(var(--sidebar-width) - 3px));
     width: 6px;
     height: 100%;
     background-color: var(--sideContent-resize-background);
+    z-index: 1;
 }
 
 .mainContent {

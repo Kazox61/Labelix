@@ -1,8 +1,8 @@
 import { EventHandler } from "./eventhandler.js";
 import { Titlebar } from "./components/titlebar/titlebar.js";
-import { Sidebar } from "./components/sidebar.js";
-import { SideContent } from "./components/sidecontents/sideContent.js";
-import { MainContent } from "./components/maincontents/mainContent.js";
+import { Sidebar } from "./components/sidebar/sidebar.js";
+import { SideContent } from "./components/sideContent/sideContent.js";
+import { MainContent } from "./components/mainContent/mainContent.js";
 
 export const eventhandler = new EventHandler();
 
@@ -12,32 +12,31 @@ export class Application {
     }
 
     async start() {
-        await this.loadSettings();
+        this.settings = await window.electronAPI.getSettings();
+        
         this.rootNode = document.querySelector(".root");
         this.rootNode.style.setProperty("--default-foreground", this.settings.defaultForeground);
 
-        this.titlebar = new Titlebar(this.rootNode, this.settings);
+        this.titlebar = new Titlebar(this.settings);
+        this.sidebar = new Sidebar(this.settings);
+        this.sideContent = new SideContent(this.settings);
+        this.mainContent = new MainContent(this.settings);
+
+        this.buildComponents();
+    }
+
+
+    buildComponents() {
+        this.titlebar.build(this.rootNode);
 
         this.containerNode = document.createElement("div");
         this.containerNode.className = "container";
+        this.rootNode.appendChild(this.containerNode);
 
-        document.querySelector(".root").appendChild(this.containerNode);
+        this.sidebar.build(this.containerNode);
+        this.sideContent.build(this.containerNode);
+        this.mainContent.build(this.containerNode);
 
-        this.sidebar = new Sidebar(this.containerNode, this.settings);
-        this.sideContent = new SideContent(this.containerNode, this.settings, this.sidebar.explorerButtonNode, this.sidebar.labelListButtonNode);
-        this.mainContent = new MainContent(this.containerNode, this.settings);
-        this.sidebar.select(this.sidebar.explorerButtonNode)
-
-        eventhandler.connect("settingsUpdated", () => this.onSettingsUpdated())
-
-        eventhandler.emit("components:created");
-    }
-
-    async loadSettings() {
-        this.settings = await window.electronAPI.getSettings();
-    }
-
-    onSettingsUpdated() {
-        window.electronAPI.saveSettings(this.settings);
+        eventhandler.emit("componentsBuilt");
     }
 }

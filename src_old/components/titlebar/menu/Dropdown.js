@@ -1,16 +1,12 @@
 import { eventhandler } from "../../../application.js";
 
 export class Dropdown {
-    constructor(settings, content) {
+    constructor(menubarNode, settings, content) {
+        this.menubarNode = menubarNode;
         this.settings = settings;
         this.dropdownSettings = this.settings.titlebar.menubar.dropdown;
         this.content = content;
 
-    }
-
-    build(menubarNode) {
-        this.menubarNode = menubarNode;
-        
         this.dropdownNode = document.createElement("div");
         this.dropdownNode.className = "dropdown";
         this.dropdownNode.style.setProperty("--dropdown-button-hover-background", this.dropdownSettings.buttonHoverBackground);
@@ -20,7 +16,7 @@ export class Dropdown {
 
         this.dropdownButton = document.createElement("button");
         this.dropdownButton.className = "dropdown-btn";
-        this.dropdownButton.innerText = this.content.name;
+        this.dropdownButton.innerText = content.name;
         this.dropdownNode.appendChild(this.dropdownButton);
 
         this.dropdownContentNode = document.createElement("ul");
@@ -37,7 +33,7 @@ export class Dropdown {
             }
         });
 
-        this.content.elements.forEach(element => {
+        content.elements.forEach(element => {
             let containerNode = document.createElement("li");
             this.dropdownContentNode.appendChild(containerNode);
 

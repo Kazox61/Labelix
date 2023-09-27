@@ -1,8 +1,5 @@
 export class TitlebarRight {
-    constructor() {
-    }
-
-    build(titlebarNode) {
+    constructor(titlebarNode) {
         this.titlebarNode = titlebarNode;
 
         this.titlebarRightNode = document.createElement("div");

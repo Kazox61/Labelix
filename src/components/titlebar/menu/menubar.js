@@ -1,13 +1,9 @@
 import { Dropdown } from "./Dropdown.js";
 
 export class Menubar {
-    constructor(titlebarNode, settings) {
-        this.titlebarNode = titlebarNode;
+    constructor(settings) {
         this.settings = settings;
 
-        this.menubarNode = document.createElement("div");
-        this.menubarNode.className = "menubar";
-        this.titlebarNode.appendChild(this.menubarNode);
 
 
         this.fileDropdownContent = {
@@ -16,10 +12,20 @@ export class Menubar {
                 {
                     "name": "Open Folder",
                     "shortcut": ["Ctrl", "P"],
-                    "clickEventName": "tb:openFolder"
+                    "clickEventName": "titlebar.openFolder"
                 }
             ]
         };
-        this.fileDropdown = new Dropdown(this.menubarNode, this.settings, this.fileDropdownContent);
+        this.fileDropdown = new Dropdown(this.settings, this.fileDropdownContent);
+    }
+
+    build(titlebarNode) {
+        this.titlebarNode = titlebarNode;
+        
+        this.menubarNode = document.createElement("div");
+        this.menubarNode.className = "menubar";
+        this.titlebarNode.appendChild(this.menubarNode);
+
+        this.fileDropdown.build(this.menubarNode);
     }
 }

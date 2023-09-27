@@ -1,5 +1,5 @@
 :root {
-    --titlebar-height: 25px
+    --titlebar-height: 25px;
 }
 
 * {
@@ -133,8 +133,13 @@ html, body, .root {
     background-color: var(--sideContent-background);
 }
 
-.sideContent.highlighted-border {
-    border-right: solid rgb(101, 113, 163) 6px;
+.sideContentResize {
+    position: relative;
+    left: calc(var(--sideContent-width) - 3px);
+    background-color: yellow;
+    width: 6px;
+    height: 100%;
+    background-color: var(--sideContent-resize-background);
 }
 
 .mainContent {

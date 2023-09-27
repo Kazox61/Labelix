@@ -2,10 +2,11 @@ import { eventhandler } from "../../application.js";
 import { SideContentBase } from "./sideContentBase.js";
 
 class LabelixImage {
-    constructor(name, path, image) {
+    constructor(name, path, image, labelBoxes) {
         this.name = name;
         this.path = path;
         this.canvasImage = image;
+        this.labelBoxes = labelBoxes;
     }
 }
 
@@ -59,7 +60,7 @@ export class Explorer extends SideContentBase {
         this.explorerNode.appendChild(this.listNode);
 
         let i = 0
-        this.labelData.forEach(element => {
+        this.projectData.images.forEach(element => {
             let canvasImage = new Image();
             canvasImage.src = element.imagePath;
             let labelixImage = new LabelixImage(element.name, element.imagePath, canvasImage);
@@ -89,8 +90,7 @@ export class Explorer extends SideContentBase {
         this.dirName = dirName;
         this.dirPath = dirPath;
 
-        const labelTypes = await window.electronAPI.loadProject(this.dirPath);
-        this.labelData = await window.electronAPI.getDirectoryFiles(this.dirPath);
+        this.projectData = await window.electronAPI.loadProject(dirPath);
 
         eventhandler.emit("projectLoaded", dirPath, labelTypes);
 

@@ -1,0 +1,26 @@
+:root {
+    --titlebar-height: 25px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    color: var(--default-foreground);
+    user-select: none;
+    font-size: 12px;
+    font-weight: 300;
+}
+
+html, body, .root {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    background-color: black;
+}
+
+.container {
+    display: flex;
+    margin-top: var(--titlebar-height);
+    height: calc(100% - var(--titlebar-height));
+}

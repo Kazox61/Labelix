@@ -1,0 +1,29 @@
+.explorer h2 {
+    padding: 10px;
+}
+
+.explorer .project-header {
+    padding-left: 12px;
+    background-color: var(--explorer-project-header-background);
+}
+
+.explorer ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.explorer li {
+    margin-left: 12px;
+    border-left: solid white 0.5px;
+    padding: 1px 12px;
+}
+
+.explorer li.selected {
+    background-color: var(--explorer-element-selected-background);
+}
+
+.explorer li:not(.selected):hover {
+    cursor: pointer;
+    background-color: var(--explorer-element-hover-background);
+}

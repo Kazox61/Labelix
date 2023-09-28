@@ -1,0 +1,14 @@
+.sidebar {
+    width: var(--sidebar-width);
+    height: 100%;
+    background-color: var(--sidebar-background);
+}
+
+.sidebarResize {
+    position: absolute;
+    left: calc(var(--sidebar-width) + calc(var(--activitybar-width) - 3px));
+    width: 6px;
+    height: 100%;
+    background-color: var(--sidebar-resize-background);
+    z-index: 1;
+}

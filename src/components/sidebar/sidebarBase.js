@@ -1,14 +1,14 @@
 
 
-export class SideContentBase {
-    constructor(sideContentNode, settings) {
-        this.sideContentNode = sideContentNode;
+export class SidebarBase {
+    constructor(sidebarNode, settings) {
+        this.sidebarNode = sidebarNode;
         this.settings = settings;
         this.isHidden = true;
     }
 
     async show() {
-        this.sideContentNode.replaceChildren();
+        this.sidebarNode.replaceChildren();
         this.isHidden = false;     
     }
 

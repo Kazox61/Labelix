@@ -1,0 +1,24 @@
+.activitybar {
+    height: 100%;
+    width: var(--activitybar-width);
+    background-color: var(--activitybar-background);
+    display: flex;
+    flex-direction: column;
+}
+
+.activitybar-btn {
+    height: var(--activitybar-width);
+    width: var(--activitybar-width);
+    outline: none;
+    border: none;
+    background-color: transparent;
+}
+
+.activitybar-btn.selected {
+    background-color: var(--activitybar-btn-selected-background);
+}
+
+.activitybar-btn-svg {
+    width: calc(var(--activitybar-width) - 25px);
+    height: calc(var(--activitybar-width) - 25px);
+}

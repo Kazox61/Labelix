@@ -1,42 +1,111 @@
 import { eventhandler } from "../../application.js";
-import { Tab } from "./tab.js";
+import { Explorer } from "./explorer.js";
+import { ClassEditor } from "./classEditor.js";
 
 export class Sidebar {
     constructor(settings) {
         this.settings = settings;
-        this.selectedTab = null;
-
-        this.tabs = [
-            new Tab(settings, "explorer", '<svg class="sidebar-btn-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="var(--sidebar-btn-svg-color)"><path d="M17.5 0h-9L7 1.5V6H2.5L1 7.5v15.07L2.5 24h12.07L16 22.57V18h4.7l1.3-1.43V4.5L17.5 0zm0 2.12l2.38 2.38H17.5V2.12zm-3 20.38h-12v-15H7v9.07L8.5 18h6v4.5zm6-6h-12v-15H16V6h4.5v10.5z"/></svg>'),
-            new Tab(settings, "sidebar", '<svg class="sidebar-btn-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 6.00067L21 6.00139M8 12.0007L21 12.0015M8 18.0007L21 18.0015M3.5 6H3.51M3.5 12H3.51M3.5 18H3.51M4 6C4 6.27614 3.77614 6.5 3.5 6.5C3.22386 6.5 3 6.27614 3 6C3 5.72386 3.22386 5.5 3.5 5.5C3.77614 5.5 4 5.72386 4 6ZM4 12C4 12.2761 3.77614 12.5 3.5 12.5C3.22386 12.5 3 12.2761 3 12C3 11.7239 3.22386 11.5 3.5 11.5C3.77614 11.5 4 11.7239 4 12ZM4 18C4 18.2761 3.77614 18.5 3.5 18.5C3.22386 18.5 3 18.2761 3 18C3 17.7239 3.22386 17.5 3.5 17.5C3.77614 17.5 4 17.7239 4 18Z" stroke="var(--sidebar-btn-svg-color)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>')
-        ]
     }
 
     build(containerNode) {
         this.containerNode = containerNode;
+        this.sidebarSettings = this.settings.sidebar;
+        this.sidebarWidth = this.settings.sidebar.width;
 
         this.sidebarNode = document.createElement("div");
         this.sidebarNode.className = "sidebar";
-        this.containerNode.style.setProperty("--sidebar-width", String(this.settings.sidebar.width)+"px");
-        this.sidebarNode.style.setProperty("--sidebar-background", this.settings.sidebar.background);
-        this.sidebarNode.style.setProperty("--sidebar-btn-selected-background", this.settings.sidebar.buttonSelectedBackground);
+        this.sidebarNode.style.setProperty("--sidebar-background", this.sidebarSettings.background);
+        this.containerNode.style.setProperty("--sidebar-width", String(this.sidebarSettings.width)+"px");
         this.containerNode.appendChild(this.sidebarNode);
 
-        this.tabs.forEach(tab => {
-            tab.build(this.sidebarNode);
-        })
+        this.sidebarResizeNode = document.createElement("div");
+        this.sidebarResizeNode.className = "sidebarResize";
+        this.sidebarResizeNode.style.setProperty('--sidebar-resize-background', "transparent")
+        this.containerNode.appendChild(this.sidebarResizeNode);
 
-        eventhandler.connect("sidebar.tabSelected", (selectedTab) => {
-            if (this.selectedTab != null) {
-                this.selectedTab.unselectTab();
+        
+        this.sidebars = [
+            new Explorer(this.sidebarNode, this.settings),
+            new ClassEditor(this.sidebarNode, this.settings)
+        ]
+
+        this.handleResize();
+
+        
+        this.selectedsidebar = null;
+        eventhandler.connect("activitybar.elementSelected", async (buttonNode) => {
+            for (let index = 0; index < this.sidebar.length; index++) {
+                let element = this.sidebar[index];
+
+                if (buttonNode == element.activitybarButtonNode) {
+                    if (this.selectedsidebar !== null) {
+                        this.selectedsidebar.hide();
+                    }
+                    this.selectedsidebar = element;
+                    this.selectedsidebar.show();
+                    return;
+                }
             }
-            this.selectedTab = selectedTab;
         });
-
-        eventhandler.connect("componentsBuilt", () => {
-            this.tabs[0].selectTab();
+        
+        eventhandler.connect("activitybar.tabSelected", (tab) => {
+            this.sidebars.forEach(sidebar => {
+                if (tab.name === sidebar.name) {
+                    sidebar.show();
+                }
+                else {
+                    sidebar.hide();
+                }
+            })
         });
     }
 
-    
+    handleResize() {
+        this.isResizingsidebar = false;
+        this.cursorInsidebarResize = false;
+
+        document.addEventListener("mousemove", (event) => {
+            let borderPosition = this.settings.activitybar.width + this.sidebarWidth;
+            if (event.clientX >= borderPosition -3 && event.clientX <= borderPosition + 3) {
+                if (!this.cursorInsidebarResize) {
+                    document.body.style.cursor = "e-resize";
+                    this.cursorInsidebarResize = true;
+                }
+            }
+            else {
+                if (this.cursorInsidebarResize && !this.isResizingsidebar) {
+                    document.body.style.cursor = "default";
+                    this.cursorInsidebarResize = false;
+                }
+            }
+
+            if (this.isResizingsidebar) {
+                borderPosition = Math.min(window.innerWidth / 2, Math.max(200, event.clientX));
+                this.sidebarWidth = borderPosition - this.settings.activitybar.width;
+                this.containerNode.style.setProperty("--sidebar-width", String(this.sidebarWidth)+"px");
+                eventhandler.emit("sidebar.resized")
+            }
+        });
+
+        document.addEventListener("mousedown", (event) => {
+            if (this.cursorInsidebarResize) {
+                this.isResizingsidebar = true;
+                this.sidebarResizeNode.style.setProperty('--sidebar-resize-background', "rgb(101, 113, 163)")
+            }
+        });
+
+        document.addEventListener("mouseup", (event) => {
+            if (this.isResizingsidebar) {
+                this.isResizingsidebar = false;
+                this.sidebarResizeNode.style.setProperty('--sidebar-resize-background', "transparent")
+                this.settings.sidebar.width = this.sidebarWidth;
+                eventhandler.emit("settingsUpdated");
+            }
+        });
+
+        // important to disable the cursor to change cursor to warning symbol and lagging
+        document.addEventListener('dragstart', (event) => {
+            event.preventDefault();
+        });
+    }
 }

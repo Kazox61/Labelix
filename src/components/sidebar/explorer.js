@@ -19,11 +19,14 @@ export class Explorer extends SidebarBase {
         this.isProjectLoaded = false;
 
         eventhandler.connect("titlebar.openFolder", async () => {
-            const { dirName, dirPath} = await window.electronAPI.openDirectory();
-            this.unloadProject();
-            await this.openProject(dirName, dirPath);
+            const result = await window.electronAPI.openDirectory();
 
-            if (this.labelixImages.length > 0) this.selectedLabelixImage = this.labelixImages[0];
+            if (result == null) {
+                return;
+            }
+
+            this.unloadProject();
+            await this.openProject(result.dirName, result.dirPath);
 
             if (!this.isHidden) {
                 this.showProject();
@@ -33,9 +36,11 @@ export class Explorer extends SidebarBase {
         eventhandler.connect("componentsBuilt", async () => {
             if (this.settings.lastProjectPath !== null) {
                 await this.openProject(this.settings.lastProjectName, this.settings.lastProjectPath);
-
                 
-                if (this.labelixImages.length > 0) this.selectedLabelixImage = this.labelixImages[0];
+                if (this.labelixImages.length > 0) {
+                    this.selectedLabelixImage = this.labelixImages[0];
+                    this.selectLabelixImage(this.selectedLabelixImage);
+                }
 
                 if (!this.isHidden) {
                     this.showProject();
@@ -75,7 +80,7 @@ export class Explorer extends SidebarBase {
             labelImage.elementNode = elementNode;
 
             elementNode.addEventListener("click", () => {
-                this.onSelect(labelImage);
+                this.selectLabelixImage(labelImage);
             })
 
             this.listNode.appendChild(elementNode);
@@ -94,18 +99,26 @@ export class Explorer extends SidebarBase {
 
         this.projectData = await window.electronAPI.loadProject(dirPath);
 
+        let i = 0
         this.projectData.images.forEach(image => {
             let canvasImage = new Image();
             canvasImage.src = image.imagePath;
+            if (this.labelixImages.length > 0) {
+                this.selectedLabelixImage = this.labelixImages[0];
+                canvasImage.onload = () => {
+                    eventhandler.emit("explorer.imageSelected", this.labelixImages[0]);
+                }
+            }
             let labelixImage = new LabelixImage(image.name, image.imagePath, canvasImage, image.labelBoxes);
             this.labelixImages.push(labelixImage);
+            i++;
         })
 
         this.isProjectLoaded = true;
-        //eventhandler.emit("projectLoaded", dirPath, labelTypes);
+        eventhandler.emit("projectLoaded", dirPath, this.projectData.labelClasses);
     }
 
-    onSelect(labelixImage)  {
+    selectLabelixImage(labelixImage)  {
         if (this.selectedLabelixImage != null) {
             if (this.selectedLabelixImage === labelixImage) {
                 return;
@@ -115,7 +128,7 @@ export class Explorer extends SidebarBase {
 
         this.selectedLabelixImage = labelixImage;
         this.selectedLabelixImage.elementNode.classList.add("selected");
-        //eventhandler.emit("explorer.imageSelected", labelixImage, labelBoxes);
+        eventhandler.emit("explorer.imageSelected", labelixImage);
     }
 
     unloadProject() {
@@ -123,7 +136,10 @@ export class Explorer extends SidebarBase {
             return;
         }
         this.labelixImages = [];
-        this.explorerNode.removeChild(this.explorerProjectHeaderNode);
-        this.explorerNode.removeChild(this.listNode);
+
+        if (!this.isHidden) {
+            this.explorerNode.removeChild(this.explorerProjectHeaderNode);
+            this.explorerNode.removeChild(this.listNode);
+        }
     }
 }

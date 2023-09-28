@@ -65,6 +65,10 @@
 .classEditor .inputRow-textInput:focus { 
     border: 1px solid #6fa2e6;
 }
+
+.classEditor .addButton:focus { 
+    border: 1px solid #6fa2e6;
+}
  
 :where(th, td).min {
     width: 0;

@@ -3,8 +3,9 @@ import { Explorer } from "./explorer.js";
 import { ClassEditor } from "./classEditor.js";
 
 export class Sidebar {
-    constructor(settings) {
-        this.settings = settings;
+    constructor(app) {
+        this.app = app;
+        this.settings = this.app.settings;
     }
 
     build(containerNode) {
@@ -23,10 +24,11 @@ export class Sidebar {
         this.sidebarResizeNode.style.setProperty('--sidebar-resize-background', "transparent")
         this.containerNode.appendChild(this.sidebarResizeNode);
 
-        
+        this.explorer = new Explorer(this.sidebarNode, this.settings);
+        this.classEditor = new ClassEditor(this.sidebarNode, this.settings);
+
         this.sidebars = [
-            new Explorer(this.sidebarNode, this.settings),
-            new ClassEditor(this.sidebarNode, this.settings)
+            this.explorer, this.classEditor
         ]
 
         this.handleResize();

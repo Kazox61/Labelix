@@ -4,10 +4,23 @@ import { eventhandler } from "../../application.js"
 class LabelClass {
     constructor(index, name, color) {
         this.index = index;
-        this.name = name
-        this.color = color
-        this.amount = 0
-        this.rowNode = null
+        this.name = name;
+        this.color = color;
+        this.amount = 0;
+        this.rowNode = null;
+    }
+
+    toJSON() {
+        return {
+            "index": this.index,
+            "name": this.name,
+            "color": this.color,
+            "amount": this.amount
+        }
+    }
+
+    static fromJSON(data) {
+        return new LabelClass(data.index, data.name, data.color);
     }
 }
 
@@ -15,11 +28,29 @@ export class ClassEditor extends SidebarBase {
     constructor(sidebarNode, settings) {
         super(sidebarNode, settings);
         this.name = "classEditor";
-        this.labelClassess = [];
+        this.labelClasses = [];
 
-        eventhandler.connect("projectLoaded", (dirPath, labelTypes) => {
+        eventhandler.connect("projectLoaded", (dirPath, labelClassesJSON) => {
+            if (this.labelClasses.length > 0) {
+                this.labelClasses = [];
+                this.tableBodyNode.replaceChildren();
+            }
 
-        })
+            this.rootPath = dirPath;
+
+            labelClassesJSON.forEach(element => {
+                this.labelClasses.push(LabelClass.fromJSON(element));
+            });
+
+            if (this.labelClasses.length > 0) {
+                this.selectedLabelClass = this.labelClasses[0];
+                eventhandler.emit("classEditor.labelClassSelected", this.selectedLabelClass);
+            }
+
+            if (!this.isHidden) {
+                this.labelClasses.forEach(labelClass => this.showLabelClass(labelClass));
+            }
+        });
     }
 
     async show() {
@@ -84,7 +115,7 @@ export class ClassEditor extends SidebarBase {
         commitInputNode.addEventListener("click", () => {
 
             let labelClass = new LabelClass(
-                this.labelClassess.length,
+                this.labelClasses.length,
                 nameInputNode.value,
                 colorInputNode.value
             );
@@ -92,14 +123,23 @@ export class ClassEditor extends SidebarBase {
             nameInputNode.value = "";
             colorInputNode.value = "";
             
-            this.labelClassess.push(labelClass);
+            this.labelClasses.push(labelClass);
+
+            if (this.selectedLabelClass == null) {
+                this.selectedLabelClass = labelClass;
+            }
+            
             this.showLabelClass(labelClass);
 
-            //window.electronAPI.saveProject(this.rootPath, this.labelTypes);
+            const labelClassesJSON = []
+            this.labelClasses.forEach(labelClass => {
+                labelClassesJSON.push(labelClass.toJSON());
+            })
+            window.electronAPI.saveProject(this.rootPath, labelClassesJSON);
         });
 
-        for (let index = 0; index < this.labelClassess.length; index++) {
-            let labelClass = this.labelClassess[index];
+        for (let index = 0; index < this.labelClasses.length; index++) {
+            let labelClass = this.labelClasses[index];
             this.showLabelClass(labelClass);
         }
     }
@@ -109,7 +149,7 @@ export class ClassEditor extends SidebarBase {
 
         labelClass.rowNode = rowNode;
 
-        if (this.selectLabelClass === labelClass) {
+        if (this.selectedLabelClass === labelClass) {
             rowNode.className = "selected";
         }
 
@@ -142,6 +182,6 @@ export class ClassEditor extends SidebarBase {
         
         this.selectedLabelClass = labelClass;
         this.selectedLabelClass.rowNode.classList.add("selected");
-        //eventhandler.emit("classEditor.labelSelected", index, this.labelTypes[this.indexSelectedElement].color);
+        eventhandler.emit("classEditor.labelClassSelected", this.selectedLabelClass);
     }
 }

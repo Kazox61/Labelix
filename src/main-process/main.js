@@ -90,14 +90,14 @@ app.whenReady().then(() => {
         return await loadProject(dirPath);
     });
 
-    ipcMain.handle("fs:saveProject", async (event, dirPath, labelTypes) => {
+    ipcMain.handle("fs:saveProject", async (event, dirPath, labelClasses) => {
         const rootPath = path.join(dirPath, ".labelix");
         if (!fs.existsSync(rootPath)) {
             await fs.promises.mkdir(rootPath);
         }
-        const labelTypePath = path.join(rootPath, "labelTypes.json");
+        const labelTypePath = path.join(rootPath, "labelClasses.json");
 
-        await fs.promises.writeFile(labelTypePath, JSON.stringify(labelTypes));
+        await fs.promises.writeFile(labelTypePath, JSON.stringify(labelClasses));
     });
 })
 

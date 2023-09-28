@@ -2,7 +2,7 @@ import { EventHandler } from "./eventhandler.js";
 import { Titlebar } from "./components/titlebar/titlebar.js";
 import { Activitybar } from "./components/activitybar/activitybar.js";
 import { Sidebar } from "./components/sidebar/sidebar.js";
-import { MainContent } from "./components/mainContent/mainContent.js";
+import { Content } from "./components/content/content.js";
 
 export const eventhandler = new EventHandler();
 
@@ -17,10 +17,10 @@ export class Application {
         this.rootNode = document.querySelector(".root");
         this.rootNode.style.setProperty("--default-foreground", this.settings.defaultForeground);
 
-        this.titlebar = new Titlebar(this.settings);
-        this.activitybar = new Activitybar(this.settings);
-        this.sidebar = new Sidebar(this.settings);
-        this.mainContent = new MainContent(this.settings);
+        this.titlebar = new Titlebar(this);
+        this.activitybar = new Activitybar(this);
+        this.sidebar = new Sidebar(this);
+        this.mainContent = new Content(this);
 
         this.buildComponents();
     }

@@ -29,7 +29,7 @@
             "elementHoverBackground": "#403c46"
         }
     },
-    "mainContent": {
+    "content": {
         "background": "#282a36"
     }
 }

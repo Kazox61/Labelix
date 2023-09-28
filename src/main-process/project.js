@@ -3,13 +3,13 @@ const fs = require('fs');
 
 async function loadProject(rootPath) {
     const projectPath = path.join(rootPath, ".labelix");
-    let labelTypes = [];
+    let labelClasses = [];
     if (fs.existsSync(projectPath)) {
 
-        const labelTypePath = path.join(projectPath, "labelTypes.json");
-        if (fs.existsSync(labelTypePath)) {
-            const labelTypesData = await fs.promises.readFile(labelTypePath, 'utf-8');
-            labelTypes =  JSON.parse(labelTypesData);
+        const labelClassesPath = path.join(projectPath, "labelClasses.json");
+        if (fs.existsSync(labelClassesPath)) {
+            const labelClassesData = await fs.promises.readFile(labelClassesPath, 'utf-8');
+            labelClasses =  JSON.parse(labelClassesData);
         }
     }
     else {
@@ -19,7 +19,7 @@ async function loadProject(rootPath) {
     const images = await getImages(rootPath);
 
 
-    return { "labelTypes": labelTypes, "images": images };
+    return { "labelClasses": labelClasses, "images": images };
 }
 
 

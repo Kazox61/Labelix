@@ -29,6 +29,7 @@ export class LabelEditor {
         this.ctx = this.canvasNode.getContext("2d");
         this.zoom = 1;
         this.canLabel = () => this.isProjectLoaded && this.selectedLabelixImage && this.labelClasses.length > 0;
+        this.currentLabelPositions = [];
 
         this.isProjectLoaded = false
 
@@ -76,31 +77,6 @@ export class LabelEditor {
             //this.canvasNode.style.cursor = "default";
         });
 
-        this.leftMouseDown = false;
-        this.canvasNode.addEventListener("mousedown", (event) => {
-            if (!this.canLabel()) {
-                return;
-            }
-            const mouseButton = getMouseButton(event);
-            if (mouseButton === "left") {
-                if (!this.leftMouseDown) {
-                    this.leftMouseDown = true;
-                    this.labelStartX = this.cursorX;
-                    this.labelStartY = this.cursorY;
-                }
-            }
-        });
-        document.addEventListener("mouseup", (event) => {
-            if (!this.canLabel()) {
-                return;
-            }
-
-            const mouseButton = getMouseButton(event);
-            if (mouseButton === "left" && this.leftMouseDown) {
-                this.leftMouseDown = false;
-                this.saveLabelBox();
-            }
-        });
         this.canvasNode.addEventListener("mousemove", (event) => {
             if (!this.canLabel()) {
                 return;
@@ -112,12 +88,35 @@ export class LabelEditor {
 
             this.render();
 
-            if (this.leftMouseDown) {
-                let startX = Math.min(this.labelStartX, this.cursorX);
-                let startY = Math.min(this.labelStartY, this.cursorY);
-                let width = Math.abs(this.labelStartX - this.cursorX);
-                let height = Math.abs(this.labelStartY - this.cursorY);
+            if (this.currentLabelPositions.length === 2) {
+                console.log("RENDER RECT");
+                
+                const [endX, endY] = this.clampPositionInImage(this.cursorX, this.cursorY);
+                let startX = Math.min(this.currentLabelPositions[0], endX);
+                let startY = Math.min(this.currentLabelPositions[1], endY);
+        
+                let width = Math.abs(this.currentLabelPositions[0] - endX);
+                let height = Math.abs(this.currentLabelPositions[1] - endY);
                 this.ctx.strokeRect(startX, startY, width, height);
+            }
+        });
+
+        this.canvasNode.addEventListener("mousedown", (event) => {
+            if (!this.canLabel()) {
+                return;
+            }
+            const mouseButton = getMouseButton(event);
+            if (mouseButton === "left") {
+                const [x, y] = this.clampPositionInImage(this.cursorX, this.cursorY);
+                this.currentLabelPositions.push(x);
+                this.currentLabelPositions.push(y);
+
+                if (this.currentLabelPositions.length === 4) {
+                    this.saveLabelBox(this.currentLabelPositions);
+                    console.log("DRAW");
+                    this.currentLabelPositions = [];
+                    this.render();
+                }
             }
         });
     }
@@ -152,11 +151,24 @@ export class LabelEditor {
         }
     }
 
+    //x-left, y-left, width, height
+    getCurrentImageBounds() {
+        const x = this.canvasCenterX - (this.selectedLabelixImage.canvasImage.width * this.scaleFactor * this.zoom * 0.5);
+        const y = this.canvasCenterY - (this.selectedLabelixImage.canvasImage.height * this.scaleFactor * this.zoom * 0.5);
+        const w = this.selectedLabelixImage.canvasImage.width * this.scaleFactor * this.zoom;
+        const h = this.selectedLabelixImage.canvasImage.height * this.scaleFactor * this.zoom;
+        return {x,y,w,h};
+    }
+
+    clampPositionInImage(posX, posY) {
+        const {x,y,w,h} = this.getCurrentImageBounds();
+        const newX = Math.max(x, Math.min(x+w, posX));
+        const newY = Math.max(y, Math.min(y+h, posY));
+        return [newX, newY];
+    }
+
     renderImage() {
-        let x = this.canvasCenterX - (this.selectedLabelixImage.canvasImage.width * this.scaleFactor * this.zoom * 0.5);
-        let y = this.canvasCenterY - (this.selectedLabelixImage.canvasImage.height * this.scaleFactor * this.zoom * 0.5);
-        let w = this.selectedLabelixImage.canvasImage.width * this.scaleFactor * this.zoom;
-        let h = this.selectedLabelixImage.canvasImage.height * this.scaleFactor * this.zoom;
+        const {x,y,w,h} = this.getCurrentImageBounds();
         
         this.ctx.drawImage(this.selectedLabelixImage.canvasImage, x, y, w, h);
     }
@@ -164,7 +176,6 @@ export class LabelEditor {
     renderLabelBoxes() {
         this.selectedLabelixImage.labelBoxes.forEach(labelBox => {
             const labelClassIndex = labelBox[0];
-            console.log(labelBox);
             if (!Number.isInteger(labelClassIndex) || labelClassIndex >= this.labelClasses.length) {
                 return
             }
@@ -185,11 +196,11 @@ export class LabelEditor {
         });
     }
 
-    saveLabelBox() {
-        let startX = Math.min(this.labelStartX, this.cursorX);
-        let startY = Math.min(this.labelStartY, this.cursorY);
-        let width = Math.abs(this.labelStartX - this.cursorX);
-        let height = Math.abs(this.labelStartY - this.cursorY);
+    saveLabelBox(labelPositions) {
+        let startX = Math.min(labelPositions[0], labelPositions[2]);
+        let startY = Math.min(labelPositions[1], labelPositions[3]);
+        let width = Math.abs(labelPositions[0] - labelPositions[2]);
+        let height = Math.abs(labelPositions[1] - labelPositions[3]);
 
 
         let totalWidth = this.selectedLabelixImage.canvasImage.width * this.scaleFactor * this.zoom;
@@ -204,8 +215,10 @@ export class LabelEditor {
         
         let w = width * 0.5 / totalWidth;
         let h = height * 0.5 / totalHeight;
+        if (w < 0.05 || h < 0.05) {
+            return;
+        }
 
-        console.log(this.labelClasses.indexOf(this.selectedLabelClass));
         this.selectedLabelixImage.labelBoxes.push([this.labelClasses.indexOf(this.selectedLabelClass), x, y, w, h]);
         window.electronAPI.writeLabels(this.selectedLabelixImage.path, this.selectedLabelixImage.labelBoxes);
     }

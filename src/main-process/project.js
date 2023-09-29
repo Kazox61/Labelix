@@ -70,7 +70,21 @@ function parseLabelBoxes(boxes) {
     const lines = boxes.split("\n");
     lines.forEach(line => {
         const values = line.split(" ");
-        parsedData.push([parseInt(values[0]), parseFloat(values[1]), parseFloat(values[2]), parseFloat(values[3]), parseFloat(values[4])]);
+        if (values.length !== 5) return;
+        const labelClassIndex = parseInt(values[0]);
+        const x = parseFloat(values[1]);
+        const y = parseFloat(values[2]);
+        const w = parseFloat(values[3]);
+        const h = parseFloat(values[4]);
+
+        const isValid = !isNaN(labelClassIndex) && !isNaN(x) && !isNaN(y) && !isNaN(w) && !isNaN(h)
+
+        if (!isValid) return;
+
+        const isInImageBounds = x >= 0 && x <= 1 && y >= 0 && y <= 1 && (x-w) >= 0 && (x+w) <= 1 && (y-h) >= 0 && (y+h) <= 1;
+        if (!isInImageBounds) return;
+
+        parsedData.push([labelClassIndex, x, y, w, h]);
     })
     return parsedData;
 }

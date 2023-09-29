@@ -1,9 +1,9 @@
 
 
 export class SidebarBase {
-    constructor(sidebarNode, settings) {
+    constructor(app, sidebarNode) {
+        this.app = app;
         this.sidebarNode = sidebarNode;
-        this.settings = settings;
         this.isHidden = true;
     }
 

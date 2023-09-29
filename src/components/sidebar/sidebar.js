@@ -5,25 +5,22 @@ import { ClassEditor } from "./classEditor.js";
 export class Sidebar {
     constructor(app) {
         this.app = app;
-        this.settings = this.app.settings;
     }
 
     build(containerNode) {
         this.containerNode = containerNode;
-        this.sidebarSettings = this.settings.sidebar;
-        this.sidebarWidth = this.settings.sidebar.width;
 
         this.sidebarNode = document.createElement("div");
         this.sidebarNode.className = "sidebar";
-        this.containerNode.style.setProperty("--sidebar-width", String(this.sidebarSettings.width)+"px");
+        this.containerNode.style.setProperty("--sidebar-width", String(this.app.config.sidebarWidth)+"px");
         this.containerNode.appendChild(this.sidebarNode);
 
         this.sidebarResizeNode = document.createElement("div");
         this.sidebarResizeNode.className = "sidebarResize";
         this.containerNode.appendChild(this.sidebarResizeNode);
 
-        this.explorer = new Explorer(this.sidebarNode, this.settings);
-        this.classEditor = new ClassEditor(this.sidebarNode, this.settings);
+        this.explorer = new Explorer(this.app, this.sidebarNode);
+        this.classEditor = new ClassEditor(this.app, this.sidebarNode);
 
         this.sidebars = [
             this.explorer, this.classEditor
@@ -65,7 +62,7 @@ export class Sidebar {
         this.cursorInsidebarResize = false;
 
         document.addEventListener("mousemove", (event) => {
-            let borderPosition = this.settings.activitybar.width + this.sidebarWidth;
+            let borderPosition = this.app.config.activitybarWidth + this.app.config.sidebarWidth;
             if (event.clientX >= borderPosition -3 && event.clientX <= borderPosition + 3) {
                 if (!this.cursorInsidebarResize) {
                     document.body.style.cursor = "e-resize";
@@ -81,8 +78,8 @@ export class Sidebar {
 
             if (this.isResizingsidebar) {
                 borderPosition = Math.min(window.innerWidth / 2, Math.max(200, event.clientX));
-                this.sidebarWidth = borderPosition - this.settings.activitybar.width;
-                this.containerNode.style.setProperty("--sidebar-width", String(this.sidebarWidth)+"px");
+                this.app.config.sidebarWidth = borderPosition - this.app.config.activitybarWidth;
+                this.containerNode.style.setProperty("--sidebar-width", String(this.app.config.sidebarWidth)+"px");
                 eventhandler.emit("sidebar.resized")
             }
         });
@@ -98,8 +95,7 @@ export class Sidebar {
             if (this.isResizingsidebar) {
                 this.isResizingsidebar = false;
                 this.sidebarResizeNode.classList.remove("selected");
-                this.settings.sidebar.width = this.sidebarWidth;
-                eventhandler.emit("settingsUpdated");
+                eventhandler.emit("configUpdated");
             }
         });
 

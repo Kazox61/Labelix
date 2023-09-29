@@ -1,11 +1,8 @@
 import { eventhandler } from "../../../application.js";
 
 export class Dropdown {
-    constructor(settings, content) {
-        this.settings = settings;
-        this.dropdownSettings = this.settings.titlebar.menubar.dropdown;
+    constructor(content) {
         this.content = content;
-
     }
 
     build(menubarNode) {

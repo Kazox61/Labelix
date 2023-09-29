@@ -13,8 +13,13 @@ export class Application {
     }
 
     async start() {
-        this.settings = await window.electronAPI.getSettings();
-        
+        this.config = await window.electronAPI.loadConfig();
+        if (this.config === null) {
+            this.config = {
+                activitybarWidth: 50,
+                sidebarWidth: 250
+            }
+        }
         this.rootNode = document.querySelector(".root");
         this.updateColorTheme(dracula);
 
@@ -24,6 +29,8 @@ export class Application {
         this.mainContent = new Content(this);
 
         this.buildComponents();
+
+        eventhandler.connect("configUpdated", () => window.electronAPI.saveConfig(this.config));
     }
 
 

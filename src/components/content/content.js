@@ -4,7 +4,6 @@ import { LabelEditor } from "./labelEditor.js";
 export class Content {
     constructor(app) {
         this.app = app;
-        this.settings = this.app.settings;
     }
 
     build(containerNode) {

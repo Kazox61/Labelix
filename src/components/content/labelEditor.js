@@ -69,11 +69,11 @@ export class LabelEditor {
             this.render();
         });
         this.canvasNode.addEventListener("mouseenter", () => {
-            this.canvasNode.style.cursor = "crosshair";
+            //this.canvasNode.style.cursor = "crosshair";
         });
 
         this.canvasNode.addEventListener("mouseleave", () => {
-            this.canvasNode.style.cursor = "default";
+            //this.canvasNode.style.cursor = "default";
         });
 
         this.leftMouseDown = false;

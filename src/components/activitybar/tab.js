@@ -1,8 +1,7 @@
 import { eventhandler } from "../../application.js";
 
 export class Tab {
-    constructor(settings, name, svg) {
-        this.settings = settings;
+    constructor(name, svg) {
         this.name = name;
         this.svg = svg;
     }

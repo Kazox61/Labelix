@@ -25,8 +25,8 @@ class LabelClass {
 }
 
 export class ClassEditor extends SidebarBase {
-    constructor(sidebarNode, settings) {
-        super(sidebarNode, settings);
+    constructor(app, sidebarNode) {
+        super(app, sidebarNode);
         this.name = "classEditor";
         this.labelClasses = [];
 

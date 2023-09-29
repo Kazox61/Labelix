@@ -1,11 +1,7 @@
 import { Dropdown } from "./Dropdown.js";
 
 export class Menubar {
-    constructor(settings) {
-        this.settings = settings;
-
-
-
+    constructor() {
         this.fileDropdownContent = {
             "name": "File",
             "elements": [
@@ -16,7 +12,7 @@ export class Menubar {
                 }
             ]
         };
-        this.fileDropdown = new Dropdown(this.settings, this.fileDropdownContent);
+        this.fileDropdown = new Dropdown(this.fileDropdownContent);
     }
 
     build(titlebarNode) {

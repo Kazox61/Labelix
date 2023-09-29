@@ -54,34 +54,31 @@ app.whenReady().then(() => {
         });
     });
 
-    ipcMain.handle('fs:loadSettings', async () => {
-        const settingsPath = path.join(app.getPath("userData"), "settings.json");
+    ipcMain.handle('fs:loadConfig', async () => {
+        const settingsPath = path.join(app.getPath("userData"), "config.json");
         
         try {
             if (fs.existsSync(settingsPath)) {
                 const userData = await fs.promises.readFile(settingsPath, 'utf-8');
-                console.log("Load Settings from User.");
+                console.log("Load Config from User.");
                 return JSON.parse(userData);
-            } else {
-                console.log("User settings file not found, loading Default Settings.");
-                const defaultData = await fs.promises.readFile(path.join(__dirname, "../../static/defaultSettings.json"), 'utf-8');
-                return JSON.parse(defaultData);
             }
+            else return null
         } catch (error) {
             console.error("Error reading settings:", error);
 
-            throw error;
+            return null
         }
     })
 
-    ipcMain.handle('fs:saveSettings', (event, settings) => {
-        const settingsPath = path.join(app.getPath("userData"), "settings.json");
+    ipcMain.handle('fs:saveConfig', (event, config) => {
+        const settingsPath = path.join(app.getPath("userData"), "config.json");
 
-        fs.writeFile(settingsPath, JSON.stringify(settings), (err) => {
+        fs.writeFile(settingsPath, JSON.stringify(config), (err) => {
             if (err) {
-            console.error('Error writing Settings:', err);
+                console.error('Error writing Config:', err);
             } else {
-            console.log('Settings overwritten successfully.');
+                console.log('Config overwritten successfully.');
             }
         });
     });

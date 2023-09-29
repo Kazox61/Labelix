@@ -4,10 +4,9 @@ import { TitlebarRight } from "./titlebarRight.js";
 export class Titlebar {
     constructor(app) {
         this.app = app;
-        this.settings = this.app.settings;
 
-        this.menubar = new Menubar(this.settings);
-        this.titlebarRight = new TitlebarRight(this.titlebarNode);
+        this.menubar = new Menubar();
+        this.titlebarRight = new TitlebarRight();
     }
 
     build(rootNode) {

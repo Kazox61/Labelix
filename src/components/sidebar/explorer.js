@@ -11,10 +11,9 @@ class LabelixImage {
 }
 
 export class Explorer extends SidebarBase {
-    constructor(sidebarNode, settings) {
-        super(sidebarNode, settings);
+    constructor(app, sidebarNode) {
+        super(app, sidebarNode);
         this.name = "explorer";
-        this.explorerSettings = this.settings.sidebar.explorer;
         this.labelixImages = []
         this.isProjectLoaded = false;
 
@@ -34,8 +33,8 @@ export class Explorer extends SidebarBase {
         });
 
         eventhandler.connect("componentsBuilt", async () => {
-            if (this.settings.lastProjectPath !== null) {
-                await this.openProject(this.settings.lastProjectName, this.settings.lastProjectPath);
+            if (this.app.config.hasOwnProperty("lastProjectPath")) {
+                await this.openProject(this.app.config.lastProjectName, this.app.config.lastProjectPath);
                 
                 if (this.labelixImages.length > 0) {
                     this.selectedLabelixImage = this.labelixImages[0];
@@ -87,9 +86,9 @@ export class Explorer extends SidebarBase {
     }
 
     async openProject(dirName, dirPath) {
-        this.settings.lastProjectPath = dirPath;
-        this.settings.lastProjectName = dirName;
-        eventhandler.emit("settingsUpdated");
+        this.app.config.lastProjectPath = dirPath;
+        this.app.config.lastProjectName = dirName;
+        eventhandler.emit("configUpdated");
         
         this.dirName = dirName;
         this.dirPath = dirPath;

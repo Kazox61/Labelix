@@ -1,4 +1,4 @@
-const dracula = {
+export const dracula = {
     name: "dracula",
     category: "dark",
     style: {
@@ -22,6 +22,7 @@ const dracula = {
         },
         sidebar: {
             background: "#21222c",
+            resizeBackground: "#6571a3",
             explorer: {
                 projectHeaderBackground: "#363647",
                 elementSelectedBackground: "#9a94a5",

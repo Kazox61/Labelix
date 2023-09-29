@@ -3,6 +3,7 @@ import { Titlebar } from "./components/titlebar/titlebar.js";
 import { Activitybar } from "./components/activitybar/activitybar.js";
 import { Sidebar } from "./components/sidebar/sidebar.js";
 import { Content } from "./components/content/content.js";
+import { dracula } from "./preferences/theme/dracula.js";
 
 export const eventhandler = new EventHandler();
 
@@ -15,7 +16,7 @@ export class Application {
         this.settings = await window.electronAPI.getSettings();
         
         this.rootNode = document.querySelector(".root");
-        this.rootNode.style.setProperty("--default-foreground", this.settings.defaultForeground);
+        this.updateColorTheme(dracula);
 
         this.titlebar = new Titlebar(this);
         this.activitybar = new Activitybar(this);
@@ -38,5 +39,26 @@ export class Application {
         this.mainContent.build(this.containerNode);
 
         eventhandler.emit("componentsBuilt");
+    }
+
+    updateColorTheme(colorTheme) {
+        this.rootNode.style.setProperty("--foreground", colorTheme.style.foreground);
+        
+        this.rootNode.style.setProperty("--titlebar-background", colorTheme.style.titlebar.background);
+        this.rootNode.style.setProperty("--dropdown-button-hover-background", colorTheme.style.titlebar.menubar.dropdown.buttonHoverBackground);
+        this.rootNode.style.setProperty("--dropdown-content-background", colorTheme.style.titlebar.menubar.dropdown.content.background);
+        this.rootNode.style.setProperty("--dropdown-content-element-hover-background", colorTheme.style.titlebar.menubar.dropdown.content.elementHoverBackground);
+
+        this.rootNode.style.setProperty("--activitybar-background", colorTheme.style.activitybar.background);
+        this.rootNode.style.setProperty("--activitybar-btn-selected-background", colorTheme.style.activitybar.buttonSelectedBackground);
+        this.rootNode.style.setProperty("--activitybar-btn-svg-color", colorTheme.style.activitybar.buttonSVGColor);
+
+        this.rootNode.style.setProperty("--sidebar-background", colorTheme.style.sidebar.background);
+        this.rootNode.style.setProperty('--sidebar-resize-background', colorTheme.style.sidebar.resizeBackground);
+        this.rootNode.style.setProperty("--explorer-project-header-background", colorTheme.style.sidebar.explorer.projectHeaderBackground);
+        this.rootNode.style.setProperty("--explorer-element-selected-background", colorTheme.style.sidebar.explorer.elementSelectedBackground);
+        this.rootNode.style.setProperty("--explorer-element-hover-background", colorTheme.style.sidebar.explorer.elementHoverBackground);
+
+        this.rootNode.style.setProperty("--content-background", colorTheme.style.content.background);
     }
 }

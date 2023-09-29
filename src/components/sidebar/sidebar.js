@@ -6,10 +6,6 @@ export class Sidebar {
     constructor(app) {
         this.app = app;
         this.settings = this.app.settings;
-
-        eventhandler.connect("colorThemeSelected", (colorTheme) => {
-            
-        })
     }
 
     build(containerNode) {
@@ -19,13 +15,11 @@ export class Sidebar {
 
         this.sidebarNode = document.createElement("div");
         this.sidebarNode.className = "sidebar";
-        this.sidebarNode.style.setProperty("--sidebar-background", this.sidebarSettings.background);
         this.containerNode.style.setProperty("--sidebar-width", String(this.sidebarSettings.width)+"px");
         this.containerNode.appendChild(this.sidebarNode);
 
         this.sidebarResizeNode = document.createElement("div");
         this.sidebarResizeNode.className = "sidebarResize";
-        this.sidebarResizeNode.style.setProperty('--sidebar-resize-background', "transparent")
         this.containerNode.appendChild(this.sidebarResizeNode);
 
         this.explorer = new Explorer(this.sidebarNode, this.settings);
@@ -96,14 +90,14 @@ export class Sidebar {
         document.addEventListener("mousedown", (event) => {
             if (this.cursorInsidebarResize) {
                 this.isResizingsidebar = true;
-                this.sidebarResizeNode.style.setProperty('--sidebar-resize-background', "rgb(101, 113, 163)")
+                this.sidebarResizeNode.classList.add("selected");
             }
         });
 
         document.addEventListener("mouseup", (event) => {
             if (this.isResizingsidebar) {
                 this.isResizingsidebar = false;
-                this.sidebarResizeNode.style.setProperty('--sidebar-resize-background', "transparent")
+                this.sidebarResizeNode.classList.remove("selected");
                 this.settings.sidebar.width = this.sidebarWidth;
                 eventhandler.emit("settingsUpdated");
             }

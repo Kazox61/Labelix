@@ -6,10 +6,10 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    color: var(--default-foreground);
     user-select: none;
     font-size: 12px;
     font-weight: 300;
+    color: var(--foreground);
 }
 
 html, body, .root {
@@ -17,6 +17,7 @@ html, body, .root {
     width: 100%;
     overflow: hidden;
     background-color: black;
+    color: var(--foreground);
 }
 
 .container {

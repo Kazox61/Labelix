@@ -14,7 +14,6 @@ export class Titlebar {
         this.rootNode = rootNode;
         this.titlebarNode = document.createElement("div");
         this.titlebarNode.className = "titlebar";
-        this.titlebarNode.style.setProperty("--titlebar-background", this.settings.titlebar.background);
         this.rootNode.appendChild(this.titlebarNode);
 
         this.menubar.build(this.titlebarNode);

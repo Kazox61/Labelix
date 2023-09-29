@@ -13,9 +13,6 @@ export class Dropdown {
         
         this.dropdownNode = document.createElement("div");
         this.dropdownNode.className = "dropdown";
-        this.dropdownNode.style.setProperty("--dropdown-button-hover-background", this.dropdownSettings.buttonHoverBackground);
-        this.dropdownNode.style.setProperty("--dropdown-content-background", this.dropdownSettings.content.background);
-        this.dropdownNode.style.setProperty("--dropdown-content-element-hover-background", this.dropdownSettings.content.elementHoverBackground)
         this.menubarNode.appendChild(this.dropdownNode);
 
         this.dropdownButton = document.createElement("button");

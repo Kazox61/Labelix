@@ -12,7 +12,6 @@ export class Content {
 
         this.contentNode = document.createElement("div");
         this.contentNode.className = "content";
-        this.contentNode.style.setProperty("--content-background", this.settings.content.background);
         this.containerNode.appendChild(this.contentNode);
 
         this.LabelEditor = new LabelEditor(this.app, this.contentNode);

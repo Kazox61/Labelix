@@ -53,9 +53,6 @@ export class Explorer extends SidebarBase {
         await super.show();
         this.explorerNode = document.createElement("div");
         this.explorerNode.className = "explorer";
-        this.explorerNode.style.setProperty("--explorer-project-header-background", this.explorerSettings.projectHeaderBackground);
-        this.explorerNode.style.setProperty("--explorer-element-selected-background", this.explorerSettings.elementSelectedBackground);
-        this.explorerNode.style.setProperty("--explorer-element-hover-background", this.explorerSettings.elementHoverBackground);
         this.sidebarNode.appendChild(this.explorerNode);
 
         this.explorerHeaderNode = document.createElement("h2");

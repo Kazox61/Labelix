@@ -33,7 +33,9 @@ export class ClassEditor extends SidebarBase {
         eventhandler.connect("projectLoaded", (dirPath, labelClassesJSON) => {
             if (this.labelClasses.length > 0) {
                 this.labelClasses = [];
-                this.tableBodyNode.replaceChildren();
+                if (!this.isHidden) {
+                    this.tableBodyNode.replaceChildren();
+                }
             }
 
             this.rootPath = dirPath;

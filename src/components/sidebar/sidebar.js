@@ -6,6 +6,10 @@ export class Sidebar {
     constructor(app) {
         this.app = app;
         this.settings = this.app.settings;
+
+        eventhandler.connect("colorThemeSelected", (colorTheme) => {
+            
+        })
     }
 
     build(containerNode) {

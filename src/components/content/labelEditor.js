@@ -28,6 +28,7 @@ export class LabelEditor {
         this.contentNode.appendChild(this.canvasNode);
         this.ctx = this.canvasNode.getContext("2d");
         this.zoom = 1;
+        this.canLabel = () => this.isProjectLoaded && this.selectedLabelixImage && this.labelClasses.length > 0;
 
         this.isProjectLoaded = false
 
@@ -69,15 +70,15 @@ export class LabelEditor {
         });
         this.canvasNode.addEventListener("mouseenter", () => {
             this.canvasNode.style.cursor = "crosshair";
-        })
+        });
 
         this.canvasNode.addEventListener("mouseleave", () => {
             this.canvasNode.style.cursor = "default";
-        })
+        });
 
         this.leftMouseDown = false;
         this.canvasNode.addEventListener("mousedown", (event) => {
-            if (!this.isProjectLoaded || this.selectedLabelixImage == null) {
+            if (!this.canLabel()) {
                 return;
             }
             const mouseButton = getMouseButton(event);
@@ -90,7 +91,7 @@ export class LabelEditor {
             }
         });
         document.addEventListener("mouseup", (event) => {
-            if (!this.isProjectLoaded || this.selectedLabelixImage == null) {
+            if (!this.canLabel()) {
                 return;
             }
 
@@ -101,7 +102,7 @@ export class LabelEditor {
             }
         });
         this.canvasNode.addEventListener("mousemove", (event) => {
-            if (!this.isProjectLoaded || this.selectedLabelixImage == null) {
+            if (!this.canLabel()) {
                 return;
             }
             let bounds = this.canvasNode.getBoundingClientRect();
@@ -146,7 +147,9 @@ export class LabelEditor {
     render() {
         this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
         this.renderImage();
-        this.renderLabelBoxes();
+        if (this.labelClasses.length > 0) {
+            this.renderLabelBoxes();
+        }
     }
 
     renderImage() {

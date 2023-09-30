@@ -2,11 +2,11 @@ import { eventhandler } from "../../application.js";
 import { SidebarBase } from "./sidebarBase.js";
 
 class LabelixImage {
-    constructor(name, path, image, labelBoxes) {
+    constructor(name, path, image, labelBoxesNormalized) {
         this.name = name;
         this.path = path;
         this.canvasImage = image;
-        this.labelBoxes = labelBoxes;
+        this.labelBoxesNormalized = labelBoxesNormalized;
     }
 }
 
@@ -105,7 +105,7 @@ export class Explorer extends SidebarBase {
                     eventhandler.emit("explorer.imageSelected", this.labelixImages[0]);
                 }
             }
-            let labelixImage = new LabelixImage(image.name, image.imagePath, canvasImage, image.labelBoxes);
+            let labelixImage = new LabelixImage(image.name, image.imagePath, canvasImage, image.labelBoxesNormalized);
             this.labelixImages.push(labelixImage);
             i++;
         })

@@ -49,7 +49,7 @@ async function getImages(dirPath) {
                 data.push({
                     "name": fileName,
                     "imagePath": filePath,
-                    "labelBoxes": parsedBoxes
+                    "labelBoxesNormalized": parsedBoxes
                 });
             }
         }

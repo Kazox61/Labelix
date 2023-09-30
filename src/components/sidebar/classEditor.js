@@ -30,7 +30,7 @@ export class ClassEditor extends SidebarBase {
         this.name = "classEditor";
         this.labelClasses = [];
 
-        eventhandler.connect("projectLoaded", (dirPath, labelClassesJSON) => {
+        eventhandler.connect("projectLoaded", (dirPath, project) => {
             if (this.labelClasses.length > 0) {
                 this.labelClasses = [];
                 if (!this.isHidden) {
@@ -40,7 +40,7 @@ export class ClassEditor extends SidebarBase {
 
             this.rootPath = dirPath;
 
-            labelClassesJSON.forEach(element => {
+            project.labelClasses.forEach(element => {
                 this.labelClasses.push(LabelClass.fromJSON(element));
             });
 

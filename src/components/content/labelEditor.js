@@ -34,7 +34,19 @@ export class LabelEditor {
 
         this.isProjectLoaded = false
 
-        eventhandler.connect("projectLoaded", () => this.isProjectLoaded = true);
+        eventhandler.connect("projectLoaded", (dirPath, project) => {
+            this.isProjectLoaded = true;
+            project.images.forEach(image => {
+                image.labelBoxes = [];
+                
+                image.canvasImage.addEventListener("load", () => {
+                    image.labelBoxesNormalized.forEach(labelBoxNormalized => {
+                        console.log(this.fromLabelNormalized(labelBoxNormalized, image.canvasImage));
+                        image.labelBoxes.push(this.fromLabelNormalized(labelBoxNormalized, image.canvasImage));
+                    });
+                });
+            });
+        });
 
         eventhandler.connect("componentsBuilt", () => {
             this.labelClasses = this.app.sidebar.classEditor.labelClasses;
@@ -43,12 +55,6 @@ export class LabelEditor {
         eventhandler.connect("explorer.imageSelected", (labelixImage) => {
             this.selectedLabelixImage = labelixImage;
             this.updateImageScaleFactor();
-
-            const labelBoxes = []
-            this.selectedLabelixImage.labelBoxesNormalized.forEach(labelBoxNormalized => {
-                labelBoxes.push(this.fromLabelNormalized(labelBoxNormalized));
-            });
-            this.selectedLabelixImage.labelBoxes = labelBoxes;
 
             this.scaleX = 1;
             this.scaleY = 1;
@@ -106,6 +112,7 @@ export class LabelEditor {
 
         if (this.currentLabelPositions.length === 4) {
             this.addLabelBox(this.currentLabelPositions);
+            this.saveLabelBoxes();
             this.currentLabelPositions = [];
             this.render();
         }
@@ -249,7 +256,6 @@ export class LabelEditor {
         const ey = Math.max(y1, y2);
 
         this.selectedLabelixImage.labelBoxes.push([this.labelClasses.indexOf(this.selectedLabelClass), sx, sy, ex, ey]);
-        this.saveLabelBoxes();
     }
 
     saveLabelBoxes() {
@@ -257,16 +263,17 @@ export class LabelEditor {
         this.selectedLabelixImage.labelBoxes.forEach(labelBox => {
             labelBoxesNormalized.push(this.toLabelNormalized(labelBox));
         });
-        window.electronAPI.writeLabels(this.selectedLabelixImage.path, labelBoxesNormalized);
+        console.log(labelBoxesNormalized);
+        window.electronAPI.writeLabels(this.selectedLabelixImage.imagePath, labelBoxesNormalized);
     }
 
-    fromLabelNormalized(labelBoxNormalized) {
+    fromLabelNormalized(labelBoxNormalized, canvasImage) {
             const [labelClassIndex, x, y, w, h] = labelBoxNormalized;
-            const width = w * this.selectedLabelixImage.canvasImage.width * 2;
-            const height = h * this.selectedLabelixImage.canvasImage.height * 2;
+            const width = w * canvasImage.width * 2;
+            const height = h * canvasImage.height * 2;
 
-            const sx = (x * this.selectedLabelixImage.canvasImage.width) - this.selectedLabelixImage.canvasImage.width / 2 - width / 2;
-            const sy = (y * this.selectedLabelixImage.canvasImage.height) - this.selectedLabelixImage.canvasImage.height / 2 - height / 2;
+            const sx = (x * canvasImage.width) - canvasImage.width / 2 - width / 2;
+            const sy = (y * canvasImage.height) - canvasImage.height / 2 - height / 2;
 
             const ex = sx +  width;
             const ey = sy + height;

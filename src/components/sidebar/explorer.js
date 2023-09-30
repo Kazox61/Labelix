@@ -1,15 +1,6 @@
 import { eventhandler } from "../../application.js";
 import { SidebarBase } from "./sidebarBase.js";
 
-class LabelixImage {
-    constructor(name, path, image, labelBoxesNormalized) {
-        this.name = name;
-        this.path = path;
-        this.canvasImage = image;
-        this.labelBoxesNormalized = labelBoxesNormalized;
-    }
-}
-
 export class Explorer extends SidebarBase {
     constructor(app, sidebarNode) {
         super(app, sidebarNode);
@@ -70,7 +61,7 @@ export class Explorer extends SidebarBase {
         this.listNode = document.createElement("ul");
         this.explorerNode.appendChild(this.listNode);
 
-        this.labelixImages.forEach(labelImage => {
+        this.project.images.forEach(labelImage => {
             let elementNode = document.createElement("li");
             elementNode.innerText = labelImage.name;
             labelImage.elementNode = elementNode;
@@ -93,25 +84,21 @@ export class Explorer extends SidebarBase {
         this.dirName = dirName;
         this.dirPath = dirPath;
 
-        this.projectData = await window.electronAPI.loadProject(dirPath);
+        this.project = await window.electronAPI.loadProject(dirPath);
 
-        let i = 0
-        this.projectData.images.forEach(image => {
-            let canvasImage = new Image();
-            canvasImage.src = image.imagePath;
-            if (this.labelixImages.length > 0) {
-                this.selectedLabelixImage = this.labelixImages[0];
-                canvasImage.onload = () => {
-                    eventhandler.emit("explorer.imageSelected", this.labelixImages[0]);
+        this.project.images.forEach((image, index) => {
+            image.canvasImage = new Image();
+            if (index === 0) {
+                this.selectedLabelixImage = this.project.images[0];
+                image.canvasImage.onload = () => {
+                    eventhandler.emit("explorer.imageSelected", this.selectedLabelixImage);
                 }
             }
-            let labelixImage = new LabelixImage(image.name, image.imagePath, canvasImage, image.labelBoxesNormalized);
-            this.labelixImages.push(labelixImage);
-            i++;
-        })
+            image.canvasImage.src = image.imagePath;
+        });
 
         this.isProjectLoaded = true;
-        eventhandler.emit("projectLoaded", dirPath, this.projectData.labelClasses);
+        eventhandler.emit("projectLoaded", dirPath, this.project);
     }
 
     selectLabelixImage(labelixImage)  {
@@ -124,6 +111,7 @@ export class Explorer extends SidebarBase {
 
         this.selectedLabelixImage = labelixImage;
         this.selectedLabelixImage.elementNode.classList.add("selected");
+        console.log(this.labelixImages);
         eventhandler.emit("explorer.imageSelected", labelixImage);
     }
 

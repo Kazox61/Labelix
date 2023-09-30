@@ -27,7 +27,8 @@ export class LabelEditor {
         this.canvasNode = document.createElement("canvas");
         this.contentNode.appendChild(this.canvasNode);
         this.ctx = this.canvasNode.getContext("2d");
-        this.zoom = 1;
+        this.scaleX = 1;
+        this.scaleY = 1;
         this.canLabel = () => this.isProjectLoaded && this.selectedLabelixImage && this.labelClasses.length > 0;
         this.currentLabelPositions = [];
 
@@ -41,7 +42,11 @@ export class LabelEditor {
 
         eventhandler.connect("explorer.imageSelected", (labelixImage) => {
             this.selectedLabelixImage = labelixImage;
-            this.zoom = 1;
+            this.scaleX = 1;
+            this.scaleY = 1;
+            this.offsetX = 0;
+            
+            this.offsetY = 0;
             this.updateImageScaleFactor();
             this.render();
         });
@@ -57,6 +62,7 @@ export class LabelEditor {
             if (this.selectedLabelixImage != null) {
                 this.updateImageScaleFactor();
             }
+            this.render();
         });
 
         this.canvasNode.addEventListener("wheel", (event) => {
@@ -64,9 +70,20 @@ export class LabelEditor {
             if (!this.isProjectLoaded) {
                 return;
             }
+
+            const [mouseWorldXBeforeZoom, mouseWorldYBeforeZoom] = this.screenToWorld(this.mouseX, this.mouseY);
+            //for zoom
             const zoomFactor = -0.1;
-            const zoom = this.zoom * (1 + zoomFactor * (event.deltaY / 100));
-            this.zoom = Math.max(0.1, Math.min(10, zoom));
+            const newZoom = this.scaleX * (1 + zoomFactor * (event.deltaY / 100));
+            const zoom = Math.max(0.1, Math.min(10, newZoom));
+            this.scaleX = zoom;
+            this.scaleY = zoom;
+
+            const [mouseWorldXAfterZoom, mouseWorldYAfterZoom] = this.screenToWorld(this.mouseX, this.mouseY);
+
+            this.offsetX += mouseWorldXBeforeZoom - mouseWorldXAfterZoom;
+            this.offsetY += mouseWorldYBeforeZoom - mouseWorldYAfterZoom;
+            
             this.render();
         });
         this.canvasNode.addEventListener("mouseenter", () => {
@@ -78,26 +95,28 @@ export class LabelEditor {
         });
 
         this.canvasNode.addEventListener("mousemove", (event) => {
+            //update Cursor Position
+            const bounds = this.canvasNode.getBoundingClientRect();
+            this.mouseX = event.clientX - bounds.left;
+            this.mouseY = event.clientY - bounds.top;
+
             if (!this.canLabel()) {
                 return;
             }
-            let bounds = this.canvasNode.getBoundingClientRect();
-            //update Cursor Position
-            this.cursorX = event.clientX - bounds.left;
-            this.cursorY = event.clientY - bounds.top;
 
             this.render();
 
             if (this.currentLabelPositions.length === 2) {
-                console.log("RENDER RECT");
-                
-                const [endX, endY] = this.clampPositionInImage(this.cursorX, this.cursorY);
-                let startX = Math.min(this.currentLabelPositions[0], endX);
-                let startY = Math.min(this.currentLabelPositions[1], endY);
+                const [startX, startY] = this.worldToScreen(this.currentLabelPositions[0], this.currentLabelPositions[1]);
+                const [worldEX, worldEY] = this.screenToWorld(this.mouseX, this.mouseY);
+                const [clampedWorldEX, clampedWorldEY] = this.clampPositionInImage(worldEX, worldEY);
+                const [screenEX, screenEY] = this.worldToScreen(clampedWorldEX, clampedWorldEY);
+                const leftX = Math.min(startX, screenEX);
+                const leftY = Math.min(startY, screenEY);
         
-                let width = Math.abs(this.currentLabelPositions[0] - endX);
-                let height = Math.abs(this.currentLabelPositions[1] - endY);
-                this.ctx.strokeRect(startX, startY, width, height);
+                const width = Math.abs(screenEX - startX);
+                const height = Math.abs(screenEY - startY);
+                this.ctx.strokeRect(leftX, leftY, width, height);
             }
         });
 
@@ -107,13 +126,13 @@ export class LabelEditor {
             }
             const mouseButton = getMouseButton(event);
             if (mouseButton === "left") {
-                const [x, y] = this.clampPositionInImage(this.cursorX, this.cursorY);
+                let [x, y] = this.screenToWorld(this.mouseX, this.mouseY);
+                [x,y] = this.clampPositionInImage(x, y);
                 this.currentLabelPositions.push(x);
                 this.currentLabelPositions.push(y);
 
                 if (this.currentLabelPositions.length === 4) {
                     this.saveLabelBox(this.currentLabelPositions);
-                    console.log("DRAW");
                     this.currentLabelPositions = [];
                     this.render();
                 }
@@ -125,11 +144,13 @@ export class LabelEditor {
         this.canvasWidth = this.contentNode.clientWidth;
         this.canvasHeight = this.contentNode.clientHeight;
 
-        this.canvasCenterX = this.canvasWidth * 0.5;
-        this.canvasCenterY = this.canvasHeight * 0.5;
-
         this.canvasNode.width = this.canvasWidth;
         this.canvasNode.height = this.canvasHeight;
+
+        this.canvasOffsetX = -this.canvasWidth/2;
+        this.canvasOffsetY = -this.canvasHeight/2;
+        this.offsetX = 0;
+        this.offsetY = 0;
     }
 
     updateImageScaleFactor() {
@@ -143,6 +164,24 @@ export class LabelEditor {
         }
     }
 
+    worldToScreen(worldX, worldY) {
+        const screenX = (worldX - (this.offsetX+this.canvasOffsetX)) * this.scaleX;
+        const screenY = (worldY - (this.offsetY+this.canvasOffsetY)) * this.scaleY;
+        return [screenX, screenY];
+    }
+
+    screenToWorld(screenX, screenY) {
+       const worldX = screenX / this.scaleX + (this.offsetX+this.canvasOffsetX);
+       const worldY = screenY / this.scaleY + (this.offsetY+this.canvasOffsetY);
+       return [worldX, worldY];
+    }
+
+    clampPositionInImage(posX, posY) {
+        const x = Math.max(-this.selectedLabelixImage.canvasImage.width/2, Math.min(this.selectedLabelixImage.canvasImage.width/2, posX));
+        const y = Math.max(-this.selectedLabelixImage.canvasImage.height/2, Math.min(this.selectedLabelixImage.canvasImage.height/2, posY));
+        return [x, y];
+    }
+
     render() {
         this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
         this.renderImage();
@@ -151,73 +190,42 @@ export class LabelEditor {
         }
     }
 
-    //x-left, y-left, width, height
-    getCurrentImageBounds() {
-        const x = this.canvasCenterX - (this.selectedLabelixImage.canvasImage.width * this.scaleFactor * this.zoom * 0.5);
-        const y = this.canvasCenterY - (this.selectedLabelixImage.canvasImage.height * this.scaleFactor * this.zoom * 0.5);
-        const w = this.selectedLabelixImage.canvasImage.width * this.scaleFactor * this.zoom;
-        const h = this.selectedLabelixImage.canvasImage.height * this.scaleFactor * this.zoom;
-        return {x,y,w,h};
-    }
-
-    clampPositionInImage(posX, posY) {
-        const {x,y,w,h} = this.getCurrentImageBounds();
-        const newX = Math.max(x, Math.min(x+w, posX));
-        const newY = Math.max(y, Math.min(y+h, posY));
-        return [newX, newY];
-    }
-
     renderImage() {
-        const {x,y,w,h} = this.getCurrentImageBounds();
-        
-        this.ctx.drawImage(this.selectedLabelixImage.canvasImage, x, y, w, h);
+        const [startX, startY] = this.worldToScreen(-this.selectedLabelixImage.canvasImage.width/2, -this.selectedLabelixImage.canvasImage.height/2);
+        const [endX, endY] = this.worldToScreen(this.selectedLabelixImage.canvasImage.width/2, this.selectedLabelixImage.canvasImage.height/2);
+        this.ctx.drawImage(this.selectedLabelixImage.canvasImage, startX, startY, endX-startX, endY-startY);
     }
 
     renderLabelBoxes() {
         this.selectedLabelixImage.labelBoxes.forEach(labelBox => {
-            const labelClassIndex = labelBox[0];
+            const [labelClassIndex, x, y, w, h] = labelBox;
             if (!Number.isInteger(labelClassIndex) || labelClassIndex >= this.labelClasses.length) {
                 return
             }
-            let totalWidth = this.selectedLabelixImage.canvasImage.width * this.scaleFactor * this.zoom;
-            let width = labelBox[3] * 2 * totalWidth;
-            let leftCanvas = this.canvasCenterX - (this.selectedLabelixImage.canvasImage.width * this.scaleFactor * this.zoom * 0.5);
-            let centerX = labelBox[1] * totalWidth + leftCanvas;
-            let startX = centerX - width * 0.5
+            const width = w * this.selectedLabelixImage.canvasImage.width * 2;
+            const height = h * this.selectedLabelixImage.canvasImage.height * 2;
 
-            let totalHeight = this.selectedLabelixImage.canvasImage.height * this.scaleFactor * this.zoom;
-            let height = labelBox[4] * 2 * totalHeight;
-            let topCanvas = this.canvasCenterY - (this.selectedLabelixImage.canvasImage.height * this.scaleFactor * this.zoom * 0.5);
-            let centerY = labelBox[2] * totalHeight + topCanvas;
-            let startY = centerY - height * 0.5
+
+            const startX = (x * this.selectedLabelixImage.canvasImage.width) - this.selectedLabelixImage.canvasImage.width / 2 - width / 2;
+            const startY = (y * this.selectedLabelixImage.canvasImage.height) - this.selectedLabelixImage.canvasImage.height / 2 - height / 2;
 
             this.ctx.strokeStyle = this.labelClasses[labelClassIndex].color;
-            this.ctx.strokeRect(startX, startY, width, height);
+            const [screenSX, screenSY] = this.worldToScreen(startX, startY);
+            const [screenEX, screenEY] = this.worldToScreen(startX+width, startY+height);
+            this.ctx.strokeRect(screenSX, screenSY, screenEX-screenSX, screenEY-screenSY);
         });
     }
 
     saveLabelBox(labelPositions) {
-        let startX = Math.min(labelPositions[0], labelPositions[2]);
-        let startY = Math.min(labelPositions[1], labelPositions[3]);
-        let width = Math.abs(labelPositions[0] - labelPositions[2]);
-        let height = Math.abs(labelPositions[1] - labelPositions[3]);
+        const startX = Math.min(labelPositions[0], labelPositions[2]);
+        const startY = Math.min(labelPositions[1], labelPositions[3]);
+        const width = Math.abs(labelPositions[0] - labelPositions[2]);
+        const height = Math.abs(labelPositions[1] - labelPositions[3]);
 
-
-        let totalWidth = this.selectedLabelixImage.canvasImage.width * this.scaleFactor * this.zoom;
-        let leftCanvas = this.canvasCenterX - (this.selectedLabelixImage.canvasImage.width * this.scaleFactor * this.zoom * 0.5)
-        let centerX = startX + width * 0.5;
-        let x = (centerX - leftCanvas) / totalWidth;
-        
-        let totalHeight = this.selectedLabelixImage.canvasImage.height * this.scaleFactor * this.zoom;
-        let topCanvas = this.canvasCenterY - (this.selectedLabelixImage.canvasImage.height * this.scaleFactor * this.zoom * 0.5)
-        let centerY = startY + height * 0.5;
-        let y = (centerY - topCanvas) / totalHeight;
-        
-        let w = width * 0.5 / totalWidth;
-        let h = height * 0.5 / totalHeight;
-        if (w < 0.05 || h < 0.05) {
-            return;
-        }
+        const x = (startX + width / 2 + this.selectedLabelixImage.canvasImage.width / 2) / this.selectedLabelixImage.canvasImage.width;
+        const y = (startY + height / 2 + this.selectedLabelixImage.canvasImage.height / 2) / this.selectedLabelixImage.canvasImage.height;
+        const w = width / 2 / this.selectedLabelixImage.canvasImage.width;
+        const h = height / 2 / this.selectedLabelixImage.canvasImage.height;
 
         this.selectedLabelixImage.labelBoxes.push([this.labelClasses.indexOf(this.selectedLabelClass), x, y, w, h]);
         window.electronAPI.writeLabels(this.selectedLabelixImage.path, this.selectedLabelixImage.labelBoxes);

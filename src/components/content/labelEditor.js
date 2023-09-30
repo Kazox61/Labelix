@@ -105,7 +105,7 @@ export class LabelEditor {
         this.currentLabelPositions.push(y);
 
         if (this.currentLabelPositions.length === 4) {
-            this.saveLabelBox(this.currentLabelPositions);
+            this.addLabelBox(this.currentLabelPositions);
             this.currentLabelPositions = [];
             this.render();
         }
@@ -126,6 +126,7 @@ export class LabelEditor {
             remainingLabelBoxes.push(labelBox);
         });
         this.selectedLabelixImage.labelBoxes = remainingLabelBoxes;
+        this.saveLabelBoxes();
         this.render();
     }
 
@@ -240,7 +241,7 @@ export class LabelEditor {
         });
     }
 
-    saveLabelBox(labelPositions) {
+    addLabelBox(labelPositions) {
         const [x1, y1, x2, y2] = labelPositions;
         const sx = Math.min(x1, x2);
         const ex = Math.max(x1, x2);
@@ -248,6 +249,10 @@ export class LabelEditor {
         const ey = Math.max(y1, y2);
 
         this.selectedLabelixImage.labelBoxes.push([this.labelClasses.indexOf(this.selectedLabelClass), sx, sy, ex, ey]);
+        this.saveLabelBoxes();
+    }
+
+    saveLabelBoxes() {
         const labelBoxesNormalized = [];
         this.selectedLabelixImage.labelBoxes.forEach(labelBox => {
             labelBoxesNormalized.push(this.toLabelNormalized(labelBox));

@@ -41,7 +41,6 @@ export class LabelEditor {
                 
                 image.canvasImage.addEventListener("load", () => {
                     image.labelBoxesNormalized.forEach(labelBoxNormalized => {
-                        console.log(this.fromLabelNormalized(labelBoxNormalized, image.canvasImage));
                         image.labelBoxes.push(this.fromLabelNormalized(labelBoxNormalized, image.canvasImage));
                     });
                 });
@@ -238,11 +237,11 @@ export class LabelEditor {
     renderLabelBoxes() {
         this.selectedLabelixImage.labelBoxes.forEach(labelBox => {
             const [labelClassIndex, x1, y1, x2, y2] = labelBox;
-            if (!Number.isInteger(labelClassIndex) || labelClassIndex >= this.labelClasses.length) {
+            if (!Number.isInteger(labelClassIndex) || labelClassIndex >= this.labelClasses.length, labelClassIndex < 0) {
                 return
             }
             const [screenX1, screenY1] = this.worldToScreen(x1, y1);
-            const [screenX2, screenY2] = this.worldToScreen(x2, y2); 
+            const [screenX2, screenY2] = this.worldToScreen(x2, y2);
             this.ctx.strokeStyle = this.labelClasses[labelClassIndex].color;
             this.ctx.strokeRect(screenX1, screenY1, screenX2-screenX1, screenY2-screenY1);
         });
@@ -263,7 +262,6 @@ export class LabelEditor {
         this.selectedLabelixImage.labelBoxes.forEach(labelBox => {
             labelBoxesNormalized.push(this.toLabelNormalized(labelBox));
         });
-        console.log(labelBoxesNormalized);
         window.electronAPI.writeLabels(this.selectedLabelixImage.imagePath, labelBoxesNormalized);
     }
 

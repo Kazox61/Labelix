@@ -111,7 +111,6 @@ export class Explorer extends SidebarBase {
 
         this.selectedLabelixImage = labelixImage;
         this.selectedLabelixImage.elementNode.classList.add("selected");
-        console.log(this.labelixImages);
         eventhandler.emit("explorer.imageSelected", labelixImage);
     }
 

@@ -57,16 +57,16 @@ export class ClassEditor extends SidebarBase {
 
     async show() {
         await super.show();
-        this.cassEditorNode = document.createElement("div");
-        this.cassEditorNode.className = "classEditor";
-        this.sidebarNode.appendChild(this.cassEditorNode);
+        this.classEditorNode = document.createElement("div");
+        this.classEditorNode.className = "classEditor";
+        this.sidebarNode.appendChild(this.classEditorNode);
 
         this.classEditorHeaderNode = document.createElement("h2");
         this.classEditorHeaderNode.innerText = "Class Editor";
-        this.cassEditorNode.appendChild(this.classEditorHeaderNode);
+        this.classEditorNode.appendChild(this.classEditorHeaderNode);
 
         this.tableNode = document.createElement("table");
-        this.cassEditorNode.appendChild(this.tableNode);
+        this.classEditorNode.appendChild(this.tableNode);
         const tableHeaderNode = document.createElement("thead");
         this.tableNode.appendChild(tableHeaderNode);
         const tableHeaderRowNode = document.createElement("tr");
@@ -93,7 +93,7 @@ export class ClassEditor extends SidebarBase {
 
         const inputRowNode = document.createElement("div");
         inputRowNode.className = "inputRow"
-        this.cassEditorNode.appendChild(inputRowNode);
+        this.classEditorNode.appendChild(inputRowNode);
 
         const nameRowNode = document.createElement("div");
         inputRowNode.appendChild(nameRowNode);
@@ -156,6 +156,22 @@ export class ClassEditor extends SidebarBase {
         }
 
         rowNode.addEventListener("click", () => this.selectLabelClass(labelClass));
+        rowNode.addEventListener("contextmenu", (event) => {
+            event.preventDefault();
+
+            this.app.contextMenu.createMenu(rowNode, this.classEditorNode, event.clientX, event.clientY, {
+                "Delete": () => {
+                    this.tableBodyNode.removeChild(labelClass.rowNode);
+                    const index = this.labelClasses.indexOf(labelClass);
+                    this.labelClasses.splice(index, 1);
+
+                    if (labelClass === this.selectedLabelClass && this.labelClasses.length > 0) {
+                        this.selectLabelClass(this.labelClasses[0])
+                    }
+                }
+            });
+
+        });
 
         const bodyIndexNode = document.createElement("td");
         bodyIndexNode.className = "min";

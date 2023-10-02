@@ -4,6 +4,7 @@ import { Activitybar } from "./components/activitybar/activitybar.js";
 import { Sidebar } from "./components/sidebar/sidebar.js";
 import { Content } from "./components/content/content.js";
 import { dracula } from "./preferences/theme/dracula.js";
+import { ContextMenu } from "./contextMenu/contextMenu.js";
 
 export const eventhandler = new EventHandler();
 
@@ -22,6 +23,9 @@ export class Application {
         }
         this.rootNode = document.querySelector(".root");
         this.updateColorTheme(dracula);
+
+        
+        this.contextMenu = new ContextMenu();
 
         this.titlebar = new Titlebar(this);
         this.activitybar = new Activitybar(this);

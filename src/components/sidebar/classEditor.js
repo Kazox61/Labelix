@@ -71,10 +71,6 @@ export class ClassEditor extends SidebarBase {
         this.tableNode.appendChild(tableHeaderNode);
         const tableHeaderRowNode = document.createElement("tr");
         tableHeaderNode.appendChild(tableHeaderRowNode);
-        const tableIndexHeaderNode = document.createElement("th");
-        tableIndexHeaderNode.className = "min";
-        tableIndexHeaderNode.innerText = "Index";
-        tableHeaderRowNode.appendChild(tableIndexHeaderNode);
         const tableNameHeaderNode = document.createElement("th");
         tableNameHeaderNode.innerText = "Name";
         tableHeaderRowNode.appendChild(tableNameHeaderNode);
@@ -82,10 +78,6 @@ export class ClassEditor extends SidebarBase {
         tableColorHeaderNode.className = "min";
         tableColorHeaderNode.innerText = "Color";
         tableHeaderRowNode.appendChild(tableColorHeaderNode);
-        const tableAmountHeaderNode = document.createElement("th");
-        tableAmountHeaderNode.className = "min";
-        tableAmountHeaderNode.innerText = "Amount";
-        tableHeaderRowNode.appendChild(tableAmountHeaderNode);
         
         this.tableBodyNode = document.createElement("tbody");
         this.tableNode.appendChild(this.tableBodyNode);
@@ -173,11 +165,6 @@ export class ClassEditor extends SidebarBase {
 
         });
 
-        const bodyIndexNode = document.createElement("td");
-        bodyIndexNode.className = "min";
-        bodyIndexNode.innerText = labelClass.index;
-        rowNode.appendChild(bodyIndexNode);
-
         const bodyNameNode = document.createElement("td");
         bodyNameNode.innerText = labelClass.name;
         rowNode.appendChild(bodyNameNode);
@@ -186,11 +173,6 @@ export class ClassEditor extends SidebarBase {
         bodyColorNode.className = "min";
         bodyColorNode.innerText = labelClass.color;
         rowNode.appendChild(bodyColorNode);
-
-        const bodyAmountNode = document.createElement("td");
-        bodyAmountNode.className = "min";
-        bodyAmountNode.innerText = labelClass.amount;
-        rowNode.appendChild(bodyAmountNode);
     }
 
     selectLabelClass(labelClass) {

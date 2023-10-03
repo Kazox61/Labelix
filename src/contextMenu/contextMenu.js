@@ -46,7 +46,7 @@ export class ContextMenu {
             node: contextMenuNode
         });
 
-        triggerNode.classList.add("contextMenu-selected");
+        triggerNode.classList.add("contextMenu-triggerHighlighted");
 
         const contextMenuListNode = document.createElement("ul");
         contextMenuNode.appendChild(contextMenuListNode);

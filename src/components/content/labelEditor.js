@@ -73,6 +73,10 @@ export class LabelEditor {
             this.selectedLabelClass = labelClass;
         });
 
+        eventhandler.connect("labelBoxesModified", () => {
+            this.render();
+        });
+
         this.updateWindowDimensions();
         window.addEventListener("resize", () => {
             this.updateWindowDimensions();
@@ -119,7 +123,6 @@ export class LabelEditor {
             this.addLabelBox(this.currentLabelPositions);
             this.saveLabelBoxes();
             this.currentLabelPositions = [];
-            this.render();
         }
     }
 
@@ -141,7 +144,6 @@ export class LabelEditor {
         });
         this.selectedLabelixImage.labelBoxes = remainingLabelBoxes;
         this.saveLabelBoxes();
-        this.render();
         removedLabelBoxes.forEach(labelBox => {
             eventhandler.emit("labelBoxesModified", this.selectedLabelixImage, labelBox[0]);
         });

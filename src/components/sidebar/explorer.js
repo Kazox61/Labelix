@@ -154,11 +154,16 @@ export class Explorer extends SidebarBase {
 
                 liNode.addEventListener("contextmenu", (event) => {
                     this.app.contextMenu.createMenu(liNode, ulNode, event.clientX, event.clientY, {
-                        "Delete Labels for class": () => console.log("Delete all Labels")
+                        "Delete Labels": () => {
+                            const index = labelClass.index;
+                            labelixImage.labelBoxes = labelixImage.labelBoxes.filter(labelBox => labelBox[0] !== index);
+                            eventhandler.emit("labelBoxesModified", this.selectedLabelixImage, index);
+                        }
                     })
                 });
 
                 eventhandler.connect("labelBoxesModified", (selectedLabelixImage, indexLabelClass) => {
+                    console.log(selectedLabelixImage === labelixImage, indexLabelClass === labelClass.index);
                     if (selectedLabelixImage === labelixImage && indexLabelClass === labelClass.index) {
                         let amount = 0;
                         labelixImage.labelBoxes.forEach(labelBox => {

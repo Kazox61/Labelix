@@ -36,13 +36,19 @@ export class LabelEditor {
 
         eventhandler.connect("projectLoaded", (dirPath, project) => {
             this.isProjectLoaded = true;
+            let count = 0;
             project.images.forEach(image => {
                 image.labelBoxes = [];
                 
                 image.canvasImage.addEventListener("load", () => {
+                    count++;
                     image.labelBoxesNormalized.forEach(labelBoxNormalized => {
                         image.labelBoxes.push(this.fromLabelNormalized(labelBoxNormalized, image.canvasImage));
                     });
+
+                    if (count === project.images.length -1) {
+                        this.render();
+                    }
                 });
             });
         });

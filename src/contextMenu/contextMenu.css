@@ -22,3 +22,7 @@
     background-color: #45475a;
     border-radius: 5px;
 }
+
+.contextMenu-triggerHighlighted {
+    box-shadow: inset 0 0 0 1px rgb(148, 188, 235);
+}

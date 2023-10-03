@@ -122,11 +122,13 @@ export class LabelEditor {
             return;
         }
 
-        const remainingLabelBoxes = []
+        const remainingLabelBoxes = [];
+        const removedLabelBoxes = [];
         const [worldMouseX, worldMouseY] = this.screenToWorld(this.mouseX, this.mouseY);
         this.selectedLabelixImage.labelBoxes.forEach(labelBox => {
             const [labelClassIndex, x1, y1, x2, y2] = labelBox;
             if (x1 <= worldMouseX && x2 >= worldMouseX && y1 <= worldMouseY && y2 >= worldMouseY) {
+                removedLabelBoxes.push(labelBox);
                 return;
             }
             remainingLabelBoxes.push(labelBox);
@@ -134,6 +136,9 @@ export class LabelEditor {
         this.selectedLabelixImage.labelBoxes = remainingLabelBoxes;
         this.saveLabelBoxes();
         this.render();
+        removedLabelBoxes.forEach(labelBox => {
+            eventhandler.emit("labelBoxesModified", this.selectedLabelixImage, labelBox[0]);
+        });
     }
 
     onMousePositionChange() {
@@ -248,13 +253,18 @@ export class LabelEditor {
     }
 
     addLabelBox(labelPositions) {
+        const indexLabelClass = this.labelClasses.indexOf(this.selectedLabelClass)
+        if (indexLabelClass < 0 ) {
+            return;
+        }
         const [x1, y1, x2, y2] = labelPositions;
         const sx = Math.min(x1, x2);
         const ex = Math.max(x1, x2);
         const sy = Math.min(y1, y2);
         const ey = Math.max(y1, y2);
 
-        this.selectedLabelixImage.labelBoxes.push([this.labelClasses.indexOf(this.selectedLabelClass), sx, sy, ex, ey]);
+        this.selectedLabelixImage.labelBoxes.push([indexLabelClass, sx, sy, ex, ey]);
+        eventhandler.emit("labelBoxesModified", this.selectedLabelixImage, indexLabelClass);
     }
 
     saveLabelBoxes() {

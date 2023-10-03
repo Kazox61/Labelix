@@ -16,6 +16,7 @@ export class ContextMenu {
             }
 
             const last = this.contextMenus.shift();
+            last.triggerNode.classList.remove("contextMenu-triggerHighlighted");
             last.parentNode.removeChild(last.node);
             
         });
@@ -45,6 +46,8 @@ export class ContextMenu {
             node: contextMenuNode
         });
 
+        triggerNode.classList.add("contextMenu-selected");
+
         const contextMenuListNode = document.createElement("ul");
         contextMenuNode.appendChild(contextMenuListNode);
 
@@ -62,6 +65,7 @@ export class ContextMenu {
 
     closeMenu() {
         this.contextMenus.forEach(menu => {
+            menu.triggerNode.classList.remove("contextMenu-triggerHighlighted")
             menu.parentNode.removeChild(menu.node);
         })
         this.contextMenus = [];

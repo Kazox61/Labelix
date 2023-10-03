@@ -3,7 +3,7 @@
 }
 
 .explorer .project-header {
-    padding-left: 12px;
+    padding: 2px 0 2px 12px;
     background-color: var(--explorer-project-header-background);
 }
 
@@ -13,17 +13,38 @@
     padding: 0;
 }
 
-.explorer li {
-    margin-left: 12px;
-    border-left: solid white 0.5px;
+.explorer li .explorer-imageNameContainer {
     padding: 1px 12px;
 }
 
-.explorer li.selected {
+.explorer li.selected .explorer-imageNameContainer {
     background-color: var(--explorer-element-selected-background);
 }
 
-.explorer li:not(.selected):hover {
+.explorer li:not(.selected) .explorer-imageNameContainer:hover {
     cursor: pointer;
     background-color: var(--explorer-element-hover-background);
 }
+
+.explorer-openIndicator {
+    width: 10px;
+    height: 10px;
+    margin-right: 6px;
+    transform: rotate(-90deg);
+}
+
+.explorer-openIndicator.opened {
+    transform: rotate(0);
+}
+
+.explorer-classElement {
+    padding: 1px 0 1px 28px !important;
+}
+
+.explorer-classElement-color {
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+    margin-right: 4px;
+}
+

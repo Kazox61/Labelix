@@ -26,6 +26,10 @@
 .classEditor table thead, tbody {
     border-collapse: collapse;
 }
+
+.classEditor .labelClassRow:hover {
+    cursor: pointer;
+}
  
 .classEditor .addButton {
     background-color: #1ac422;

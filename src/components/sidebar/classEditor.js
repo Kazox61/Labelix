@@ -144,12 +144,8 @@ export class ClassEditor extends SidebarBase {
 
     showLabelClass(labelClass) {
         const rowNode = this.tableBodyNode.insertRow();
-
+        rowNode.className = "labelClassRow";
         labelClass.rowNode = rowNode;
-
-        if (this.selectedLabelClass === labelClass) {
-            rowNode.className = "selected";
-        }
 
         rowNode.addEventListener("click", () => this.selectLabelClass(labelClass));
         rowNode.addEventListener("contextmenu", (event) => {
@@ -173,19 +169,24 @@ export class ClassEditor extends SidebarBase {
         bodyNameNode.innerText = labelClass.name;
         rowNode.appendChild(bodyNameNode);
 
+        labelClass.nameNode = bodyNameNode;
+        if (this.selectedLabelClass === labelClass) {
+            bodyNameNode.className = "selected";
+        }
+
         const bodyColorNode = document.createElement("td");
         bodyColorNode.className = "min";
-        bodyColorNode.innerText = labelClass.color;
+        bodyColorNode.style.backgroundColor = labelClass.color;
         rowNode.appendChild(bodyColorNode);
     }
 
     selectLabelClass(labelClass) {
         if (this.selectedLabelClass != null) {
-            this.selectedLabelClass.rowNode.classList.remove("selected");
+            this.selectedLabelClass.nameNode.classList.remove("selected");
         }
         
         this.selectedLabelClass = labelClass;
-        this.selectedLabelClass.rowNode.classList.add("selected");
+        this.selectedLabelClass.nameNode.classList.add("selected");
         eventhandler.emit("classEditor.labelClassSelected", this.selectedLabelClass);
     }
 }

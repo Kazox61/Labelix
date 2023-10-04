@@ -65,8 +65,12 @@ export class ClassEditor extends SidebarBase {
         this.classEditorHeaderNode.innerText = "Class Editor";
         this.classEditorNode.appendChild(this.classEditorHeaderNode);
 
+        this.classEditorContainerNode = document.createElement("div");
+        this.classEditorContainerNode.className = "classEditorContainer";
+        this.classEditorNode.appendChild(this.classEditorContainerNode)
+
         this.tableNode = document.createElement("table");
-        this.classEditorNode.appendChild(this.tableNode);
+        this.classEditorContainerNode.appendChild(this.tableNode);
         const tableHeaderNode = document.createElement("thead");
         this.tableNode.appendChild(tableHeaderNode);
         const tableHeaderRowNode = document.createElement("tr");
@@ -85,7 +89,7 @@ export class ClassEditor extends SidebarBase {
 
         const inputRowNode = document.createElement("div");
         inputRowNode.className = "inputRow"
-        this.classEditorNode.appendChild(inputRowNode);
+        this.classEditorContainerNode.appendChild(inputRowNode);
 
         const nameRowNode = document.createElement("div");
         inputRowNode.appendChild(nameRowNode);

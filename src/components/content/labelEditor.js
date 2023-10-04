@@ -165,6 +165,8 @@ export class LabelEditor {
     
             const width = Math.abs(screenEX - startX);
             const height = Math.abs(screenEY - startY);
+            
+            this.ctx.strokeStyle = this.selectedLabelClass.color;
             this.ctx.strokeRect(leftX, leftY, width, height);
         }
     }

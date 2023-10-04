@@ -5,7 +5,6 @@ export class Explorer extends SidebarBase {
     constructor(app, sidebarNode) {
         super(app, sidebarNode);
         this.name = "explorer";
-        this.labelixImages = []
         this.isProjectLoaded = false;
 
         eventhandler.connect("titlebar.openFolder", async () => {
@@ -26,11 +25,6 @@ export class Explorer extends SidebarBase {
         eventhandler.connect("componentsBuilt", async () => {
             if (this.app.config.hasOwnProperty("lastProjectPath")) {
                 await this.openProject(this.app.config.lastProjectName, this.app.config.lastProjectPath);
-                
-                if (this.labelixImages.length > 0) {
-                    this.selectedLabelixImage = this.labelixImages[0];
-                    this.selectLabelixImage(this.selectedLabelixImage);
-                }
 
                 if (!this.isHidden) {
                     this.showProject();

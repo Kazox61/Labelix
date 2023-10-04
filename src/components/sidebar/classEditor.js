@@ -14,8 +14,7 @@ class LabelClass {
         return {
             "index": this.index,
             "name": this.name,
-            "color": this.color,
-            "amount": this.amount
+            "color": this.color
         }
     }
 
@@ -112,34 +111,41 @@ export class ClassEditor extends SidebarBase {
         inputRowNode.appendChild(commitInputNode);
         commitInputNode.addEventListener("click", () => {
 
-            let labelClass = new LabelClass(
-                this.labelClasses.length,
-                nameInputNode.value,
-                colorInputNode.value
-            );
-            labelClass.rowNode = inputRowNode;
-            nameInputNode.value = "";
-            colorInputNode.value = "";
-            
-            this.labelClasses.push(labelClass);
-
-            if (this.selectedLabelClass == null) {
-                this.selectedLabelClass = labelClass;
-            }
-            
-            this.showLabelClass(labelClass);
-
-            const labelClassesJSON = []
-            this.labelClasses.forEach(labelClass => {
-                labelClassesJSON.push(labelClass.toJSON());
-            })
-            window.electronAPI.saveProject(this.rootPath, labelClassesJSON);
+            this.insertlabelClassRow(nameInputNode, colorInputNode, inputRowNode);
         });
 
         for (let index = 0; index < this.labelClasses.length; index++) {
             let labelClass = this.labelClasses[index];
             this.showLabelClass(labelClass);
         }
+    }
+
+    insertlabelClassRow(nameInputNode, colorInputNode, inputRowNode) {
+        let labelClass = new LabelClass(
+            this.labelClasses.length,
+            nameInputNode.value,
+            colorInputNode.value
+        );
+        labelClass.rowNode = inputRowNode;
+        nameInputNode.value = "";
+        colorInputNode.value = "";
+
+        this.labelClasses.push(labelClass);
+
+        if (this.selectedLabelClass == null) {
+            this.selectedLabelClass = labelClass;
+        }
+
+        this.showLabelClass(labelClass);
+        this.saveProject();
+    }
+
+    saveProject() {
+        const labelClassesJSON = [];
+        this.labelClasses.forEach(labelClass => {
+            labelClassesJSON.push(labelClass.toJSON());
+        });
+        window.electronAPI.saveProject(this.rootPath, labelClassesJSON);
     }
 
     showLabelClass(labelClass) {
@@ -152,15 +158,8 @@ export class ClassEditor extends SidebarBase {
             event.preventDefault();
 
             this.app.contextMenu.createMenu(rowNode, this.classEditorNode, event.clientX, event.clientY, {
-                "Delete": () => {
-                    this.tableBodyNode.removeChild(labelClass.rowNode);
-                    const index = this.labelClasses.indexOf(labelClass);
-                    this.labelClasses.splice(index, 1);
-
-                    if (labelClass === this.selectedLabelClass && this.labelClasses.length > 0) {
-                        this.selectLabelClass(this.labelClasses[0])
-                    }
-                }
+                "Delete": () => this.deleteLabelClass(labelClass)
+    
             });
 
         });
@@ -178,6 +177,43 @@ export class ClassEditor extends SidebarBase {
         bodyColorNode.className = "min";
         bodyColorNode.style.backgroundColor = labelClass.color;
         rowNode.appendChild(bodyColorNode);
+    }
+
+    deleteLabelClass(labelClass) {
+        const deletedLabelClassIndex = this.labelClasses.indexOf(labelClass);
+        this.tableBodyNode.removeChild(labelClass.rowNode);
+        this.labelClasses.splice(deletedLabelClassIndex, 1);
+
+        this.updateIndexLabelClasses(deletedLabelClassIndex);
+        this.saveProject();
+        
+        if (labelClass === this.selectedLabelClass && this.labelClasses.length > 0) {
+            this.selectLabelClass(this.labelClasses[0]);
+        }
+    }
+
+    updateIndexLabelClasses(deletedLabelClassIndex) {
+        this.labelClasses.forEach((labelClass, newIndex) => {
+            this.updateIndexLabelBoxes(labelClass, newIndex, deletedLabelClassIndex);
+        });
+        this.labelClasses.forEach((labelClass, newIndex) => {
+            labelClass.index = newIndex;
+        });
+        
+        this.app.sidebar.explorer.project.images.forEach(labelixImage => {
+            eventhandler.emit("labelBoxesModified", labelixImage);
+        });
+    }
+
+    updateIndexLabelBoxes(labelClass, newIndex, deletedLabelClassIndex) {
+        this.app.sidebar.explorer.project.images.forEach(labelixImage => {
+            labelixImage.labelBoxes = labelixImage.labelBoxes.filter(labelbox => labelbox[0] !== deletedLabelClassIndex);
+            labelixImage.labelBoxes.forEach(labelBox => {
+                if (labelBox[0] === labelClass.index) {
+                    labelBox[0] = newIndex;
+                }
+            });
+        });
     }
 
     selectLabelClass(labelClass) {

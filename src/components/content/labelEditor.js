@@ -73,9 +73,9 @@ export class LabelEditor {
             this.selectedLabelClass = labelClass;
         });
 
-        eventhandler.connect("labelBoxesModified", () => {
-            this.saveLabelBoxes();
-            this.render();
+        eventhandler.connect("labelBoxesModified", (labelixImage) => {
+            this.saveLabelBoxes(labelixImage);
+            if (labelixImage === this.selectedLabelixImage) this.render();
         });
 
         this.updateWindowDimensions();
@@ -276,12 +276,12 @@ export class LabelEditor {
         eventhandler.emit("labelBoxesModified", this.selectedLabelixImage);
     }
 
-    saveLabelBoxes() {
+    saveLabelBoxes(labelixImage) {
         const labelBoxesNormalized = [];
-        this.selectedLabelixImage.labelBoxes.forEach(labelBox => {
-            labelBoxesNormalized.push(this.toLabelNormalized(labelBox));
+        labelixImage.labelBoxes.forEach(labelBox => {
+            labelBoxesNormalized.push(this.toLabelNormalized(labelBox, labelixImage.canvasImage));
         });
-        window.electronAPI.writeLabels(this.selectedLabelixImage.imagePath, labelBoxesNormalized);
+        window.electronAPI.writeLabels(labelixImage.imagePath, labelBoxesNormalized);
     }
 
     fromLabelNormalized(labelBoxNormalized, canvasImage) {
@@ -297,16 +297,16 @@ export class LabelEditor {
             return [labelClassIndex, sx, sy, ex, ey];
     }
 
-    toLabelNormalized(labelBox) {
+    toLabelNormalized(labelBox, canvasImage) {
         const sx = Math.min(labelBox[1], labelBox[3]);
         const sy = Math.min(labelBox[2], labelBox[4]);
         const width = Math.abs(labelBox[1] - labelBox[3]);
         const height = Math.abs(labelBox[2] - labelBox[4]);
 
-        const x = (sx + width / 2 + this.selectedLabelixImage.canvasImage.width / 2) / this.selectedLabelixImage.canvasImage.width;
-        const y = (sy + height / 2 + this.selectedLabelixImage.canvasImage.height / 2) / this.selectedLabelixImage.canvasImage.height;
-        const w = width / 2 / this.selectedLabelixImage.canvasImage.width;
-        const h = height / 2 / this.selectedLabelixImage.canvasImage.height;
+        const x = (sx + width / 2 + canvasImage.width / 2) / canvasImage.width;
+        const y = (sy + height / 2 + canvasImage.height / 2) / canvasImage.height;
+        const w = width / 2 / canvasImage.width;
+        const h = height / 2 / canvasImage.height;
         return [labelBox[0], x, y, w, h];
     }
 }

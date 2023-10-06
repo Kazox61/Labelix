@@ -31,6 +31,14 @@ export const dracula = {
         },
         content: {
             background: "#282a36"
+        },
+        colorPicker: {
+            background: "#5e517c",
+            borderColor: "#3073f0",
+            markerSV: "#00ffff",
+            markerHue: "#000000",
+            textInputBackground: "#424053",
+            textInputFocusBorderColor: "#6fa2e6"
         }
     }
 }

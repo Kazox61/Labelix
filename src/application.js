@@ -71,5 +71,12 @@ export class Application {
         this.rootNode.style.setProperty("--explorer-element-hover-background", colorTheme.style.sidebar.explorer.elementHoverBackground);
 
         this.rootNode.style.setProperty("--content-background", colorTheme.style.content.background);
+
+        this.rootNode.style.setProperty("--colorPicker-background", colorTheme.style.colorPicker.background);
+        this.rootNode.style.setProperty("--colorPicker-borderColor", colorTheme.style.colorPicker.borderColor);
+        this.rootNode.style.setProperty("--colorPicker-markerSV", colorTheme.style.colorPicker.markerSV);
+        this.rootNode.style.setProperty("--colorPicker-markerHue", colorTheme.style.colorPicker.markerHue);
+        this.rootNode.style.setProperty("--colorPicker-textInput-background", colorTheme.style.colorPicker.textInputBackground);
+        this.rootNode.style.setProperty("--colorPicker-textInput-focusBorderColor", colorTheme.style.colorPicker.textInputFocusBorderColor);
     }
 }

@@ -64,7 +64,8 @@ export class Sidebar {
         document.addEventListener("mousemove", (event) => {
             let borderPosition = this.app.config.activitybarWidth + this.app.config.sidebarWidth;
             if (event.clientX >= borderPosition -3 && event.clientX <= borderPosition + 3) {
-                if (!this.cursorInsidebarResize) {
+                const isInForeground = event.target === this.sidebarResizeNode || this.sidebarResizeNode.contains(event.target);
+                if (!this.cursorInsidebarResize && isInForeground) {
                     document.body.style.cursor = "e-resize";
                     this.cursorInsidebarResize = true;
                 }

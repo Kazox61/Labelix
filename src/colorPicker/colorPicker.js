@@ -7,6 +7,9 @@ const defaultSettings = {
 export class ColorPicker {
     constructor(options) {
         this.settings = defaultSettings;
+        this.hue = 0; //from 0 to 360
+        this.saturation = 1; //from 0 to 1
+        this.value = 1; //from 0 to 1
         this.configure(options);
         this.parentContainerNode = this.settings.parent;
         this.anchorNode = this.settings.anchor;
@@ -15,9 +18,6 @@ export class ColorPicker {
         this.hasColorPicker = false;
         this.isMouseDownSVMap = false;
         this.isMouseDownHueMap = false;
-        this.hue = 0; //from 0 to 360
-        this.saturation = 1; //from 0 to 1
-        this.value = 1; //from 0 to 1
 
         this.anchorNode.addEventListener("mouseenter", () => {
             this.isInAnchorArea = true;
@@ -37,6 +37,8 @@ export class ColorPicker {
                 };
             }, 500);
         });
+
+        this.anchorNode.style.backgroundColor = this.getRGBColorS();
     }
 
     configure(options) {
@@ -46,6 +48,25 @@ export class ColorPicker {
 
         for (const key in options) {
             switch (key) {
+                case 'defaultColor':
+                    const defaultColor = options.defaultColor;
+                    if (defaultColor.startsWith("#")) {
+                        const rgb = hexToRgb(defaultColor);
+                        if (rgb == null) break;
+                        const hsv = rgbToHsv(rgb.r, rgb.g, rgb.b);
+                        this.hue = hsv.h;
+                        this.saturation = hsv.s;
+                        this.value = hsv.v;
+                    }
+                    else if(defaultColor.startsWith("rgb")) {
+                        const rgb = parseRGBString(defaultColor);
+                        if (rgb == null) break;
+                        const hsv = rgbToHsv(rgb.r, rgb.g, rgb.b);
+                        this.hue = hsv.h;
+                        this.saturation = hsv.s;
+                        this.value = hsv.v;
+                    }
+                    break;
                 default:
                     this.settings[key] = options[key];
             }
@@ -223,29 +244,9 @@ export class ColorPicker {
     onColorInputRGB() {
         let input = this.colorInputRGB.value;
 
-        const indexLeftBracket = input.indexOf("(");
-        if (indexLeftBracket < 0) {
-            return;
-        }
-        input = input.slice(indexLeftBracket + 1);
-
-        const indexRightBracket = input.indexOf(")");
-        if (indexRightBracket < 0) {
-            return;
-        }
-        input = input.substring(0, indexRightBracket);
-
-        const values = input.split(",");
-        if (values.length !== 3) {
-            return;
-        }
-        const r = parseInt(values[0]);
-        const g = parseInt(values[1]);
-        const b = parseInt(values[2]);
-
-        if (isNaN(r) || isNaN(g) || isNaN(b)) {
-            return;
-        }
+        const rgb = parseRGBString(input);
+        if (rgb == null) return;
+        const {r,g,b} = rgb;
 
         const hsvColor = rgbToHsv(r, g, b);
         this.hue = hsvColor.h;
@@ -344,4 +345,46 @@ function rgbToHsv(r, g, b) {
     }
     
     return { h, s, v };
+}
+
+function hexToRgb(hex) {
+    hex = hex.replace(/^#/, '');
+  
+    if (hex.length !== 6) {
+      throw new Error('Invalid hex color');
+    }
+  
+    const r = parseInt(hex.slice(0, 2), 16);
+    const g = parseInt(hex.slice(2, 4), 16);
+    const b = parseInt(hex.slice(4, 6), 16);
+  
+    return {r,g,b};
+}
+
+function parseRGBString(rgbString) {
+    const indexLeftBracket = rgbString.indexOf("(");
+    if (indexLeftBracket < 0) {
+        return null;
+    }
+    rgbString = rgbString.slice(indexLeftBracket + 1);
+
+    const indexRightBracket = rgbString.indexOf(")");
+    if (indexRightBracket < 0) {
+        return null;
+    }
+    rgbString = rgbString.substring(0, indexRightBracket);
+
+    const values = rgbString.split(",");
+    if (values.length !== 3) {
+        return null;
+    }
+    const r = parseInt(values[0]);
+    const g = parseInt(values[1]);
+    const b = parseInt(values[2]);
+
+    if (isNaN(r) || isNaN(g) || isNaN(b)) {
+        return null;
+    }
+
+    return {r,g,b};
 }

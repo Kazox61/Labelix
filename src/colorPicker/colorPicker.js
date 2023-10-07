@@ -125,6 +125,7 @@ export class ColorPicker {
         //update x pos of hue slider just once when creating, because its stays the same
         const colorPickerBounds = this.colorPickerNode.getBoundingClientRect();
         const hueMapBounds = this.hueMapNode.getBoundingClientRect();
+        // not sure why we need here the -1, but it has a offset without it?!
         this.hueMapSlider.style.left = hueMapBounds.left -1- colorPickerBounds.left + "px";
 
         this.updateColor();

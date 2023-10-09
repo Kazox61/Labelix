@@ -20,9 +20,7 @@ export class Tab {
         });
     }
 
-    selectTab() {
-        this.tabButtonNode.classList.add("selected");
-        
+    selectTab() {        
         eventhandler.emit("activitybar.tabSelected", this);
     }
 

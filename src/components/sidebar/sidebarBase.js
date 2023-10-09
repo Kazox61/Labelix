@@ -8,11 +8,11 @@ export class SidebarBase {
     }
 
     async show() {
-        this.sidebarNode.replaceChildren();
-        this.isHidden = false;     
+        this.isHidden = false;
     }
 
     hide() {
+        this.sidebarNode.replaceChildren();
         this.isHidden = true;
     }
 }

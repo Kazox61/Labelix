@@ -1,8 +1,9 @@
 .content {
     flex: 1;
     overflow: hidden;
-    display: flex;
     flex-direction: column;
+    width: 100%;
+    height: 100%;
 }
 
 .contentbar {
@@ -38,5 +39,5 @@
 
 .contentContainer {
     background-color: var(--content-container-background);
-    flex: 1;
+    height: calc(100% - 35px);
 }

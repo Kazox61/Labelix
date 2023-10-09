@@ -26,9 +26,24 @@ export class Activitybar {
 
         eventhandler.connect("activitybar.tabSelected", (selectedTab) => {
             if (this.selectedTab != null) {
-                this.selectedTab.unselectTab();
+                if (this.selectedTab === selectedTab) {
+                    this.app.sidebar.setSidebarWidth(0);
+                    this.selectedTab.unselectTab();
+                    this.selectedTab = null;
+                }
+                else {
+                    this.selectedTab.unselectTab();
+                    this.selectedTab = selectedTab;
+                    this.selectedTab.tabButtonNode.classList.add("selected");
+                    this.app.sidebar.setSidebarWidth(this.app.config.sidebarWidth);
+                }
             }
-            this.selectedTab = selectedTab;
+            else {
+                this.selectedTab = selectedTab;
+                this.selectedTab.tabButtonNode.classList.add("selected");
+                this.app.sidebar.setSidebarWidth(this.app.config.sidebarWidth);
+            }
+            this.app.sidebar.selectSidebar(this.selectedTab);
         });
 
         eventhandler.connect("componentsBuilt", () => {

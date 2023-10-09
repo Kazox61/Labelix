@@ -76,6 +76,17 @@ export class LabelEditor extends ContentBase {
             if (labelixImage === this.selectedLabelixImage) this.render();
         });
 
+        eventhandler.connect("sidebar.resized", () => {
+            if (!this.isHidden) {
+                this.updateWindowDimensions();
+            }
+
+            if (this.selectedLabelixImage != null) {
+                this.updateImageScaleFactor();
+            }
+            this.render();
+        });
+
         window.addEventListener("resize", () => {
             if (!this.isHidden) {
                 this.updateWindowDimensions();
@@ -242,7 +253,7 @@ export class LabelEditor extends ContentBase {
     }
 
     render() {
-        if (this.isHidden) {
+        if (this.isHidden || this.selectedLabelixImage == null) {
             return;
         }
         this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);

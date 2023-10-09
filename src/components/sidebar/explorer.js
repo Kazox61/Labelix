@@ -7,20 +7,7 @@ export class Explorer extends SidebarBase {
         this.name = "explorer";
         this.isProjectLoaded = false;
 
-        eventhandler.connect("titlebar.openFolder", async () => {
-            const result = await window.electronAPI.openDirectory();
-
-            if (result == null) {
-                return;
-            }
-
-            this.unloadProject();
-            await this.openProject(result.dirName, result.dirPath);
-
-            if (!this.isHidden) {
-                this.showProject();
-            }
-        });
+        eventhandler.connect("titlebar.openFolder", async () => await this.openFolder())
 
         eventhandler.connect("componentsBuilt", async () => {
             if (this.app.config.hasOwnProperty("lastProjectPath")) {
@@ -44,6 +31,21 @@ export class Explorer extends SidebarBase {
         this.explorerNode.appendChild(this.explorerHeaderNode);
 
         if (this.isProjectLoaded) this.showProject();
+    }
+
+    async openFolder() {
+        const result = await window.electronAPI.openDirectory();
+
+        if (result == null) {
+            return;
+        }
+
+        this.unloadProject();
+        await this.openProject(result.dirName, result.dirPath);
+
+        if (!this.isHidden) {
+            this.showProject();
+        }
     }
 
     showProject() {

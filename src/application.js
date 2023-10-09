@@ -1,4 +1,7 @@
+import "./mousetrap.js"
 import { EventHandler } from "./eventhandler.js";
+import { KeyboardShortcuts } from "./keyboardShortcuts.js";
+
 import { Titlebar } from "./components/titlebar/titlebar.js";
 import { Activitybar } from "./components/activitybar/activitybar.js";
 import { Sidebar } from "./components/sidebar/sidebar.js";
@@ -10,7 +13,7 @@ export const eventhandler = new EventHandler();
 
 export class Application {
     constructor() {
-        
+        this.keyboardShortcuts = new KeyboardShortcuts();
     }
 
     async start() {
@@ -35,6 +38,8 @@ export class Application {
         this.buildComponents();
 
         eventhandler.connect("configUpdated", () => window.electronAPI.saveConfig(this.config));
+
+        this.keyboardShortcuts.init(this);
     }
 
 

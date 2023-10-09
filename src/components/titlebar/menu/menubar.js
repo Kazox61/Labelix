@@ -7,7 +7,7 @@ export class Menubar {
             "elements": [
                 {
                     "name": "Open Folder",
-                    "shortcut": ["Ctrl", "P"],
+                    "shortcut": ["ctrl", "o"],
                     "clickEventName": "titlebar.openFolder"
                 }
             ]

@@ -218,12 +218,10 @@ export class ClassEditor extends SidebarBase {
     }
 
     selectLabelClass(labelClass) {
-        if (this.selectedLabelClass != null) {
-            this.selectedLabelClass.nameNode.classList.remove("selected");
-        }
+        if (!this.isHidden && this.selectedLabelClass != null) this.selectedLabelClass.nameNode.classList.remove("selected");
         
         this.selectedLabelClass = labelClass;
-        this.selectedLabelClass.nameNode.classList.add("selected");
+        if (!this.isHidden) this.selectedLabelClass.nameNode.classList.add("selected");
         eventhandler.emit("classEditor.labelClassSelected", this.selectedLabelClass);
     }
 }

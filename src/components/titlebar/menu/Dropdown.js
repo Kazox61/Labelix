@@ -47,7 +47,7 @@ export class Dropdown {
 
             let shortcutNode = document.createElement("p");
             shortcutNode.className = "dropdown-element-shortcut";
-            shortcutNode.innerText = element.shortcut;
+            shortcutNode.innerText = element.shortcut.join("+");
             containerNode.appendChild(shortcutNode);
         });
     }

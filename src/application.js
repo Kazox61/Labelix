@@ -66,9 +66,18 @@ export class Application {
 
         this.rootNode.style.setProperty("--sidebar-background", colorTheme.style.sidebar.background);
         this.rootNode.style.setProperty('--sidebar-resize-background', colorTheme.style.sidebar.resizeBackground);
+
         this.rootNode.style.setProperty("--explorer-project-header-background", colorTheme.style.sidebar.explorer.projectHeaderBackground);
         this.rootNode.style.setProperty("--explorer-element-selected-background", colorTheme.style.sidebar.explorer.elementSelectedBackground);
         this.rootNode.style.setProperty("--explorer-element-hover-background", colorTheme.style.sidebar.explorer.elementHoverBackground);
+
+        this.rootNode.style.setProperty("--classEditor-table-borderColor", colorTheme.style.sidebar.classEditor.tableBorderColor);
+        this.rootNode.style.setProperty("--classEditor-table-classSelectedColor", colorTheme.style.sidebar.classEditor.tableClassSelectedColor);
+        this.rootNode.style.setProperty("--classEditor-textInput-background", colorTheme.style.sidebar.classEditor.textInputBackground);
+        this.rootNode.style.setProperty("--classEditor-textInput-focusBorderColor", colorTheme.style.sidebar.classEditor.textInputFocusBorderColor);
+        this.rootNode.style.setProperty("--classEditor-colorInput-borderColor", colorTheme.style.sidebar.classEditor.colorInputBorderColor);
+        this.rootNode.style.setProperty("--classEditor-addButton-background", colorTheme.style.sidebar.classEditor.addButtonBackground);
+        this.rootNode.style.setProperty("--classEditor-addButton-hoverBackground", colorTheme.style.sidebar.classEditor.addButtonHoverBackground);
 
         this.rootNode.style.setProperty("--content-background", colorTheme.style.content.background);
 

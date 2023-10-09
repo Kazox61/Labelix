@@ -15,7 +15,7 @@
 }
 
 .classEditor table td, th {
-    border: 1px solid white; 
+    border: 1px solid var(--classEditor-table-borderColor); 
  }
  
 .classEditor table {
@@ -27,60 +27,18 @@
     border-collapse: collapse;
 }
 
-.classEditor .labelClassRow:hover {
-    cursor: pointer;
-}
- 
-.classEditor .addButton {
-    background-color: #1ac422;
-    outline: none;
-    border: none;
-    border-radius: 0;
-    padding: 2px 5px;
-}
- 
-.classEditor .addButton:hover {
-    background-color: #258a2a;
+table tr:not(thead tr) {
     cursor: pointer;
 }
  
 .classEditor table .selected {
-    background-color: rgb(206, 164, 241);
+    background-color: var(--classEditor-table-classSelectedColor);
 }
  
 .classEditor th, td {
     padding: 2px 5px;
 }
- 
-.classEditor .inputRow {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-sizing: border-box;
-}
- 
-.classEditor .inputRow-textInput {
-    margin: 5px;
-    box-sizing: border-box;
-    width: auto;
-    min-width: 20px;
-}
- 
-.classEditor .inputRow-textInput {
-    background-color: rgb(66, 64, 83);
-    outline: none;
-    border: 1px solid transparent;
-}
- 
-.classEditor .inputRow-textInput:focus { 
-    border: 1px solid #6fa2e6;
-}
 
-.classEditor .addButton:focus { 
-    border: 1px solid #6fa2e6;
-}
- 
 :where(th, td).min {
     width: 0;
     white-space: nowrap;
@@ -89,4 +47,46 @@
  
 :where(th, td):not(.min) {
     text-align: left;
+}
+ 
+.classEditor .inputRow {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 10px;
+}
+ 
+.classEditor input[type=text] {
+    box-sizing: content-box;
+    min-width: 20px;
+    display: flex;
+    border: none;
+    background-color: var(--classEditor-textInput-background);
+    outline: none;
+    flex: 1;
+}
+
+.classEditor input[type=text]:focus { 
+    border: 1px solid var(--classEditor-textInput-focusBorderColor);
+}
+ 
+.classEditor .inputRow-colorInput {
+    width: 10px;
+    height: 10px;
+    border: 1px solid var(--classEditor-colorInput-borderColor);
+    margin: 0px 10px;
+}
+
+.classEditor .addButton {
+    background-color: var(--classEditor-addButton-background);
+    outline: none;
+    border: none;
+    border-radius: 0;
+    padding: 2px 5px;
+}
+ 
+.classEditor .addButton:hover {
+    background-color: var(--classEditor-addButton-hoverBackground);
+    cursor: pointer;
 }

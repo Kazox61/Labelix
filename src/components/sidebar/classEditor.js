@@ -1,5 +1,6 @@
 import { SidebarBase } from "./sidebarBase.js";
 import { eventhandler } from "../../application.js"
+import { ColorPicker } from "../../colorPicker/colorPicker.js";
 
 class LabelClass {
     constructor(index, name, color) {
@@ -95,15 +96,17 @@ export class ClassEditor extends SidebarBase {
 
         const nameInputNode = document.createElement("input");
         nameInputNode.setAttribute('type', 'text');
-        nameInputNode.setAttribute('placeholder', 'car');
-        nameInputNode.className = "inputRow-textInput"
+        nameInputNode.setAttribute('placeholder', 'class name');
         inputRowNode.appendChild(nameInputNode);
 
-        const colorInputNode = document.createElement("input");
-        colorInputNode.setAttribute('type', 'text');
-        colorInputNode.setAttribute('placeholder', '#ff0000');
-        colorInputNode.className = "inputRow-textInput"
+        const colorInputNode = document.createElement("div");
+        colorInputNode.className = "inputRow-colorInput"
         inputRowNode.appendChild(colorInputNode);
+        this.colorPicker = new ColorPicker({
+            parent: inputRowNode, 
+            anchor: colorInputNode,
+            defaultColor: '#ff00ff'
+        });
 
         const commitInputNode = document.createElement("button");
         commitInputNode.innerText = "add";
@@ -111,7 +114,7 @@ export class ClassEditor extends SidebarBase {
         inputRowNode.appendChild(commitInputNode);
         commitInputNode.addEventListener("click", () => {
 
-            this.insertlabelClassRow(nameInputNode, colorInputNode, inputRowNode);
+            this.insertlabelClassRow(nameInputNode, inputRowNode);
         });
 
         for (let index = 0; index < this.labelClasses.length; index++) {
@@ -120,15 +123,14 @@ export class ClassEditor extends SidebarBase {
         }
     }
 
-    insertlabelClassRow(nameInputNode, colorInputNode, inputRowNode) {
+    insertlabelClassRow(nameInputNode, inputRowNode) {
         let labelClass = new LabelClass(
             this.labelClasses.length,
             nameInputNode.value,
-            colorInputNode.value
+            this.colorPicker.getRGBColorS()
         );
         labelClass.rowNode = inputRowNode;
         nameInputNode.value = "";
-        colorInputNode.value = "";
 
         this.labelClasses.push(labelClass);
 
@@ -150,7 +152,6 @@ export class ClassEditor extends SidebarBase {
 
     showLabelClass(labelClass) {
         const rowNode = this.tableBodyNode.insertRow();
-        rowNode.className = "labelClassRow";
         labelClass.rowNode = rowNode;
 
         rowNode.addEventListener("click", () => this.selectLabelClass(labelClass));

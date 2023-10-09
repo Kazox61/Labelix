@@ -15,7 +15,7 @@ export const dracula = {
                 }
             }
         },
-        activitybar: {
+        activitybar: { 
             background: "#353746",
             buttonSelectedBackground: "#3C3D51",
             buttonSVGColor: "#ACA9B4"
@@ -27,6 +27,15 @@ export const dracula = {
                 projectHeaderBackground: "#363647",
                 elementSelectedBackground: "#9a94a5",
                 elementHoverBackground: "#403c46"
+            },
+            classEditor: {
+                tableBorderColor: "#ffffff",
+                tableClassSelectedColor: "#cea4f1",
+                textInputBackground: "#424053",
+                textInputFocusBorderColor: "6fa2e6",
+                colorInputBorderColor: "ffffff",
+                addButtonBackground: "#1ac422",
+                addButtonHoverBackground: "#258a2a",
             }
         },
         content: {

@@ -33,7 +33,7 @@ export class Application {
         this.titlebar = new Titlebar(this);
         this.activitybar = new Activitybar(this);
         this.sidebar = new Sidebar(this);
-        this.mainContent = new Content(this);
+        this.content = new Content(this);
 
         this.buildComponents();
 
@@ -52,7 +52,7 @@ export class Application {
 
         this.activitybar.build(this.containerNode);
         this.sidebar.build(this.containerNode);
-        this.mainContent.build(this.containerNode);
+        this.content.build(this.containerNode);
 
         eventhandler.emit("componentsBuilt");
     }
@@ -84,7 +84,7 @@ export class Application {
         this.rootNode.style.setProperty("--classEditor-addButton-background", colorTheme.style.sidebar.classEditor.addButtonBackground);
         this.rootNode.style.setProperty("--classEditor-addButton-hoverBackground", colorTheme.style.sidebar.classEditor.addButtonHoverBackground);
 
-        this.rootNode.style.setProperty("--content-background", colorTheme.style.content.background);
+        this.rootNode.style.setProperty("--content-container-background", colorTheme.style.content.containerBackground);
 
         this.rootNode.style.setProperty("--colorPicker-background", colorTheme.style.colorPicker.background);
         this.rootNode.style.setProperty("--colorPicker-borderColor", colorTheme.style.colorPicker.borderColor);

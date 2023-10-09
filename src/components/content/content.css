@@ -1,0 +1,42 @@
+.content {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.contentbar {
+    display: flex;
+    flex-direction: row;
+    background-color: #191a21;
+    width: 100%;
+    height: 35px;
+}
+
+.contentbar .tabContainer {
+    background-color: #21222c;
+    margin-right: 1px;
+    box-sizing: content-box;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 0px 10px;
+}
+
+.contentbar .tabContainer.selected {
+    background-color: #282a36;
+    border-top: 1px solid #cea4f1;
+}
+
+.contentbar .tabName {
+    display: inline-block;
+}
+
+.contentbar .tabClose {
+    display: inline-block;
+}
+
+.contentContainer {
+    background-color: var(--content-container-background);
+    flex: 1;
+}

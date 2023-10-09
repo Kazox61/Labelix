@@ -1,4 +1,5 @@
 import { eventhandler } from "../../application.js";
+import { ContentBase } from "./contentBase.js";
 
 function getMouseButton(event) {
     const e = event || window.event;
@@ -19,14 +20,11 @@ function getMouseButton(event) {
     }
 }
 
-export class LabelEditor {
-    constructor(app, contentNode) {
-        this.app = app;
-        this.contentNode = contentNode;
+export class LabelEditor extends ContentBase {
+    constructor(app, contentContainerNode,contentbarNode) {
+        super(app, contentContainerNode, contentbarNode);
+        this.name = "LabelEditor";
 
-        this.canvasNode = document.createElement("canvas");
-        this.contentNode.appendChild(this.canvasNode);
-        this.ctx = this.canvasNode.getContext("2d");
         this.scaleX = 1;
         this.scaleY = 1;
         this.canLabel = () => this.isProjectLoaded && this.selectedLabelixImage && this.labelClasses.length > 0;
@@ -78,15 +76,24 @@ export class LabelEditor {
             if (labelixImage === this.selectedLabelixImage) this.render();
         });
 
-        this.updateWindowDimensions();
         window.addEventListener("resize", () => {
-            this.updateWindowDimensions();
+            if (!this.isHidden) {
+                this.updateWindowDimensions();
+            }
 
             if (this.selectedLabelixImage != null) {
                 this.updateImageScaleFactor();
             }
             this.render();
         });
+    }
+
+    show() {
+        super.show();
+        this.canvasNode = document.createElement("canvas");
+        this.contentContainerNode.appendChild(this.canvasNode);
+        this.ctx = this.canvasNode.getContext("2d");
+        this.updateWindowDimensions();
 
         this.canvasNode.addEventListener("wheel", (event) => {
             event.preventDefault();
@@ -193,8 +200,8 @@ export class LabelEditor {
     }
 
     updateWindowDimensions() {
-        this.canvasWidth = this.contentNode.clientWidth;
-        this.canvasHeight = this.contentNode.clientHeight;
+        this.canvasWidth = this.contentContainerNode.clientWidth;
+        this.canvasHeight = this.contentContainerNode.clientHeight;
 
         this.canvasNode.width = this.canvasWidth;
         this.canvasNode.height = this.canvasHeight;
@@ -235,6 +242,9 @@ export class LabelEditor {
     }
 
     render() {
+        if (this.isHidden) {
+            return;
+        }
         this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
         this.renderImage();
         if (this.labelClasses.length > 0) {

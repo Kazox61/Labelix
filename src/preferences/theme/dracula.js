@@ -39,7 +39,7 @@ export const dracula = {
             }
         },
         content: {
-            background: "#282a36"
+            containerBackground: "#282a36"
         },
         colorPicker: {
             background: "#5e517c",

@@ -1,4 +1,5 @@
 import { LabelEditor } from "./labelEditor.js";
+import { SettingsEditor } from "./settingsEditor.js";
 
 export class Content {
     constructor(app) {
@@ -22,6 +23,8 @@ export class Content {
 
         this.labelEditor = new LabelEditor(this.app, this.contentContainerNode, this.contentbarNode);
         this.labelEditor.buildTab();
+        this.settingsEditor = new SettingsEditor(this.app, this.contentContainerNode, this.contentbarNode);
+        this.settingsEditor.buildTab();
         this.selectContent(this.labelEditor);
     }
 

@@ -14,7 +14,7 @@
     padding: 10px;
 }
 
-.classEditor table td, th {
+.classEditor table td, .classEditor table th {
     border: 1px solid var(--classEditor-table-borderColor); 
  }
  
@@ -23,11 +23,11 @@
     border-collapse: collapse;
 }
  
-.classEditor table thead, tbody {
+.classEditor table thead, .classEditor table tbody {
     border-collapse: collapse;
 }
 
-table tr:not(thead tr) {
+.classEditor table tr:not(thead tr) {
     cursor: pointer;
 }
  
@@ -35,7 +35,7 @@ table tr:not(thead tr) {
     background-color: var(--classEditor-table-classSelectedColor);
 }
  
-.classEditor th, td {
+.classEditor th, .classEditor td {
     padding: 2px 5px;
 }
 

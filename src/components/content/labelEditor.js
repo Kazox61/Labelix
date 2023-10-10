@@ -127,6 +127,7 @@ export class LabelEditor extends ContentBase {
                 this.onRightMouseDown();
             }
         });
+        this.render();
     }
 
     onLeftMouseDown() {

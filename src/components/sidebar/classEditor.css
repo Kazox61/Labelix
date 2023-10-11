@@ -15,7 +15,7 @@
 }
 
 .classEditor table td, .classEditor table th {
-    border: 1px solid var(--classEditor-table-borderColor); 
+    border: 1px solid var(--foreground); 
  }
  
 .classEditor table {
@@ -32,7 +32,7 @@
 }
  
 .classEditor table .selected {
-    background-color: var(--classEditor-table-classSelectedColor);
+    background-color: var(--selected-background);
 }
  
 .classEditor th, .classEditor td {
@@ -61,8 +61,6 @@
     box-sizing: content-box;
     min-width: 20px;
     display: flex;
-    border: none;
-    background-color: var(--classEditor-textInput-background);
     outline: none;
     flex: 1;
 }
@@ -74,12 +72,11 @@
 .classEditor .inputRow-colorInput {
     width: 10px;
     height: 10px;
-    border: 1px solid var(--classEditor-colorInput-borderColor);
+    border: 1px solid var(--input-border);
     margin: 0px 10px;
 }
 
 .classEditor .addButton {
-    background-color: var(--classEditor-addButton-background);
     outline: none;
     border: none;
     border-radius: 0;
@@ -87,6 +84,5 @@
 }
  
 .classEditor .addButton:hover {
-    background-color: var(--classEditor-addButton-hoverBackground);
     cursor: pointer;
 }

@@ -25,3 +25,26 @@ html, body, .root {
     margin-top: var(--titlebar-height);
     height: calc(100% - var(--titlebar-height));
 }
+
+input {
+    background-color: var(--input-background);
+    color: var(--input-foreground);
+    border: 1px solid var(--input-border);
+}
+
+input::placeholder {
+    color: var(--input-placeholder-foreground);
+}
+
+input:focus {
+    border: 1px solid var(--input-focus-border);
+}
+
+button {
+    background-color: var(--button-background);
+    color: var(--button-foreground);
+}
+
+button:hover {
+    background-color: var(--button-hover-background);
+}

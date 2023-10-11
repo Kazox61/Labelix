@@ -4,7 +4,7 @@
 
 .explorer .project-header {
     padding: 2px 0 2px 12px;
-    background-color: var(--explorer-project-header-background);
+    background-color: var(--sidebar-section-header-background);
 }
 
 .explorer ul {
@@ -20,12 +20,12 @@
 }
 
 .explorer li.selected .explorer-imageNameContainer {
-    background-color: var(--explorer-element-selected-background);
+    background-color: var(--list-selected-background);
 }
 
 .explorer li:not(.selected) .explorer-imageNameContainer:hover {
     cursor: pointer;
-    background-color: var(--explorer-element-hover-background);
+    background-color: var(--list-hover-background);
 }
 
 .explorer-openIndicator {

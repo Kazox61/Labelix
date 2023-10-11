@@ -25,7 +25,7 @@ export class Application {
             }
         }
         this.rootNode = document.querySelector(".root");
-        this.updateColorTheme(dracula);
+        this.updateColorTheme(JSON.parse('{"name":"Monokai Pro","category":"dark","style":{"foreground":"#fcfcfa","titlebar":{"background":"#221f22","menubar":{"dropdown":{"buttonHoverBackground":"#4f4b5e","content":{"background":"#2d2a2e","elementHoverBackground":"#7d779c"}}}},"activitybar":{"background":"#19181a","foreground":"#5b595c","selectedForeground":"#fcfcfa"},"sidebar":{"background":"#221f22","resizeBackground":"#727072","sectionHeaderBackground":"#221f22"},"content":{"containerBackground":"#2d2a2e"},"colorPicker":{"background":"#2d2a2e","bordercolors":"#727072","markerSV":"#ffffff","markerHue":"#ffffff"},"list":{"selectedBackground":"#fcfcfa0c","hoverBackground":"#fcfcfa0c"},"selectedBackground":"#c1c0c026","input":{"background":"#403e41","foreground":"#fcfcfa","border":"#403e41","placeholderForeground":"#727072","focusBorder":"#727072"},"button":{"background":"#403e41","foreground":"#c1c0c0","hoverBackground":"#5b595c"}}}'));
 
         
         this.contextMenu = new ContextMenu();
@@ -66,23 +66,13 @@ export class Application {
         this.rootNode.style.setProperty("--dropdown-content-element-hover-background", colorTheme.style.titlebar.menubar.dropdown.content.elementHoverBackground);
 
         this.rootNode.style.setProperty("--activitybar-background", colorTheme.style.activitybar.background);
-        this.rootNode.style.setProperty("--activitybar-btn-selected-background", colorTheme.style.activitybar.buttonSelectedBackground);
-        this.rootNode.style.setProperty("--activitybar-btn-svg-color", colorTheme.style.activitybar.buttonSVGColor);
+        this.rootNode.style.setProperty("--activitybar-foreground", colorTheme.style.activitybar.foreground);
+        this.rootNode.style.setProperty("--activitybar-selected-background", colorTheme.style.activitybar.selectedBackground);
+        this.rootNode.style.setProperty("--activitybar-selected-foreground", colorTheme.style.activitybar.selectedForeground);
 
         this.rootNode.style.setProperty("--sidebar-background", colorTheme.style.sidebar.background);
         this.rootNode.style.setProperty('--sidebar-resize-background', colorTheme.style.sidebar.resizeBackground);
-
-        this.rootNode.style.setProperty("--explorer-project-header-background", colorTheme.style.sidebar.explorer.projectHeaderBackground);
-        this.rootNode.style.setProperty("--explorer-element-selected-background", colorTheme.style.sidebar.explorer.elementSelectedBackground);
-        this.rootNode.style.setProperty("--explorer-element-hover-background", colorTheme.style.sidebar.explorer.elementHoverBackground);
-
-        this.rootNode.style.setProperty("--classEditor-table-borderColor", colorTheme.style.sidebar.classEditor.tableBorderColor);
-        this.rootNode.style.setProperty("--classEditor-table-classSelectedColor", colorTheme.style.sidebar.classEditor.tableClassSelectedColor);
-        this.rootNode.style.setProperty("--classEditor-textInput-background", colorTheme.style.sidebar.classEditor.textInputBackground);
-        this.rootNode.style.setProperty("--classEditor-textInput-focusBorderColor", colorTheme.style.sidebar.classEditor.textInputFocusBorderColor);
-        this.rootNode.style.setProperty("--classEditor-colorInput-borderColor", colorTheme.style.sidebar.classEditor.colorInputBorderColor);
-        this.rootNode.style.setProperty("--classEditor-addButton-background", colorTheme.style.sidebar.classEditor.addButtonBackground);
-        this.rootNode.style.setProperty("--classEditor-addButton-hoverBackground", colorTheme.style.sidebar.classEditor.addButtonHoverBackground);
+        this.rootNode.style.setProperty('--sidebar-section-header-background', colorTheme.style.sidebar.sectionHeaderBackground);
 
         this.rootNode.style.setProperty("--content-container-background", colorTheme.style.content.containerBackground);
 
@@ -90,7 +80,20 @@ export class Application {
         this.rootNode.style.setProperty("--colorPicker-borderColor", colorTheme.style.colorPicker.borderColor);
         this.rootNode.style.setProperty("--colorPicker-markerSV", colorTheme.style.colorPicker.markerSV);
         this.rootNode.style.setProperty("--colorPicker-markerHue", colorTheme.style.colorPicker.markerHue);
-        this.rootNode.style.setProperty("--colorPicker-textInput-background", colorTheme.style.colorPicker.textInputBackground);
-        this.rootNode.style.setProperty("--colorPicker-textInput-focusBorderColor", colorTheme.style.colorPicker.textInputFocusBorderColor);
+
+        this.rootNode.style.setProperty("--list-selected-background", colorTheme.style.list.selectedBackground);
+        this.rootNode.style.setProperty("--list-hover-background", colorTheme.style.list.hoverBackground);
+
+        this.rootNode.style.setProperty("--selected-background", colorTheme.style.selectedBackground);
+
+        this.rootNode.style.setProperty("--input-background", colorTheme.style.input.background);
+        this.rootNode.style.setProperty("--input-foreground", colorTheme.style.input.foreground);
+        this.rootNode.style.setProperty("--input-border", colorTheme.style.input.border);
+        this.rootNode.style.setProperty("--input-placeholder-foreground", colorTheme.style.input.placeholderForeground);
+        this.rootNode.style.setProperty("--input-focus-border", colorTheme.style.input.focusBorder);
+
+        this.rootNode.style.setProperty("--button-background", colorTheme.style.button.background);
+        this.rootNode.style.setProperty("--button-foreground", colorTheme.style.button.foreground);
+        this.rootNode.style.setProperty("--button-hover-background", colorTheme.style.button.hoverBackground);
     }
 }

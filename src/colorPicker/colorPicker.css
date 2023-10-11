@@ -68,14 +68,8 @@
     margin: 5px;
     box-sizing: border-box;
     width: auto;
-    min-width: 20px;    
-    background-color: var(--colorPicker-textInput-background);
+    min-width: 20px;
     outline: none;
-    border: 1px solid transparent;
     width: 120px;
     text-align: center;
-}
-
-.colorPicker input[type=text]:focus { 
-    border: 1px solid var(--colorPicker-textInput-focusBorderColor);
 }

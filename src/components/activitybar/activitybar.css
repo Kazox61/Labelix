@@ -12,19 +12,19 @@
     outline: none;
     border: none;
     background-color: transparent;
-    fill: var(--activitybar-btn-svg-color);
-    stroke: var(--activitybar-btn-svg-color);
+    fill: var(--activitybar-foreground);
+    stroke: var(--activitybar-foreground);
 }
 
 .activitybar-btn:hover {
-    fill: white;
-    stroke: white;
+    fill: var(--activitybar-selectedForeground);
+    stroke: var(--activitybar-selectedForeground);
 }
 
 .activitybar-btn.selected {
-    background-color: var(--activitybar-btn-selected-background);
-    fill: white;
-    stroke: white;
+    background-color: var(--activitybar-selected-background);
+    fill: var(--activitybar-selectedForeground);
+    stroke: var(--activitybar-selectedForeground);
 }
 
 .activitybar-btn-svg {

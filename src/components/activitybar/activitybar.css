@@ -6,28 +6,34 @@
     flex-direction: column;
 }
 
-.activitybar-btn {
+.activitybar .action-item {
     height: var(--activitybar-width);
     width: var(--activitybar-width);
-    outline: none;
-    border: none;
-    background-color: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.activitybar .action-label {
+    width: calc(var(--activitybar-width) - 25px);
+    height: calc(var(--activitybar-width) - 25px);
+}
+
+.activitybar .action-item > * {
     fill: var(--activitybar-foreground);
     stroke: var(--activitybar-foreground);
 }
 
-.activitybar-btn:hover {
-    fill: var(--activitybar-selectedForeground);
-    stroke: var(--activitybar-selectedForeground);
+.activitybar .action-item:hover > * {
+    fill: var(--activitybar-selected-foreground);
+    stroke: var(--activitybar-selected-foreground);
 }
 
-.activitybar-btn.selected {
+.activitybar .action-item.selected {
     background-color: var(--activitybar-selected-background);
-    fill: var(--activitybar-selectedForeground);
-    stroke: var(--activitybar-selectedForeground);
 }
 
-.activitybar-btn-svg {
-    width: calc(var(--activitybar-width) - 25px);
-    height: calc(var(--activitybar-width) - 25px);
+.activitybar .action-item.selected > * {
+    fill: var(--activitybar-selected-foreground);
+    stroke: var(--activitybar-selected-foreground);
 }

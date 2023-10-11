@@ -9,8 +9,8 @@ export class Tab {
     build(activitybarNode) {
         this.activitybarNode = activitybarNode;
 
-        this.tabButtonNode = document.createElement("button");
-        this.tabButtonNode.className = "activitybar-btn";
+        this.tabButtonNode = document.createElement("div");
+        this.tabButtonNode.className = "action-item";
         this.tabButtonNode.innerHTML = this.svg;
         this.activitybarNode.appendChild(this.tabButtonNode);
         this.tabButtonNode.addEventListener("click", () => {

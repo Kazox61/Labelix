@@ -57,7 +57,6 @@ export class Application {
     }
 
     updateColorTheme(colorTheme) {
-        console.log(colorTheme.name);
         this.rootNode.style.setProperty("--foreground", colorTheme.style.foreground);
         
         this.rootNode.style.setProperty("--titlebar-background", colorTheme.style.titlebar.background);

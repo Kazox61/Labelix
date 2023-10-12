@@ -55,9 +55,9 @@ function parseTheme(vsCodeTheme) {
             },
             colorPicker: {
                 background: vsCodeTheme.colors["editor.background"],
-                border: vsCodeTheme.colors["titleBar.border"],
-                markerSV: "#ffffff",
-                markerHue: "#ffffff"
+                border: vsCodeTheme.colors["tab.border"],
+                markerSV: vsCodeTheme.colors.foreground,
+                markerHue: vsCodeTheme.colors.foreground
             },
             contextMenu: {
                 background: vsCodeTheme.colors["dropdown.background"],

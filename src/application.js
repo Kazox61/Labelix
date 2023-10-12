@@ -6,7 +6,6 @@ import { Titlebar } from "./components/titlebar/titlebar.js";
 import { Activitybar } from "./components/activitybar/activitybar.js";
 import { Sidebar } from "./components/sidebar/sidebar.js";
 import { Content } from "./components/content/content.js";
-import { dracula } from "./preferences/theme/dracula.js";
 import { ContextMenu } from "./contextMenu/contextMenu.js";
 
 export const eventhandler = new EventHandler();

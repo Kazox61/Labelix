@@ -1,6 +1,60 @@
 import { ContentBase } from "./contentBase.js";
 
 
+class Dropdown {
+    constructor(parent, options, selectedIndex=0) {
+        this.parent = parent;
+        this.options = options;
+        this.selectedIndex = selectedIndex;
+        this.isOpened = false;
+        this.build();
+    }
+
+    build() {
+        this.dropdownNode = document.createElement("div");
+        this.dropdownNode.className = "dropdown";
+        this.parent.appendChild(this.dropdownNode);
+
+        this.selectionNode = document.createElement("div");
+        this.selectionNode.className = "dropdown-selection";
+        this.selectionNode.innerText = this.options[this.selectedIndex];
+        this.dropdownNode.appendChild(this.selectionNode);
+        this.selectionNode.addEventListener("click", () => {
+            if (!this.isOpened) {
+                this.isOpened = true;
+                this.optionContainerNode.style.display = "block";
+            }
+            else {
+                this.isOpened = false;
+                this.optionContainerNode.style.display = "none";
+            }
+        });
+
+        this.optionContainerNode = document.createElement("ul");
+        this.optionContainerNode.className = "dropdown-option-container";
+        this.dropdownNode.appendChild(this.optionContainerNode);
+        
+        this.options.forEach((option, index) => {
+            const optionNode = document.createElement("li");
+            optionNode.className = "dropdown-option";
+            optionNode.innerText = option;
+            this.optionContainerNode.appendChild(optionNode);
+            optionNode.addEventListener("click", () => {
+                this.selectionNode.innerText = option;
+                this.callback(option);
+            })
+        });
+
+        window.addEventListener("click", (event) => {
+            if (this.isOpened && event.target != this.selectionNode) {
+                this.isOpened = false;
+                this.optionContainerNode.style.display = "none";
+            }
+        })
+    }
+}
+
+
 export class SettingsEditor extends ContentBase {
     constructor(app, contentContainerNode, contentbarNode) {
         super(app, contentContainerNode, contentbarNode);
@@ -67,6 +121,20 @@ export class SettingsEditor extends ContentBase {
         themeDescriptionNode.innerText = "You can select a theme to make the look of the UI different."
         themeDescriptionNode.className = "field-description";
         fieldThemeNode.appendChild(themeDescriptionNode);
+
+        const themeOptions = [];
+        this.app.themes.forEach(theme => {
+            themeOptions.push(theme.name);
+        });
+        const themeDropdown = new Dropdown(fieldThemeNode, themeOptions);
+        themeDropdown.callback = (option) => {
+            for (const theme of this.app.themes) {
+                if (theme.name === option) {
+                    this.app.updateColorTheme(theme);
+                    return;
+                }
+            }
+        }
     }
 
     createKeyboardSection() {

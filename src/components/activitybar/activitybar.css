@@ -1,4 +1,5 @@
 .activitybar {
+    border-right: 1px solid var(--activitybar-border);
     height: 100%;
     width: var(--activitybar-width);
     background-color: var(--activitybar-background);
@@ -7,6 +8,7 @@
 }
 
 .activitybar .action-item {
+    border-left: 2px solid transparent;
     height: var(--activitybar-width);
     width: var(--activitybar-width);
     display: flex;
@@ -30,6 +32,7 @@
 }
 
 .activitybar .action-item.selected {
+    border-left: 2px solid var(--activitybar-selected-border);
     background-color: var(--activitybar-selected-background);
 }
 

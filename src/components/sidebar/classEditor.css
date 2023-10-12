@@ -64,10 +64,6 @@
     outline: none;
     flex: 1;
 }
-
-.classEditor input[type=text]:focus { 
-    border: 1px solid var(--classEditor-textInput-focusBorderColor);
-}
  
 .classEditor .inputRow-colorInput {
     width: 10px;

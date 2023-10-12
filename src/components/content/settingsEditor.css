@@ -93,4 +93,46 @@
     background-color: #4e5163;
 }
 
+.settingsEditor .dropdown {
+    display: inline-block;
+    min-width: 150px;
+    position: relative;
+}
+
+.settingsEditor .dropdown .dropdown-selection {
+    background-color: var(--content-settings-dropdown-background);
+    box-sizing: border-box;
+    position: relative;
+    border: 1px solid var(--content-settings-dropdown-border);
+    width: 100%;
+    padding: 1px 5px;
+    border-radius: 2px;
+}
+
+.settingsEditor .dropdown .dropdown-selection:hover {
+    cursor: pointer;
+}
+
+.settingsEditor .dropdown .dropdown-option-container {
+    background-color: var(--content-settings-dropdown-background);
+    box-sizing: border-box;
+    border: 1px solid var(--content-settings-dropdown-border);
+    position: absolute;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    z-index: 1;
+    width: 100%;
+    border-radius: 2px;
+    display: none;
+}
+
+.settingsEditor .dropdown .dropdown-option {
+    padding: 1px 5px;
+}
+
+.settingsEditor .dropdown .dropdown-option:hover {
+    cursor: pointer;
+    background-color: var(--content-settings-dropdown-option-hover-background);
+}
 

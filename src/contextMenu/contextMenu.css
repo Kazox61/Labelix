@@ -3,7 +3,7 @@
     position: absolute;
     left: var(--contextMenuPositionX);
     top: var(--contextMenuPositionY);
-    background-color: #353746;
+    background-color: var(--contextMenu-background);
     min-width: 100px;
     padding: 2px;
 }
@@ -19,7 +19,7 @@
 }
 
 .contextMenu li:hover {
-    background-color: #45475a;
+    background-color: var(--contextMenu-hoverBackground);
     border-radius: 5px;
 }
 

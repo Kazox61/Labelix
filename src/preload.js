@@ -8,5 +8,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
     writeLabels: (imagePath, labels) => ipcRenderer.invoke('fs:writeLabels', imagePath, labels),
     loadProject: (path) => ipcRenderer.invoke('fs:loadProject', path),
     saveProject: (path, labelTypes) => ipcRenderer.invoke('fs:saveProject', path, labelTypes),
+    getThemes: () => ipcRenderer.invoke('fs:getThemes')
 })
 

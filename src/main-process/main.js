@@ -1,7 +1,8 @@
 const { app, BrowserWindow, dialog, ipcMain } = require('electron')
 const path = require('path');
 const fs = require('fs');
-const { loadProject } = require('./project.js')
+const { loadProject } = require('./project.js');
+const { parseTheme } = require('./vsCodeThemeParser.js');
 
 function createWindow () {
     const win = new BrowserWindow({
@@ -95,6 +96,17 @@ app.whenReady().then(() => {
         const labelTypePath = path.join(rootPath, "labelClasses.json");
 
         await fs.promises.writeFile(labelTypePath, JSON.stringify(labelClasses));
+    });
+
+    ipcMain.handle("fs:getThemes", async () => {
+        const themesPath = "resources/vsCodeThemes"
+        const files = await fs.promises.readdir(themesPath);
+        const themes = [];
+        for (const fileName of files) {
+            themeString = (await fs.promises.readFile(path.join(themesPath, fileName))).toString();
+            themes.push(parseTheme(JSON.parse(themeString)));
+        }
+        return themes;
     });
 })
 

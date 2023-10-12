@@ -2,6 +2,7 @@
     width: var(--sidebar-width);
     height: 100%;
     background-color: var(--sidebar-background);
+    border-right: 1px solid var(--sidebar-border);
 }
 
 .sidebarResize {
@@ -11,6 +12,10 @@
     height: 100%;
     background-color: transparent;
     z-index: 1;
+}
+
+.sidebar.hidden {
+    border-right: none;
 }
 
 .sidebarResize.selected {

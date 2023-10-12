@@ -119,7 +119,6 @@ export class ColorPicker {
         document.addEventListener("mousemove", (event) => {
             event.preventDefault();
             if (this.isMouseDownSVMap) {
-                //TODO: update also in mousedown, so extract the code to a separate function
                 this.updateSV(event);
 
                 this.updateColor();
@@ -147,6 +146,7 @@ export class ColorPicker {
         const colorPickerBounds = this.colorPickerNode.getBoundingClientRect();
         const hueMapBounds = this.hueMapNode.getBoundingClientRect();
         // not sure why we need here the -1, but it has a offset without it?!
+        // i think i found the problem, its the border of the colorPicker, its 1px some themesm has it, others not
         this.hueMapSlider.style.left = hueMapBounds.left -1- colorPickerBounds.left + "px";
 
         this.updateColor();

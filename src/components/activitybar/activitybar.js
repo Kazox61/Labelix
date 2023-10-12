@@ -30,6 +30,7 @@ export class Activitybar {
         eventhandler.connect("activitybar.tabSelected", (selectedTab) => {
             if (this.selectedTab != null) {
                 if (this.selectedTab === selectedTab) {
+                    this.app.sidebar.sidebarNode.classList.add("hidden");
                     this.app.sidebar.setSidebarWidth(0);
                     this.selectedTab.unselectTab();
                     this.selectedTab = null;
@@ -39,12 +40,14 @@ export class Activitybar {
                     this.selectedTab = selectedTab;
                     this.selectedTab.tabButtonNode.classList.add("selected");
                     this.app.sidebar.setSidebarWidth(this.app.config.sidebarWidth);
+                    this.app.sidebar.sidebarNode.classList.remove("hidden");
                 }
             }
             else {
                 this.selectedTab = selectedTab;
                 this.selectedTab.tabButtonNode.classList.add("selected");
                 this.app.sidebar.setSidebarWidth(this.app.config.sidebarWidth);
+                this.app.sidebar.sidebarNode.classList.remove("hidden");
             }
             this.app.sidebar.selectSidebar(this.selectedTab);
         });

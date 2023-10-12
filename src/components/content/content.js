@@ -26,6 +26,10 @@ export class Content {
         this.settingsEditor = new SettingsEditor(this.app, this.contentContainerNode, this.contentbarNode);
         this.settingsEditor.buildTab();
         this.selectContent(this.labelEditor);
+        
+        const fillNode = document.createElement("div");
+        fillNode.className = "fill";
+        this.contentbarNode.appendChild(fillNode);
     }
 
     selectContent(content) {

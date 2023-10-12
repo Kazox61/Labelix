@@ -9,15 +9,23 @@
 .contentbar {
     display: flex;
     flex-direction: row;
-    background-color: #191a21;
+    background-color: var(--content-tab-background);
     width: 100%;
     height: 35px;
 }
 
+.contentbar .fill {
+    flex: 1;
+    height: 100%;
+    border-bottom: 1px solid var(--content-tab-border);
+}
+
 .contentbar .tabContainer {
-    background-color: #21222c;
-    margin-right: 1px;
-    box-sizing: content-box;
+    height: 100%;
+    background-color: var(--content-tab-background);
+    border-right: 1px solid var(--content-tab-border);
+    border-top: 1px solid transparent;
+    border-bottom: 1px solid var(--content-tab-border);
     display: flex;
     align-items: center;
     justify-content: space-around;
@@ -25,12 +33,22 @@
 }
 
 .contentbar .tabContainer.selected {
-    background-color: #282a36;
-    border-top: 1px solid #cea4f1;
+    background-color: var(--content-tab-selected-background);
+    border-top: 1px solid var(--content-tab-selected-border-top);
+    border-bottom: 1px solid transparent;
 }
 
-.contentbar .tabName {
+.contentbar .tabContainer:hover:not(.selected) {
+    background-color: var(--content-tab-hover-background);
+}
+
+.contentbar .tabContainer .tabName {
     display: inline-block;
+    color: var(--content-tab-foreground);
+}
+
+.contentbar .tabContainer.selected .tabName {
+    color: var(--content-tab-selected-foreground);
 }
 
 .contentbar .tabClose {

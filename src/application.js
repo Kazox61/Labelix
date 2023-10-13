@@ -25,7 +25,7 @@ export class Application {
         }
         this.rootNode = document.querySelector(".root");
         this.themes = await window.electronAPI.getThemes();
-        this.updateColorTheme(this.themes[0]);
+        this.updateColorTheme(this.getConfigTheme());
         
         this.contextMenu = new ContextMenu();
 
@@ -56,7 +56,18 @@ export class Application {
         eventhandler.emit("componentsBuilt");
     }
 
+    getConfigTheme() {
+        for (const theme of this.themes) {
+            if (this.config.theme === theme.name) return theme;
+        }
+        this.config.theme = this.themes[0].name;
+        eventhandler.emit("configUpdated");
+        return this.themes[0];
+    }
+
     updateColorTheme(colorTheme) {
+        this.config.theme = colorTheme.name;
+        eventhandler.emit("configUpdated");
         this.rootNode.style.setProperty("--foreground", colorTheme.style.foreground);
         
         this.rootNode.style.setProperty("--titlebar-background", colorTheme.style.titlebar.background);
@@ -89,6 +100,9 @@ export class Application {
         this.rootNode.style.setProperty("--content-tab-selected-border-top", colorTheme.style.content.tab.selectedBorderTop);
         this.rootNode.style.setProperty("--content-tab-selected-background", colorTheme.style.content.tab.selectedBackground);
 
+        this.rootNode.style.setProperty("--content-settings-navbar-border", colorTheme.style.content.settings.navbarBorder);
+        this.rootNode.style.setProperty("--content-settings-field-hover-background", colorTheme.style.content.settings.fieldHoverBackground);
+        this.rootNode.style.setProperty("--content-settings-table-striped-background", colorTheme.style.content.settings.tableStripedBackground);
         this.rootNode.style.setProperty("--content-settings-dropdown-background", colorTheme.style.content.settings.dropdownBackground);
         this.rootNode.style.setProperty("--content-settings-dropdown-border", colorTheme.style.content.settings.dropdownBorder);
         this.rootNode.style.setProperty("--content-settings-dropdown-foreground", colorTheme.style.content.settings.dropdownForeground);

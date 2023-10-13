@@ -99,7 +99,7 @@ app.whenReady().then(() => {
     });
 
     ipcMain.handle("fs:getThemes", async () => {
-        const themesPath = "resources/vsCodeThemes"
+        const themesPath = path.join(__dirname, "../../resources/vsCodeThemes")
         const files = await fs.promises.readdir(themesPath);
         const themes = [];
         for (const fileName of files) {

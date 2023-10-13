@@ -47,6 +47,9 @@ function parseTheme(vsCodeTheme) {
                     selectedBackground: vsCodeTheme.colors["tab.activeBackground"]
                 },
                 settings: {
+                    navbarBorder: vsCodeTheme.colors["tab.border"],
+                    fieldHoverBackground: vsCodeTheme.colors["list.hoverBackground"] || "#2a2d2e",
+                    tableStripedBackground: vsCodeTheme.colors["list.activeSelectionBackground"] || "#37373d",
                     dropdownBackground: vsCodeTheme.colors["settings.dropdownBackground"],
                     dropdownBorder: vsCodeTheme.colors["settings.dropdownBorder"],
                     dropdownForeground: vsCodeTheme.colors["settings.dropdownForeground"] || vsCodeTheme.colors.foreground,

@@ -1,5 +1,5 @@
 import { ContentBase } from "./contentBase.js";
-
+import { eventhandler } from "../../application.js";
 
 class Dropdown {
     constructor(parent, options, selectedIndex=0) {
@@ -179,16 +179,24 @@ export class SettingsEditor extends ContentBase {
         const tableBodyNode = document.createElement("tbody");
         tableNode.appendChild(tableBodyNode);
 
-        const rowOpenFolderNode = tableBodyNode.insertRow();
+        this.createKeyboardTableRow(tableBodyNode, "Open Folder/Project", "ctrl+o");
+        this.createKeyboardTableRow(tableBodyNode, "previous Image", "a || ←");
+        this.createKeyboardTableRow(tableBodyNode, "next Image", "d || →");
+        this.createKeyboardTableRow(tableBodyNode, "previous Label Class", "w || ↑");
+        this.createKeyboardTableRow(tableBodyNode, "next Label Class", "s || ↓");
 
-        const tdCommandOpenFolder = document.createElement("td");
-        tdCommandOpenFolder.innerText = "Open Folder/Project";
-        rowOpenFolderNode.appendChild(tdCommandOpenFolder);
+    }
 
-        const tdKeybindingOpenFolder = document.createElement("td");
-        tdKeybindingOpenFolder.innerText = "ctrl+o"
-        rowOpenFolderNode.appendChild(tdKeybindingOpenFolder);
+    createKeyboardTableRow(tableBodyNode, command, keybinding) {
+        const rowNode = tableBodyNode.insertRow();
 
+        const tdCommand = document.createElement("td");
+        tdCommand.innerText = command
+        rowNode.appendChild(tdCommand);
+
+        const tdKeybinding = document.createElement("td");
+        tdKeybinding.innerText = keybinding
+        rowNode.appendChild(tdKeybinding);
     }
 
     moveToSection(section) {

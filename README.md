@@ -7,7 +7,9 @@ Labelix is a labeling tool for creating Yolo datasets. At the moment it's only t
 1. Download the latest installer exe from the releases page
 2. Install the app
 3. Open the folder where your images are located
+   ![image](resources/images/openFolder.png)
 4. Create label classes
+   ![image](resources/images/createClass.png)
 5. Start labeling your images
 
 ## Features

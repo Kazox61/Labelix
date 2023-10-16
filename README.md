@@ -16,3 +16,4 @@ Labelix is a labeling tool for creating Yolo datasets. At the moment it's only t
 ## ToDo
 * more settings to configure (e.g keyboard shortcuts, auto save, ...)
 * save label boxes in a different path then input images
+* remote projects for teams

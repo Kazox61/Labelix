@@ -1,6 +1,6 @@
 # Labelix
 
-Labelix is a labeling tool for creating Yolo datasets. At the moment it's only tested on Windows 10, where there is a installer available for the latest version. It's built on top of Electron, that s why you can run it also on Linux and MacOS by cloning the repo and installing the npm dependecies.
+Labelix is a labeling tool for creating Yolo datasets. At the moment it's only tested on Windows 10, where there is a installer available for the latest version. It's built on top of Electron, that s why you can run it also on Linux and MacOS by cloning the repo and installing the npm dependecies and build it yourself or run in dev mode.
 ![image](resources/images/label.png)
 
 ## Tutorial

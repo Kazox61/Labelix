@@ -1,26 +1,32 @@
 {
   "name": "labelix",
+  "productName": "Labelix",
   "version": "1.0.0",
   "description": "No description yet",
   "main": "src/main-process/main.js",
   "scripts": {
-    "start": "electron-forge start",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "package": "electron-forge package",
-    "make": "electron-forge make"
+    "start": "electron .",
+    "build": "electron-builder"
+  },
+  "build": {
+    "appId": "Labelix",
+    "win": {
+      "target": ["nsis"],
+      "icon": "resources/icons/icon.ico",
+      "requestedExecutionLevel": "requireAdministrator"
+    },
+    "nsis": {
+      "installerIcon": "resources/icons/icon.ico",
+      "uninstallerIcon": "resources/icons/icon.ico",
+      "uninstallDisplayName": "Labelix",
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
   },
   "author": "Kazox",
   "license": "ISC",
   "devDependencies": {
-    "@electron-forge/cli": "^6.4.2",
-    "@electron-forge/maker-deb": "^6.4.2",
-    "@electron-forge/maker-rpm": "^6.4.2",
-    "@electron-forge/maker-squirrel": "^6.4.2",
-    "@electron-forge/maker-zip": "^6.4.2",
-    "@electron-forge/plugin-auto-unpack-natives": "^6.4.2",
-    "electron": "^26.2.1"
-  },
-  "dependencies": {
-    "electron-squirrel-startup": "^1.0.0"
+    "electron": "^26.2.1",
+    "electron-builder": "^24.6.4"
   }
 }

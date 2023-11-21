@@ -15,7 +15,7 @@
         "nsis"
       ],
       "icon": "resources/icons/icon.ico",
-      "requestedExecutionLevel": "requireAdministrator"
+      "requestedExecutionLevel": "asInvoker"
     },
     "nsis": {
       "installerIcon": "resources/icons/icon.ico",

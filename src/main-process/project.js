@@ -84,7 +84,7 @@ function parseLabelBoxes(boxes) {
 
         if (!isValid) return;
 
-        const isInImageBounds = x >= 0 && x <= 1 && y >= 0 && y <= 1 && (x-w) >= 0 && (x+w) <= 1 && (y-h) >= 0 && (y+h) <= 1;
+        const isInImageBounds = x >= 0 && x <= 1 && y >= 0 && y <= 1 && (x-w/2) >= 0 && (x+w/2) <= 1 && (y-h/2) >= 0 && (y+h/2) <= 1;
         if (!isInImageBounds) return;
 
         parsedData.push([labelClassIndex, x, y, w, h]);

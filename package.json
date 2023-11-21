@@ -11,7 +11,9 @@
   "build": {
     "appId": "Labelix",
     "win": {
-      "target": ["nsis"],
+      "target": [
+        "nsis"
+      ],
       "icon": "resources/icons/icon.ico",
       "requestedExecutionLevel": "requireAdministrator"
     },
@@ -28,5 +30,8 @@
   "devDependencies": {
     "electron": "^26.2.1",
     "electron-builder": "^24.6.4"
+  },
+  "dependencies": {
+    "javascript-natural-sort": "^0.7.1"
   }
 }

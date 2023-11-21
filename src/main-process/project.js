@@ -1,5 +1,6 @@
 const path = require('path');
 const fs = require('fs');
+const naturalSort = require('javascript-natural-sort')
 
 async function loadProject(rootPath) {
     const projectPath = path.join(rootPath, ".labelix");
@@ -28,6 +29,8 @@ async function getImages(dirPath) {
         const files = await fs.promises.readdir(dirPath);
         const data = [];
     
+        files.sort(naturalSort)
+
         for (const fileName of files) {
             const filePath = path.join(dirPath, fileName);
             const suffix = path.extname(fileName);

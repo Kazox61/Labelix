@@ -310,8 +310,8 @@ export class LabelEditor extends ContentBase {
 
     fromLabelNormalized(labelBoxNormalized, canvasImage) {
             const [labelClassIndex, x, y, w, h] = labelBoxNormalized;
-            const width = w * canvasImage.width * 2;
-            const height = h * canvasImage.height * 2;
+            const width = w * canvasImage.width;
+            const height = h * canvasImage.height;
 
             const sx = (x * canvasImage.width) - canvasImage.width / 2 - width / 2;
             const sy = (y * canvasImage.height) - canvasImage.height / 2 - height / 2;
@@ -329,8 +329,8 @@ export class LabelEditor extends ContentBase {
 
         const x = (sx + width / 2 + canvasImage.width / 2) / canvasImage.width;
         const y = (sy + height / 2 + canvasImage.height / 2) / canvasImage.height;
-        const w = width / 2 / canvasImage.width;
-        const h = height / 2 / canvasImage.height;
+        const w = width / canvasImage.width;
+        const h = height / canvasImage.height;
         return [labelBox[0], x, y, w, h];
     }
 }

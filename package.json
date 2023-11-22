@@ -1,7 +1,7 @@
 {
   "name": "labelix",
   "productName": "Labelix",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "No description yet",
   "main": "src/main-process/main.js",
   "scripts": {

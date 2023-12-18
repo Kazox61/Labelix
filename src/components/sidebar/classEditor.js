@@ -113,8 +113,12 @@ export class ClassEditor extends SidebarBase {
         commitInputNode.className = "addButton";
         inputRowNode.appendChild(commitInputNode);
         commitInputNode.addEventListener("click", () => {
-
             this.insertlabelClassRow(nameInputNode, inputRowNode);
+            var r = Math.floor(Math.random() * 256);
+            var g = Math.floor(Math.random() * 256);
+            var b = Math.floor(Math.random() * 256);
+            this.colorPicker.configure({defaultColor: `rgb(${r},${g},${b})`});
+            this.colorPicker.updateColor();
         });
 
         for (let index = 0; index < this.labelClasses.length; index++) {

@@ -127,6 +127,11 @@ export class LabelEditor extends ContentBase {
                 this.onRightMouseDown();
             }
         });
+
+        this.canvasNode.addEventListener("mouseleave", (event) => {
+            this.render();
+        });
+
         this.render();
     }
 
@@ -173,6 +178,7 @@ export class LabelEditor extends ContentBase {
         }
 
         this.render();
+        this.renderCrossHair();
 
         if (this.currentLabelPositions.length === 2) {
             const [startX, startY] = this.worldToScreen(this.currentLabelPositions[0], this.currentLabelPositions[1]);
@@ -210,9 +216,18 @@ export class LabelEditor extends ContentBase {
         this.offsetY += mouseWorldYBeforeZoom - mouseWorldYAfterZoom;
         
         this.render();
+        this.renderCrossHair();
     }
 
     updateWindowDimensions() {
+        if (this.canvasWidth !== undefined && this.canvasHeight !== undefined) {
+            if (this.offsetX !== 0) {
+                this.offsetX = this.offsetX / this.canvasWidth * this.contentContainerNode.clientWidth;
+            }
+            if (this.offsetY !== 0) {
+                this.offsetY = this.offsetY / this.canvasHeight * this.contentContainerNode.clientHeight;
+            }
+        }
         this.canvasWidth = this.contentContainerNode.clientWidth;
         this.canvasHeight = this.contentContainerNode.clientHeight;
 
@@ -221,8 +236,6 @@ export class LabelEditor extends ContentBase {
 
         this.canvasOffsetX = -this.canvasWidth/2;
         this.canvasOffsetY = -this.canvasHeight/2;
-        this.offsetX = 0;
-        this.offsetY = 0;
     }
 
     updateImageScaleFactor() {
@@ -283,6 +296,22 @@ export class LabelEditor extends ContentBase {
             this.ctx.lineWidth = 2;
             this.ctx.strokeRect(screenX1, screenY1, screenX2-screenX1, screenY2-screenY1);
         });
+    }
+
+    renderCrossHair() {
+        this.ctx.beginPath();
+        this.ctx.moveTo(0, this.mouseY);
+        this.ctx.lineTo(this.canvasWidth, this.mouseY);
+        this.ctx.lineWidth = 3;
+        this.ctx.strokeStyle = "red";
+        this.ctx.stroke();
+
+        this.ctx.beginPath();
+        this.ctx.moveTo(this.mouseX, 0);
+        this.ctx.lineTo(this.mouseX, this.canvasHeight);
+        this.ctx.lineWidth = 3;
+        this.ctx.strokeStyle = "red";
+        this.ctx.stroke();
     }
 
     addLabelBox(labelPositions) {

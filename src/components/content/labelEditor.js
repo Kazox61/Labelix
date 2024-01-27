@@ -65,10 +65,13 @@ export class LabelEditor extends ContentBase {
 
             this.offsetY = 0;
             this.render();
+
+            this.previewNode.innerText = "Active: " + (this.selectedLabelClass === undefined ? "" : this.selectedLabelClass.name) + " | " + this.selectedLabelixImage.name
         });
 
         eventhandler.connect("classEditor.labelClassSelected", (labelClass) => {
             this.selectedLabelClass = labelClass;
+            this.previewNode.innerText = "Active: " + this.selectedLabelClass.name + " | " + (this.selectedLabelixImage === undefined ? "" : this.selectedLabelixImage.name)
         });
 
         eventhandler.connect("labelBoxesModified", (labelixImage) => {
@@ -103,6 +106,11 @@ export class LabelEditor extends ContentBase {
         super.show();
         this.canvasNode = document.createElement("canvas");
         this.contentContainerNode.appendChild(this.canvasNode);
+
+        this.previewNode = document.createElement("div");
+        this.previewNode.className = "preview";
+        this.contentContainerNode.appendChild(this.previewNode);
+
         this.ctx = this.canvasNode.getContext("2d");
         this.updateWindowDimensions();
 

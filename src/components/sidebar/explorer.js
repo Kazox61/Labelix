@@ -140,6 +140,18 @@ export class Explorer extends SidebarBase {
                 liNode.className = "explorer-classElement";
                 ulNode.appendChild(liNode);
 
+                eventhandler.connect("classEditor.labelClassSelected", (selectedLabelClass) => {
+                    if (labelClass.index === selectedLabelClass.index) {
+                        liNode.classList.add("active")
+                        console.log(liNode.classList)
+                    }
+                    else {
+                        if (liNode.classList.contains("active")) {
+                            liNode.classList.remove("active")
+                        }
+                    }
+                });
+
                 const classColorNode = document.createElement("div");
                 classColorNode.className = "explorer-classElement-color";
                 classColorNode.style.backgroundColor = labelClass.color;

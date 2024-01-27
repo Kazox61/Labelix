@@ -43,6 +43,10 @@
     padding: 1px 0 1px 28px !important;
 }
 
+.explorer-classElement.active {
+    background-color: var(--selected-background);
+}
+
 .explorer-classElement-color {
     width: 10px;
     height: 10px;

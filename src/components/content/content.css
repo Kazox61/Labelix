@@ -56,6 +56,18 @@
 }
 
 .contentContainer {
+    position: relative;
     background-color: var(--content-container-background);
     height: calc(100% - 35px);
+}
+
+.preview {
+    background-color: var(--activitybar-background);
+    min-width: 100px;
+    border-radius: 10px;
+    padding: 10px 20px;
+    position: absolute;
+    z-index: 200;
+    top: 20px;
+    left: 20px;
 }

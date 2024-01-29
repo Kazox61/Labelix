@@ -27,6 +27,10 @@ export class LabelEditor extends ContentBase {
 
         this.scaleX = 1;
         this.scaleY = 1;
+        this.highlightLabelbox = {
+            stroke: 1,
+            increasing: true
+        }
         this.canLabel = () => this.isProjectLoaded && this.selectedLabelixImage && this.labelClasses.length > 0;
         this.currentLabelPositions = [];
 
@@ -141,6 +145,25 @@ export class LabelEditor extends ContentBase {
         });
 
         this.render();
+
+        // for highlighting the active class labels
+        const updateCanvas = () => {
+            if (this.highlightLabelbox.increasing) {
+                this.highlightLabelbox.stroke += 0.05;
+                if (this.highlightLabelbox.stroke >= 3) {
+                    this.highlightLabelbox.increasing = false;
+                }
+            } else {
+                this.highlightLabelbox.stroke -= 0.05;
+                if (this.highlightLabelbox.stroke <= 1) {
+                    this.highlightLabelbox.increasing = true;
+                }
+            }
+            this.render();
+            this.onMousePositionChange();
+            requestAnimationFrame(updateCanvas);
+        }
+        updateCanvas();
     }
 
     onLeftMouseDown() {
@@ -301,7 +324,14 @@ export class LabelEditor extends ContentBase {
             const [screenX1, screenY1] = this.worldToScreen(x1, y1);
             const [screenX2, screenY2] = this.worldToScreen(x2, y2);
             this.ctx.strokeStyle = this.labelClasses[labelClassIndex].color;
-            this.ctx.lineWidth = 2;
+
+            if (this.selectedLabelClass.index === labelClassIndex) {
+                this.ctx.lineWidth = 2 * this.highlightLabelbox.stroke;
+            }
+            else {
+                this.ctx.lineWidth = 2;
+            }
+            
             this.ctx.strokeRect(screenX1, screenY1, screenX2-screenX1, screenY2-screenY1);
         });
     }
